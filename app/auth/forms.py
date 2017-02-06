@@ -21,9 +21,12 @@ class RegisterForm(Form):
     submit = SubmitField('Register')
 
     def validate_email(self, field):
-        if User.query.filter_by(email=field).first():
+        if User.query.filter_by(email=field.data).first():
             return ValidationError('邮箱已被使用')
 
     def validate_username(self, field):
-        if User.query.filter_by(username=field).first():
+        if User.query.filter_by(username=field.data).first():
             return ValidationError('用户名已被使用')
+
+class PostForm(Form):
+    Title = StringField()
