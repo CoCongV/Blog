@@ -3,7 +3,7 @@ import os
 
 from flask_assets import Bundle
 
-base = os.path.abspath(os.path.dirname(__file__))
+basedir = os.path.abspath(os.path.dirname(__file__))
 
 class Config:
     SECURET_KEY = os.environ.get('SECRET_KEY')
@@ -30,7 +30,7 @@ class Config:
 
 class DevelopmentConfig(Config):
     DEBUG = True
-    SQLALCHEMY_DATABASE_URI = 'mysql://root:password@localhost:3306/Flask_Blog_DEV'
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'data-dev.sqlite')
 
 
 class TestingConfig(Config):
