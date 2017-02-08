@@ -7,7 +7,7 @@ from flask import current_app
 from flask_login import UserMixin, AnonymousUserMixin
 
 from app import db, login_manager
-from .Roles import Role, Permission
+from .roles import Role, Permission
 
 
 class User(UserMixin, db.Model):
