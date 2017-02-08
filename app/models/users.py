@@ -11,7 +11,7 @@ from .roles import Role, Permission
 
 
 class User(UserMixin, db.Model):
-    __tablename = 'users'
+    __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(64), index=True, unique=True)
     username = db.Column(db.String(32), index=True, unique=True)
