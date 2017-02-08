@@ -8,27 +8,28 @@ from app import db
 
 class Reply(db.Model):
     __tablename__ = 'replies'
-    reply_id = db.Column(db.Integer, db.ForeignKey('comments.id'))
+    reply_id = db.Column(db.Integer, db.ForeignKey('comments.id'), primary_key=True)
     replied_id = db.Column(db.Integer, db.ForeignKey('comments.id'))
     timestamp = db.Column(db.DateTime, default=datetime.utcnow())
 
 
 class Comment(db.Model):
     __tablename__ = 'comments'
+    id = db.Column(db.Integer, primary_key=True)
     body = db.Column(db.Text(length=1000))
     body_html = db.Column(db.Text)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow())
-    disabled = db.Column(db.Boolen)
+    disabled = db.Column(db.Boolean)
     author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     post_id = db.Column(db.Integer, db.ForeignKey('posts.id'))
     replied = db.relationship('Reply',
                               foreign_keys=[Reply.reply_id],
-                              backref=db.backref('reply', lazy='joined'),
+                              backref=db.backref('replies', lazy='joined'),
                               lazy='dynamic',
                               cascade='all, delete-orphan')
     replies = db.relationship('Reply',
                               foreign_keys=[Reply.replied_id],
-                              backref=db.barcref('reply', lazy='joined'),
+                              backref=db.backref('replied', lazy='joined'),
                               lazy='dynamic',
                               cascade='all, delete-orphan')
 

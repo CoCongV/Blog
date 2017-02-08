@@ -6,7 +6,7 @@ from flask_assets import Bundle
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 class Config:
-    SECURET_KEY = os.environ.get('SECRET_KEY')
+    SECRET_KEY = os.environ.get('SECRET_KEY')
     SSL_DISABLE = False
     SQLALCHEMY_COMMIT_ON_TEARDOWN = True
     SQLALCHEMY_RECORD_QUERIES = True

@@ -38,7 +38,7 @@ def publish_post():
         return redirect(url_for('main.index'))
 
 
-@main.route('edit/<int:id>', methods=['GET', 'POST'])
+@main.route('/edit/<int:id>', methods=['GET', 'POST'])
 @login_required
 def edit(id):
     post = Post.query.get(id)
