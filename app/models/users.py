@@ -26,7 +26,7 @@ class User(UserMixin, db.Model):
     comments = db.relationship('Comment', backref='author', lazy='dynamic')
 
     def __int__(self, **kwargs):
-        super(User, self).__int__(**kwargs)
+        super(User, self).__init__(**kwargs)
         if self.role is None:
             if self.email == current_app.config['FLASK_ADMIN']:
                 self.role = Role.query.filter_by(permission=0xff).first()
