@@ -13,7 +13,6 @@ from flask_sqlalchemy import SQLAlchemy
 from config import config
 from utils import assets
 
-environment = Environment()
 toolbar = DebugToolbarExtension()
 mail = Mail()
 moment = Moment()
@@ -29,8 +28,6 @@ def create_app(config_name):
     app.config.from_object(config[config_name])
     config[config_name].init_app(app)
 
-    environment.init_app(app)
-    admin = Admin(app)
     toolbar.init_app(app)
     mail.init_app(app)
     pagedown.init_app(app)

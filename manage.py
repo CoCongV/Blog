@@ -2,16 +2,19 @@
 import os
 from flask_script import Shell, Manager
 from flask_migrate import Migrate, MigrateCommand
+from flask_admin import Admin
 
 from app import create_app, db
 from app.models.comments import Comment
 from app.models.users import User
 from app.models.posts import Post
 from app.models.roles import Role, Permission
+from app.utils import assets
 
 app = create_app(os.getenv('FLASK_CONFIG') or 'default')
 manager = Manager(app)
 migrate = Migrate(app, db)
+admin = Admin(app, name='Cong Blog', template_mode="bootstrap3")
 
 
 def make_shell_context():
