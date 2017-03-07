@@ -11,6 +11,7 @@ from flask_pagedown import PageDown
 from flask_sqlalchemy import SQLAlchemy
 
 from config import config
+from utils import assets
 
 environment = Environment()
 toolbar = DebugToolbarExtension()
@@ -35,6 +36,7 @@ def create_app(config_name):
     pagedown.init_app(app)
     db.init_app(app)
     login_manager.init_app(app)
+    assets.init_app(app)
 
     from .auth import auth as auth_blueprint
     from .main import main as main_blueprint

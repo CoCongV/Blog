@@ -36,10 +36,10 @@ class DevelopmentConfig(Config):
 class TestingConfig(Config):
     WTF_CSRF_ENABLE = False
     DEBUG = True
-    SQLALCHEMY_DATABASE_URI = 'mysql://root:password@localhost:3306/Flask_Blog'
+    SQLALCHEMY_DATABASE_URI = 'postgresql://root:password@localhost/Flask_Blog'
 
 class ProductionConfig(Config):
-    SQLALCHEMY_DATABASE_URI = 'mysql://root:password@localhost:3306/Flask_Blog'
+    SQLALCHEMY_DATABASE_URI = 'postgresql://root:password@localhost/Flask_Blog'
 
     @classmethod
     def init_app(cls, app):
@@ -52,10 +52,11 @@ class ProductionConfig(Config):
             credentials = (cls.MAIL_USERNAME, cls.MAIL_PASSWORD)
             if getattr(cls, 'MIAL_USE_TLS', None):
                 secure = ()
-        mail_handler = StandardError(
+
+        mail_handler = SMTPHandler(
             mailhost=(cls.MAIL_SERVER, cls.MAIL_PORT),
-            formaddr=cls.FLASK_MAIL_SENDER,
-            toaddr=cls.FLASK_ADMIN,
+            fromaddr=cls.FLASK_MAIL_SENDER,
+            toaddrs=[cls.FLASK_ADMIN],
             subject=cls.FLASK_MAIL_SUBJECT_PREFIX + ' Application Error',
             credentials=credentials,
             secure=secure
@@ -64,8 +65,8 @@ class ProductionConfig(Config):
         app.logger.addHandler(mail_handler)
 
 config = {
-    'development': DevelopmentConfig,
-    'testing': TestingConfig,
-    'production': ProductionConfig,
-    'default': DevelopmentConfig
-}
+        'development': DevelopmentConfig,
+        'testing': TestingConfig,
+        'production': ProductionConfig,
+        'default': DevelopmentConfig
+        }

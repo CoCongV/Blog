@@ -29,12 +29,11 @@ def index():
 def publish_post():
     form = PostForm()
     if form.validate_on_submit():
-        post = Post(
-                    title=form.title.data,
-                    body=form.body.data,
-                    author=current_user._get_current_object())
-        db.session.add(post)
-        db.session.commit()
+        Post.create(
+            title=form.title.data,
+            body=form.body.data,
+            author=current_user._get_current_object()
+        )
         return redirect(url_for('main.index'))
 
 
@@ -46,9 +45,10 @@ def edit(id):
         abort(403)
     form = PostForm()
     if form.validate_on_submit():
-        post.body = form.body.data
-        db.session.add(post)
-        db.session.commit()
+        # post.body = form.body.data
+        # db.session.add(post)
+        # db.session.commit()
+        post.get_or_create(id=id, body=form.body.data)
         flash('The post has been updated.')
         return redirect(url_for('.post', id=post.id))
     form.title.data = post.title
@@ -82,7 +82,7 @@ def post(id):
 @main.route('/user/<username>')
 @login_required
 def user(username):
-    user = User.query.filter_by(username=username).first_or_404()
+    user = User._filter(username)
     page = request.args.get('page', 1, type=int)
     pagination = user.posts.order_by(Post.timestamp.desc()).paginate(
         page, per_page=current_app.config['BLOG_POST_PER_PAGE'],

@@ -8,9 +8,10 @@ from flask_login import UserMixin, AnonymousUserMixin
 
 from app import db, login_manager
 from .roles import Role, Permission
+from app.minixs import CRUDMixin
 
 
-class User(UserMixin, db.Model):
+class User(CRUDMixin, UserMixin, db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(64), index=True, unique=True)
@@ -41,7 +42,7 @@ class User(UserMixin, db.Model):
     def password(self, password):
         self.password_hash = generate_password_hash(password)
 
-    def verify_password(self,password):
+    def verify_password(self, password):
         return check_password_hash(self.password_hash, password)
 
     def generate_confirm_token(self, expiration=3600):
@@ -117,6 +118,7 @@ class AnonymousUser(AnonymousUserMixin):
         return False
 
 login_manager.anonymous_user = AnonymousUser
+
 
 @login_manager.user_loader
 def load_user(user_id):

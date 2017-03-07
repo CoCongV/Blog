@@ -4,9 +4,10 @@ import bleach
 from markdown import markdown
 
 from app import db
+from app.minixs import CRUDMixin
 
 
-class Post(db.Model):
+class Post(CRUDMixin, db.Model):
     __tablename__ = 'posts'
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(1, 32), index=True)
