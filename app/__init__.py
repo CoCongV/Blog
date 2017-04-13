@@ -1,8 +1,8 @@
 # coding: utf-8
 from flask import Flask
 
-from flask_assets import Environment
-from flask_dashed.admin import Admin
+# from flask_assets import Environment
+# from flask_dashed.admin import Admin
 from flask_debugtoolbar import DebugToolbarExtension
 from flask_login import LoginManager
 from flask_moment import Moment
@@ -11,7 +11,7 @@ from flask_pagedown import PageDown
 from flask_sqlalchemy import SQLAlchemy
 
 from config import config
-from utils import assets
+from app.utils import assets
 
 toolbar = DebugToolbarExtension()
 mail = Mail()
