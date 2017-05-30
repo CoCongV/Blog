@@ -5,6 +5,7 @@ Flask_Admin == 1.4.2
 Flask_Assets == 0.12
 Flask_Dashed == 0.1b2
 Flask_DebugToolbar == 0.10.0
+Flask-HTTPAuth == 3.2.2
 Flask_Login == 0.3.2
 Flask_Mail == 0.9.1
 Flask_Migrate == 2.0.3
