@@ -109,6 +109,14 @@ class User(CRUDMixin, UserMixin, db.Model):
         db.session.add(self)
         db.session.commit()
 
+    @staticmethod
+    def verify_auth_token(token):
+        s = Serializer(current_app.config['SECRET_KEY'])
+        try:
+            data = s.loads(token)
+        except:
+            return None
+        return User.query.get(data['id'])
 
 class AnonymousUser(AnonymousUserMixin):
     def can(self, permissions):
