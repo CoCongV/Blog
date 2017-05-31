@@ -1,5 +1,6 @@
 # coding: utf-8
 from app import db
+from ..minixs import CRUDMixin
 
 
 class Permission:
@@ -7,7 +8,7 @@ class Permission:
     ADMINISTER = 0x80
 
 
-class Role(db.Model):
+class Role(db.Model, CRUDMixin):
     __tablename__ = 'roles'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), unique=True)

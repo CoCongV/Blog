@@ -50,7 +50,7 @@ class VerifyPassword(Resource):
 class GetToken(Resource):
 
     @staticmethod
-    def get(self):
+    def get():
         if g.current_user is None or g.token_used:
             return {"message": "Invalid credentials"},
         return {
@@ -58,5 +58,5 @@ class GetToken(Resource):
             "expiration": 3600
         }, 200
 
-api.add_resource(Login, '/login')
-api.add_resource(GetToken, '/get_token')
+api.add_resource(Login, '/login/')
+api.add_resource(GetToken, '/get_token/')

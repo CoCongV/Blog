@@ -15,6 +15,10 @@ class CRUDMixin(object):
         return cls.query.get(id)
 
     @classmethod
+    def get_or_404(cls, id):
+        return cls.query.get_or_404(id)
+
+    @classmethod
     def get_or_create(cls, id, commit=True, **kwargs):
         obj = cls.query.get(id) or cls(id)
         obj.update(commit=False, **kwargs)

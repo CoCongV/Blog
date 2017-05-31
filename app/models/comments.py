@@ -4,16 +4,17 @@ from markdown import markdown
 from datetime import datetime
 
 from app import db
+from ..minixs import CRUDMixin
 
 
-class Reply(db.Model):
+class Reply(db.Model, CRUDMixin):
     __tablename__ = 'replies'
     reply_id = db.Column(db.Integer, db.ForeignKey('comments.id'), primary_key=True)
     replied_id = db.Column(db.Integer, db.ForeignKey('comments.id'))
     timestamp = db.Column(db.DateTime, default=datetime.utcnow())
 
 
-class Comment(db.Model):
+class Comment(db.Model, CRUDMixin):
     __tablename__ = 'comments'
     id = db.Column(db.Integer, primary_key=True)
     body = db.Column(db.Text(length=1000))

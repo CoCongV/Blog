@@ -118,11 +118,14 @@ class User(CRUDMixin, UserMixin, db.Model):
             return None
         return User.query.get(data['id'])
 
+
 class AnonymousUser(AnonymousUserMixin):
-    def can(self, permissions):
+    @staticmethod
+    def can(permissions):
         return False
 
-    def is_administrator(self):
+    @staticmethod
+    def is_administrator():
         return False
 
 login_manager.anonymous_user = AnonymousUser

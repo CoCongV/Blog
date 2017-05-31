@@ -8,7 +8,8 @@ from . import api
 
 class GetPosts(Resource):
 
-    def get(self):
+    @staticmethod
+    def get():
         page = request.args.get('page', 1, type=int)
         pagination = Post.query.paginate(
             page, per_page=current_app.config['BLOG_POST_PER_PAGE'],
@@ -18,12 +19,42 @@ class GetPosts(Resource):
         prev = None
         if pagination.has_prev:
             prev = url_for('api.get_posts', page=page - 1, _external=True)
-        next = None
+        _next = None
         if pagination.has_next:
-            next = url_for('api.get_posts', page=page + 1, _external=True)
+            _next = url_for('api.get_posts', page=page + 1, _external=True)
         return {
-            'posts': "yes",
+            'posts': [post.to_json() for post in posts],
             'prev': prev,
-            'next': next,
+            'next': _next,
             'count': pagination.total
         }, 200
+
+
+class GetPost(Resource):
+
+    @staticmethod
+    def get(id):
+        post = Post.get_or_404(id)
+        return {
+            'post': post.to_json()
+        }, 200
+
+
+class NewPost(Resource):
+
+    def __init__(self):
+        self.reqparse = reqparse.RequestParser()
+        self.reqparse.add_argument('title', type=str, required=True, location='json')
+        self.reqparse.add_argument('body', type=str, required=True, location='json')
+        self.reqparse.add_argument('tags', type=list, required=True, location='json')
+
+    def post(self):
+        args = self.reqparse.parse_args()
+        title = args['title']
+        body = args['body']
+        tags = args['tags']
+
+
+
+api.add_resource(GetPosts, '/posts/')
+api.add_resource(GetPost, '/posts/<int:id>')
