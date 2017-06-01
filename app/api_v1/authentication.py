@@ -58,5 +58,12 @@ class GetToken(Resource):
             "expiration": 3600
         }, 200
 
+
+@api.before_request
+@auth.login_required
+def before_request():
+    if not g.current_user and not g.current_user.confirmed:
+        return {'message': 'Unconfirmed account'}, 200
+
 api.add_resource(Login, '/login/')
 api.add_resource(GetToken, '/get_token/')

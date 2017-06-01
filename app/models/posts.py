@@ -17,7 +17,6 @@ class Post(CRUDMixin, db.Model):
     timestamp = db.Column(db.DateTime, default=datetime.utcnow(), index=True)
     author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     comments = db.relationship('Comment', backref='post', lazy='dynamic')
-    tags = db.Column(db.F)
 
     @staticmethod
     def on_change_body(target, value, oldvalue, initiator):
