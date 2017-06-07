@@ -23,6 +23,7 @@ login_manager = LoginManager()
 login_manager.session_protection = 'strong'
 login_manager.login_view = 'auth.login'
 
+
 def create_app(config_name):
     app = Flask(__name__)
     app.config.from_object(config[config_name])
@@ -36,10 +37,12 @@ def create_app(config_name):
     assets.init_app(app)
 
     from .auth import auth as auth_blueprint
-    from .main import main as main_blueprint
-    from .api_v1 import api as api_v1_blueprint
-    app.register_blueprint(main_blueprint)
     app.register_blueprint(auth_blueprint)
+
+    from .main import main as main_blueprint
+    app.register_blueprint(main_blueprint)
+
+    from .api_v1 import api_bp as api_v1_blueprint
     app.register_blueprint(api_v1_blueprint)
 
     return app

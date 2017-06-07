@@ -30,7 +30,9 @@ class Post(CRUDMixin, db.Model):
 
     def to_json(self):
         json_data = {
+            "post_id": self.id,
             "url": url_for('api.get_post', id=self.post.id, _external=True),
+            "title": self.title,
             'body': self.body,
             'body_html': self.body_html,
             'timestamp': self.timestamp,

@@ -3,7 +3,7 @@ from flask_restful import Api, reqparse, abort, Resource
 from flask_httpauth import HTTPBasicAuth
 
 from ..models import User
-from . import api
+from . import api, api_bp
 
 auth = HTTPBasicAuth()
 
@@ -59,7 +59,7 @@ class GetToken(Resource):
         }, 200
 
 
-@api.before_request
+@api_bp.before_request
 @auth.login_required
 def before_request():
     if not g.current_user and not g.current_user.confirmed:
