@@ -27,7 +27,7 @@ class CRUDMixin(object):
     @classmethod
     def _filter(cls, **kwargs):
         query = cls.query
-        for key, value in kwargs.iteritems():
+        for key, value in kwargs.items():
             query = query.filer_by(**{key: value})
         return query.first()
 
@@ -49,6 +49,6 @@ class CRUDMixin(object):
         return commit and db.session.commit()
 
     def update(self, commit=True, **kwargs):
-        for attr, value in kwargs.iteritems():
-            setattr(self,attr, value)
+        for attr, value in kwargs.items():
+            setattr(self, attr, value)
         return commit and self.save() or self

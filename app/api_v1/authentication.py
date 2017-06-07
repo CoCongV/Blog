@@ -1,5 +1,5 @@
 from flask import g
-from flask_restful import Api, reqparse, abort, Resource
+from flask_restful import reqparse, Resource
 from flask_httpauth import HTTPBasicAuth
 
 from ..models import User

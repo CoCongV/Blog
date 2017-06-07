@@ -64,7 +64,6 @@ class NewPost(Resource):
         tags = args['tags']
         author = g.current_user
         post = Post.create(title=title, body=body, tags=tags, author_id=author.id)
-        post.save()
         return {"data": post.to_json(),
                 'location': url_for('api.get_post', id=post.id, _external=True)}, 201
 

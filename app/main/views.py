@@ -1,10 +1,10 @@
 # coding: utf-8
-from flask import render_template, abort, redirect, url_for, flash, request, current_app, make_response
+from flask import render_template, abort, redirect, url_for, flash, request, current_app
 from flask_login import login_required, current_user
 from flask_sqlalchemy import get_debug_queries
 
 from . import main
-from .forms import EditProfileAdminForm, EditProfileForm, PostForm, CommentForm
+from .forms import EditProfileForm, PostForm, CommentForm
 from app import db
 from app.models.roles import Role, Permission
 from app.models.users import User
@@ -20,7 +20,7 @@ def index():
         page, per_page=current_app.config['BLOG_POST_PER_PAGE'], error_out=False
     )
     posts = pagination.items
-    return render_template('index.html', posts=posts)
+    return render_template('index.html')
 
 
 @main.route('/publish_post', methods=['GET', 'POST'])
