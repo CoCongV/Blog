@@ -5,6 +5,7 @@ from flask_assets import Bundle
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
+
 class Config:
     SECRET_KEY = '272c635e-a0b2-49b1-9a8b-afc671f850ee'
     SSL_DISABLE = False

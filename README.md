@@ -1,2 +1,2 @@
 # Flask_Blog
-power of Python2 and Flask
+power of Python3 and Flask
