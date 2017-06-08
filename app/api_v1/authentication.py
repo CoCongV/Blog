@@ -11,6 +11,7 @@ auth = HTTPBasicAuth()
 class Login(Resource):
 
     def __init__(self):
+        self.expiration = 86400
         self.reqparse = reqparse.RequestParser()
         self.reqparse.add_argument('email', type=str, required=True, location='json')
         self.reqparse.add_argument('password', type=str, required=True, location='json')
@@ -26,25 +27,37 @@ class Login(Resource):
             return {'message': 'username or password error!'}, 403
         else:
             g.current_user = user
-            token = user.generate_confirm_token()
-            return {"token": token}, 200
+            token = user.generate_confirm_token(expiration=self.expiration)
+            return {
+                       "token": token,
+                       "expiration": self.expiration,
+                       "username": user.username
+                   }, 200
 
 
-class VerifyPassword(Resource):
-
-    def __init__(self):
-        self.reqparse = reqparse.RequestParser()
-        self.reqparse.add_argument('token', type=str, required=True, location='json')
-        super(VerifyPassword, self).__init__()
-
-    @auth.verify_password
-    def post(self):
-        args = self.reqparse.parse_args()
-        token = args['token']
-        g.current_user = User.verify_auth_token(token)
-        if g.current_user:
-            g.token_used = True
-            return True
+# class VerifyToken(Resource):
+#
+#     def __init__(self):
+#         self.reqparse = reqparse.RequestParser()
+#         self.reqparse.add_argument('token', type=str, required=True)
+#         super(VerifyToken, self).__init__()
+#
+#     @auth.verify_password
+#     def post(self):
+#         args = self.reqparse.parse_args()
+#         token = args['token']
+#         g.current_user = User.verify_auth_token(token)
+#         if g.current_user:
+#             g.token_used = True
+#             return True
+@auth.verify_password
+def verify_token(token):
+    _reqparse = reqparse.RequestParser()
+    _reqparse.add_argument('token', location='cookies')
+    g.current_user = User.verify_auth_token(token)
+    if g.current_user:
+        g.token_used = True
+        return True
 
 
 class GetToken(Resource):
@@ -55,7 +68,7 @@ class GetToken(Resource):
             return {"message": "Invalid credentials"},
         return {
             "token": g.current_user.generate_confirm_token(),
-            "expiration": 3600
+            "expiration": 86400
         }, 200
 
 

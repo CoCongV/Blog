@@ -52,3 +52,32 @@ class CRUDMixin(object):
         for attr, value in kwargs.items():
             setattr(self, attr, value)
         return commit and self.save() or self
+
+
+class Serializer(object):
+    serialized_fields = ()
+
+    def json(self):
+        serialized_fields = self.serialized_fields
+        cls_serialized_fields = set([column.name for column in self.__class__.__table__.columns])
+
+        for primary_key in inspect(self.__class__).primary_key:
+            if not getattr(self, primary_key.name):
+                raise ValueError("The object hasn't been loaded yet.")
+
+        if serialized_fields:
+            for field in serialized_fields:
+                if field not in cls_serialized_fields:
+                    raise ValueError(
+                        "The field `%r` isn't in `%r`"
+                        % (field, self.__class__.__name__)
+                    )
+        else:
+            serialized_fields = cls_serialized_fields
+        ret = {}
+        for field in serialized_fields:
+            try:
+                ret[field] = str(getattr(self, field))
+            except UnicodeEncodeError as e:
+                ret[field] = getattr(self, field)
+        return ret

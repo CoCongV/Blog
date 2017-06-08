@@ -8,10 +8,10 @@ from flask_login import UserMixin, AnonymousUserMixin
 
 from app import db, login_manager
 from .roles import Role, Permission
-from app.minixs import CRUDMixin
+from app.minixs import CRUDMixin, Serializer
 
 
-class User(CRUDMixin, UserMixin, db.Model):
+class User(CRUDMixin, UserMixin, db.Model, Serializer):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(64), index=True, unique=True)
@@ -46,7 +46,7 @@ class User(CRUDMixin, UserMixin, db.Model):
         return check_password_hash(self.password_hash, password)
 
     def generate_confirm_token(self, expiration=3600):
-        """generate token for Email or reset password"""
+        """generate token for Email , reset password and verify password"""
         s = Serializer(current_app.config['SECRET_KEY'], expires_in=expiration)
         return s.dumps({'confirm_id': self.id})
 
@@ -117,6 +117,8 @@ class User(CRUDMixin, UserMixin, db.Model):
         except:
             return None
         return User.query.get(data['id'])
+
+    # def to_json(self):
 
 
 class AnonymousUser(AnonymousUserMixin):
