@@ -12,5 +12,3 @@ from .decorators import permission_required
 class StateCode(object):
     SUCCESS = 200
     FORBIDDEN = 403
-
-

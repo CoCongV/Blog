@@ -50,10 +50,14 @@ class Login(Resource):
 #         if g.current_user:
 #             g.token_used = True
 #             return True
+
 @auth.verify_password
-def verify_token(token):
+def verify_token(email_or_token, password):
     _reqparse = reqparse.RequestParser()
     _reqparse.add_argument('token', location='cookies')
+    args = _reqparse.parse_args()
+    token = args['token']
+    print(token)
     g.current_user = User.verify_auth_token(token)
     if g.current_user:
         g.token_used = True
@@ -72,11 +76,11 @@ class GetToken(Resource):
         }, 200
 
 
-@api_bp.before_request
-@auth.login_required
-def before_request():
-    if not g.current_user and not g.current_user.confirmed:
-        return {'message': 'Unconfirmed account'}, 200
+# @api_bp.before_request
+# @auth.login_required
+# def before_request():
+#     if not g.current_user and not g.current_user.confirmed:
+#         return {'message': 'Unconfirmed account'}, 200
 
 api.add_resource(Login, '/login/')
 api.add_resource(GetToken, '/get_token/')
