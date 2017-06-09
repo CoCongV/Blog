@@ -1,7 +1,6 @@
 # coding: utf-8
 import os
-
-from flask_assets import Bundle
+import logging
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -23,6 +22,11 @@ class Config:
     BLOG_POST_PER_PAGE = 10
     BLOG_COMMENT_PAGE = 30
     BLOG_SLOW_DB_QUERY_TIME = 0.5
+    _LOG_FILE = './log/'
+    _MAX_LOG_SIZE = 10 * 1024 * 1024
+    _FORMAT = '[%(time)r][%(level)r][%(filename)r:%(line)d][%(threadName)r]: %(message)r'
+    _LOG_LEVEL = logging.DEBUG
+    _formatter = logging.Formatter(_FORMAT)
 
     @staticmethod
     def init_app(app):
