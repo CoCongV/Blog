@@ -9,7 +9,6 @@ from app.models.comments import Comment
 from app.models.users import User
 from app.models.posts import Post
 from app.models.roles import Role, Permission
-from app.utils import assets
 
 app = create_app(os.getenv('FLASK_CONFIG') or 'default')
 manager = Manager(app)

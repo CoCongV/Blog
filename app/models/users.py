@@ -1,7 +1,7 @@
 # coding: utf-8
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
-from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+from itsdangerous import TimedJSONWebSignatureSerializer
 
 from flask import current_app
 from flask_login import UserMixin, AnonymousUserMixin
@@ -47,11 +47,11 @@ class User(CRUDMixin, UserMixin, db.Model, Serializer):
 
     def generate_confirm_token(self, expiration=3600):
         """generate token for Email , reset password and verify password"""
-        s = Serializer(current_app.config['SECRET_KEY'], expires_in=expiration)
+        s = TimedJSONWebSignatureSerializer(current_app.config['SECRET_KEY'], expires_in=expiration)
         return s.dumps({'confirm_id': self.id})
 
     def verify_email_token(self, token):
-        s = Serializer(current_app.config['SECRET_KEY'])
+        s = TimedJSONWebSignatureSerializer(current_app.config['SECRET_KEY'])
         try:
             data = s.loads(token)
         except:
@@ -64,7 +64,7 @@ class User(CRUDMixin, UserMixin, db.Model, Serializer):
         return True
 
     def verify_reset_token(self, token, new_password):
-        s = Serializer(current_app.config['SECRET_KEY'])
+        s = TimedJSONWebSignatureSerializer(current_app.config['SECRET_KEY'])
         try:
             data = s.loads(token)
         except:
@@ -77,11 +77,11 @@ class User(CRUDMixin, UserMixin, db.Model, Serializer):
         return True
 
     def generate_change_mail_token(self, new_email, expiration=3600):
-        s = Serializer(current_app.config['SECRET_KEY'], expires_in=expiration)
+        s = TimedJSONWebSignatureSerializer(current_app.config['SECRET_KEY'], expires_in=expiration)
         return s.dumps({'confirm_id': self.id, 'new_email': new_email})
 
     def verify_change_mail(self, token):
-        s = Serializer(current_app.config['SECRET_KEY'])
+        s = TimedJSONWebSignatureSerializer(current_app.config['SECRET_KEY'])
         try:
             data = s.loads(token)
         except:
@@ -111,7 +111,7 @@ class User(CRUDMixin, UserMixin, db.Model, Serializer):
 
     @staticmethod
     def verify_auth_token(token):
-        s = Serializer(current_app.config['SECRET_KEY'])
+        s = TimedJSONWebSignatureSerializer(current_app.config['SECRET_KEY'])
         try:
             data = s.loads(token)
         except:
