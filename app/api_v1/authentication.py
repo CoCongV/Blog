@@ -1,62 +1,12 @@
-from flask import g
-from flask_restful import reqparse, Resource
-from flask_httpauth import HTTPBasicAuth
+from flask import g, make_response, jsonify
+from flask_restful import Resource
 
 from ..models import User
-from . import api, api_bp
-
-auth = HTTPBasicAuth()
+from . import api, token_auth, StateCode
 
 
-class Login(Resource):
-
-    def __init__(self):
-        self.expiration = 86400
-        self.reqparse = reqparse.RequestParser()
-        self.reqparse.add_argument('email', type=str, required=True, location='json')
-        self.reqparse.add_argument('password', type=str, required=True, location='json')
-        super(Login, self).__init__()
-
-    def post(self):
-        args = self.reqparse.parse_args()
-        email = args['email']
-        password = args['password']
-        user = User.query.filter_by(email=email).first()
-        verify = user.verify_password(password)
-        if not verify:
-            return {'message': 'username or password error!'}, 403
-        else:
-            g.current_user = user
-            token = user.generate_confirm_token(expiration=self.expiration)
-            return {
-                       "token": token,
-                       "expiration": self.expiration,
-                       "username": user.username
-                   }, 200
-
-
-# class VerifyToken(Resource):
-#
-#     def __init__(self):
-#         self.reqparse = reqparse.RequestParser()
-#         self.reqparse.add_argument('token', type=str, required=True)
-#         super(VerifyToken, self).__init__()
-#
-#     @auth.verify_password
-#     def post(self):
-#         args = self.reqparse.parse_args()
-#         token = args['token']
-#         g.current_user = User.verify_auth_token(token)
-#         if g.current_user:
-#             g.token_used = True
-#             return True
-
-@auth.verify_password
-def verify_token(email_or_token, password):
-    _reqparse = reqparse.RequestParser()
-    _reqparse.add_argument('token', location='cookies')
-    args = _reqparse.parse_args()
-    token = args['token']
+@token_auth.verify_token
+def verify_token(token):
     print(token)
     g.current_user = User.verify_auth_token(token)
     if g.current_user:
@@ -64,23 +14,19 @@ def verify_token(email_or_token, password):
         return True
 
 
-class GetToken(Resource):
+class GetToken(Resource, StateCode):
 
-    @staticmethod
-    def get():
+    def get(self):
         if g.current_user is None or g.token_used:
             return {"message": "Invalid credentials"},
         return {
             "token": g.current_user.generate_confirm_token(),
             "expiration": 86400
-        }, 200
+        }, self.SUCCESS
 
 
-# @api_bp.before_request
-# @auth.login_required
-# def before_request():
-#     if not g.current_user and not g.current_user.confirmed:
-#         return {'message': 'Unconfirmed account'}, 200
+@token_auth.error_handler
+def unauthorized():
+    return make_response(jsonify({'error': 'Unauthorized access'}), 403)
 
-api.add_resource(Login, '/login/')
 api.add_resource(GetToken, '/get_token/')

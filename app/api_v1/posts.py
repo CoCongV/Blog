@@ -69,16 +69,15 @@ class NewPost(Resource):
 
 
 class EditPost(Resource, StateCode):
+    decorators = [permission_required(Permission.ADMINISTER)]
 
-    @permission_required(Permission.ADMINISTER)
     def get(self, id):
         post = Post.get_or_404(id)
         if g.current_user != post.author:
-            return {"message": "Insufficient Permissions"}, 403
+            return {"message": "Insufficient Permissions"}, self.PERMISSION_FORBIDDEN
         else:
-            return {"data": post.to_json()}, 201
+            return {"data": post.to_json()}, self.SUCCESS
 
-    @permission_required(Permission.ADMINISTER)
     def put(self, id):
         args = post_parser.parse_args()
         title = args['title']
@@ -86,18 +85,17 @@ class EditPost(Resource, StateCode):
         tags = args['tags']
         post = Post.get(id)
         if g.current_user != post.author and not g.current_user.can(Permission.ADMINISTER):
-            return {"message": "Insufficient permissions"}, self.FORBIDDEN
+            return {"message": "Insufficient permissions"}, self.PERMISSION_FORBIDDEN
         post.body = body
         post.title = title
         post.tags = tags
         post.save()
         return self.SUCCESS
 
-    @permission_required(Permission.ADMINISTER)
     def delete(self, id):
         post = Post.get_or_404(id)
         if g.current_user != post.author and not g.current_user.can(Permission.ADMINISTER):
-            return {"message": "Insufficient permissions"}, self.FORBIDDEN
+            return {"message": "Insufficient permissions"}, self.PERMISSION_FORBIDDEN
         post.delete()
         return 200
 

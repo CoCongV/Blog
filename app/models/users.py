@@ -48,7 +48,8 @@ class User(CRUDMixin, UserMixin, db.Model, Serializer):
     def generate_confirm_token(self, expiration=3600):
         """generate token for Email , reset password and verify password"""
         s = TimedJSONWebSignatureSerializer(current_app.config['SECRET_KEY'], expires_in=expiration)
-        return s.dumps({'confirm_id': self.id})
+        token = s.dumps({'confirm_id': self.id})
+        return str(token, encoding='utf8')
 
     def verify_email_token(self, token):
         s = TimedJSONWebSignatureSerializer(current_app.config['SECRET_KEY'])
