@@ -117,7 +117,7 @@ class User(CRUDMixin, UserMixin, db.Model, Serializer):
             data = s.loads(token)
         except:
             return None
-        return User.query.get(data['id'])
+        return User.query.get(data['confirm_id'])
 
     # def to_json(self):
 

@@ -37,13 +37,19 @@ def create_app(config_name):
     login_manager.init_app(app)
     assets.init_app(app)
 
-    from .auth import auth as auth_blueprint
-    app.register_blueprint(auth_blueprint)
+    # from .auth import auth as auth_blueprint
+    # app.register_blueprint(auth_blueprint)
 
     from .main import main as main_blueprint
     app.register_blueprint(main_blueprint)
 
-    from .api_v1 import api_bp as api_v1_blueprint
-    app.register_blueprint(api_v1_blueprint)
+    from .api_v1.post import api_post
+    app.register_blueprint(api_post)
+
+    from .api_v1.auth import api_auth
+    app.register_blueprint(api_auth)
+
+    from .api_v1.user import api_user
+    app.register_blueprint(api_user)
 
     return app

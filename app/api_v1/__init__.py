@@ -1,17 +1,17 @@
-from flask import Blueprint
-from flask_restful import Api
 from flask_httpauth import HTTPTokenAuth
-
-api_bp = Blueprint('api', __name__)
-api = Api(api_bp)
-token_auth = HTTPTokenAuth()
-
 
 from .decorators import permission_required
 
 
 class StateCode(object):
     SUCCESS = 200
-    PERMISSION_FORBIDDEN = 403
+    CREATED = 201
     UNAUTHORIZED_ACCESS = 401
+    PERMISSION_FORBIDDEN = 403
+
+
+# api_comment = Blueprint('comment', __name__, url_prefix='/comment/')
+token_auth = HTTPTokenAuth(scheme='token')
+
+from .auth import authentication
 

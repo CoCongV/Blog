@@ -1,18 +1,17 @@
 from flask import g
-from flask_restful import reqparse, Resource
+from flask_restful import Resource, reqparse
 
-from ..models import User
-from . import api, token_auth, StateCode
+from app.models import User
+from app.api_v1 import StateCode
 
 
-class Login(Resource, StateCode):
+class LoginView(Resource, StateCode):
 
     def __init__(self):
         self.expiration = 86400
         self.reqparse = reqparse.RequestParser()
         self.reqparse.add_argument('email', type=str, required=True, location='json')
         self.reqparse.add_argument('password', type=str, required=True, location='json')
-        super(Login, self).__init__()
 
     def post(self):
         args = self.reqparse.parse_args()
@@ -30,15 +29,3 @@ class Login(Resource, StateCode):
                        "expiration": self.expiration,
                        "username": user.username
                    }, self.SUCCESS
-
-
-class GetUserInfo(Resource, StateCode):
-    decorators = [token_auth.login_required]
-
-    def get(self):
-        user = g.current_user.json()
-        return user, self.SUCCESS
-
-
-api.add_resource(GetUserInfo, '/user/')
-api.add_resource(Login, '/login/')
