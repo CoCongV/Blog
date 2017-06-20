@@ -1,10 +1,9 @@
 from flask import g
-from flask_restful import Resource
 
-from app.api_v1 import StateCode
+from app.api_v1 import BaseResource
 
 
-class Token(Resource, StateCode):
+class Token(BaseResource):
 
     def get(self):
         if g.current_user is None or g.token_used:

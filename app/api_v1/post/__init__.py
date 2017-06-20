@@ -1,7 +1,7 @@
 from flask import Blueprint
 from flask_restful import Api, reqparse
 
-api_post = Blueprint('post', __name__, url_prefix='/post')
+api_post = Blueprint('post', __name__)
 api = Api(api_post)
 
 
@@ -12,7 +12,7 @@ post_parser.add_argument(
     required=True
 )
 post_parser.add_argument(
-    'body',
+    'content',
     location='json',
     required=True
 )
@@ -25,5 +25,5 @@ post_parser.add_argument(
 from .posts import PostsView
 from .post import PostView
 
-api.add_resource(PostView, '/article/')
-api.add_resource(PostsView, '/articles/')
+api.add_resource(PostView, '/post/')
+api.add_resource(PostsView, '/posts/')

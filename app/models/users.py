@@ -1,14 +1,14 @@
 # coding: utf-8
 from datetime import datetime
-from werkzeug.security import generate_password_hash, check_password_hash
-from itsdangerous import TimedJSONWebSignatureSerializer
 
 from flask import current_app
 from flask_login import UserMixin, AnonymousUserMixin
+from itsdangerous import TimedJSONWebSignatureSerializer
+from werkzeug.security import generate_password_hash, check_password_hash
 
 from app import db, login_manager
+from app.models.minixs import CRUDMixin, Serializer
 from .roles import Role, Permission
-from app.minixs import CRUDMixin, Serializer
 
 
 class User(CRUDMixin, UserMixin, db.Model, Serializer):
@@ -17,7 +17,7 @@ class User(CRUDMixin, UserMixin, db.Model, Serializer):
     email = db.Column(db.String(64), index=True, unique=True)
     username = db.Column(db.String(32), index=True, unique=True)
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
-    password_hash = db.Column(db.String(128))
+    password_hash = db.Column(db.String(256))
     confirmed = db.Column(db.Boolean, default=False)
     location = db.Column(db.String(64))
     about_me = db.Column(db.String(128))

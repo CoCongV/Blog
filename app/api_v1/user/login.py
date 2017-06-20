@@ -1,11 +1,11 @@
 from flask import g
-from flask_restful import Resource, reqparse
+from flask_restful import reqparse
 
 from app.models import User
-from app.api_v1 import StateCode
+from app.api_v1 import BaseResource
 
 
-class LoginView(Resource, StateCode):
+class LoginView(BaseResource):
 
     def __init__(self):
         self.expiration = 86400
@@ -18,9 +18,11 @@ class LoginView(Resource, StateCode):
         email = args['email']
         password = args['password']
         user = User.query.filter_by(email=email).first()
+        if not user:
+            return {'message': 'Email error'}, self.UNAUTHORIZED_ACCESS
         verify = user.verify_password(password)
         if not verify:
-            return {'message': 'username or password error!'}, self.UNAUTHORIZED_ACCESS
+            return {'message': 'Password error!'}, self.UNAUTHORIZED_ACCESS
         else:
             g.current_user = user
             token = user.generate_confirm_token(expiration=self.expiration)

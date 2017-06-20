@@ -1,11 +1,11 @@
 from flask import g
-from flask_restful import reqparse, Resource
+from flask_restful import reqparse
 
 from app.models import User
-from app.api_v1 import token_auth, StateCode
+from app.api_v1 import token_auth, BaseResource
 
 
-class UserView(Resource, StateCode):
+class UserView(BaseResource):
     # decorators = [token_auth.login_required]
 
     def __init__(self):

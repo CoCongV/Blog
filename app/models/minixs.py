@@ -1,6 +1,6 @@
 from sqlalchemy.inspection import inspect
 
-from . import db
+from app import db
 
 class CRUDMixin(object):
     """Implements methods to create, read, update, and delete"""

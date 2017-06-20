@@ -52,4 +52,7 @@ def create_app(config_name):
     from .api_v1.user import api_user
     app.register_blueprint(api_user)
 
+    from .api_v1.comment import api_comment
+    app.register_blueprint(api_comment)
+
     return app

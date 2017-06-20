@@ -1,10 +1,11 @@
 # coding: utf-8
-import bleach
-from markdown import markdown
 from datetime import datetime
 
+import bleach
+from markdown import markdown
+
 from app import db
-from ..minixs import CRUDMixin
+from app.models.minixs import CRUDMixin
 
 
 class Reply(db.Model, CRUDMixin):
@@ -17,10 +18,10 @@ class Reply(db.Model, CRUDMixin):
 class Comment(db.Model, CRUDMixin):
     __tablename__ = 'comments'
     id = db.Column(db.Integer, primary_key=True)
-    body = db.Column(db.Text(length=1000))
+    body = db.Column(db.String(1000))
     body_html = db.Column(db.Text)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow())
-    disabled = db.Column(db.Boolean)
+    disabled = db.Column(db.Boolean, default=False)
     author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     post_id = db.Column(db.Integer, db.ForeignKey('posts.id'))
     replied = db.relationship('Reply',
@@ -42,5 +43,13 @@ class Comment(db.Model, CRUDMixin):
             markdown(value, output_format='html'),
             tags=allowed_tags, strip=True
         ))
+
+    def to_json(self):
+        json_data = {
+            'body_html': self.body_html,
+            'timestamp': self.timestamp.strftime('%Y-%m-%d %H:%M:%S'),
+            'author': self.author.username
+        }
+        return json_data
 
 db.event.listen(Comment.body, 'set', Comment.on_change_body)

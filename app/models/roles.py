@@ -1,6 +1,6 @@
 # coding: utf-8
 from app import db
-from ..minixs import CRUDMixin
+from app.models.minixs import CRUDMixin
 
 
 class Permission:
@@ -26,7 +26,7 @@ class Role(db.Model, CRUDMixin):
             role = Role.query.filter_by(name=r).first()
             if role is None:
                 role = Role(name=r)
-            role.permission = roles[r][0]
+            role.permissions = roles[r][0]
             role.default = roles[r][1]
             db.session.add(role)
         db.session.commit()

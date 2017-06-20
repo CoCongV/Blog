@@ -1,16 +1,15 @@
 from flask import current_app, request, url_for
-from flask_restful import Resource
 
-from app.api_v1 import StateCode
-
+from app import db
+from app.api_v1 import BaseResource
 from app.models import Post
 
 
-class PostsView(Resource, StateCode):
+class PostsView(BaseResource):
 
     def get(self):
         page = request.args.get('page', 1, type=int)
-        pagination = Post.query.paginate(
+        pagination = Post.query.order_by(db.desc('timestamp')).paginate(
             page, per_page=current_app.config['BLOG_POST_PER_PAGE'],
             error_out=False
         )
