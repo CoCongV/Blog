@@ -21,7 +21,7 @@ class User(CRUDMixin, UserMixin, db.Model, Serializer):
     confirmed = db.Column(db.Boolean, default=False)
     location = db.Column(db.String(64))
     about_me = db.Column(db.String(128))
-    member_since = db.Column(db.DateTime, default=datetime.utcnow())
+    member_since = db.Column(db.DateTime, default=lambda: datetime.utcnow())
     last_seen = db.Column(db.DateTime, default=datetime.utcnow())
     posts = db.relationship('Post', backref='author', lazy='dynamic')
     comments = db.relationship('Comment', backref='author', lazy='dynamic')

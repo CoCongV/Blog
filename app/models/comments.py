@@ -20,7 +20,7 @@ class Comment(db.Model, CRUDMixin):
     id = db.Column(db.Integer, primary_key=True)
     body = db.Column(db.String(1000))
     body_html = db.Column(db.Text)
-    timestamp = db.Column(db.DateTime, default=datetime.utcnow())
+    timestamp = db.Column(db.DateTime, default=lambda: datetime.utcnow())
     disabled = db.Column(db.Boolean, default=False)
     author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     post_id = db.Column(db.Integer, db.ForeignKey('posts.id'))
@@ -37,11 +37,16 @@ class Comment(db.Model, CRUDMixin):
 
     @staticmethod
     def on_change_body(target, value, oldvalue, initiator):
-        allowed_tags = ['a', 'abbr', 'acronym', 'b', 'code', 'em', 'i',
-                        'strong']
+        allowed_tags = ['a', 'abbr', 'acronym', 'b', 'code', 'em', 'i', 'blockquote'
+                        'strong', 'ol', 'li', 'ul', 'p', 'span', 'img', 'pre', 's']
+        allowed_styles = ['background-color']
+        allowed_attributes = {'a': ['href', 'title'],
+                              'abbr': ['title'],
+                              'acronym': ['title'],
+                              'pre': ['class', 'spellcheck']}
         target.body_html = bleach.linkify(bleach.clean(
             markdown(value, output_format='html'),
-            tags=allowed_tags, strip=True
+            tags=allowed_tags, strip=True, styles=allowed_styles, attributes=allowed_attributes
         ))
 
     def to_json(self):

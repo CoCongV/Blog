@@ -27,13 +27,13 @@ class PostView(BaseResource):
 
     @token_auth.login_required
     @permission_required(Permission.ADMINISTER)
-    def put(self, id):
+    def put(self):
         # 修改文章
         args = post_parser.parse_args()
         title = args['title']
         body = args['content']
         tags = args['tags']
-        post = Post.get(id)
+        post = Post.get(args['post_id'])
         if g.current_user != post.author and not g.current_user.can(Permission.ADMINISTER):
             return {"message": "Insufficient permissions"}, self.PERMISSION_FORBIDDEN
         post.body = body
@@ -44,8 +44,8 @@ class PostView(BaseResource):
 
     @token_auth.login_required
     @permission_required(Permission.ADMINISTER)
-    def delete(self, id):
-        post = Post.get_or_404(id)
+    def delete(self):
+        post = Post.get_or_404(request.args['post_id'])
         if g.current_user != post.author and not g.current_user.can(Permission.ADMINISTER):
             return {"message": "Insufficient permissions"}, self.PERMISSION_FORBIDDEN
         post.delete()

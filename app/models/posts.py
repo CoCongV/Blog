@@ -16,7 +16,7 @@ class Post(CRUDMixin, db.Model):
     title = db.Column(db.String(32), index=True)
     body = db.Column(db.Text)
     body_html = db.Column(db.Text)
-    timestamp = db.Column(db.DateTime, default=datetime.utcnow(), index=True)
+    timestamp = db.Column(db.DateTime, default=lambda: datetime.utcnow(), index=True)
     author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     comments = db.relationship('Comment', backref='post', lazy='dynamic')
     tags = db.Column(postgresql.ARRAY(db.String(32)))
