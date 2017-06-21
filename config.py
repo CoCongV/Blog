@@ -14,6 +14,10 @@ class Config:
     FLASK_MAIL_SUBJECT_PREFIX = '[Cong\' Blog]'
     FLASK_MAIL_SENDER = 'Admin <cong.lv@outlook.com>'
     FLASK_ADMIN = os.environ.get('BLOG_ADMIN')
+    UPLOADED_PHOTOS_DEST = './media/photos'
+    UPLOADED_FILES_DEST = './media/files'
+    ALLOWED_EXTENSIONS = ['png', 'jpg', 'jpeg', 'gif', 'webp']
+    MAX_CONTENT_LENGTH = 16 * 1024 * 1024
     MAIL_SERVER = 'smtp-mail.outlook.com'
     MAIL_PORT = 587
     MAIL_USE_TLE = True
@@ -35,16 +39,16 @@ class Config:
 
 class DevelopmentConfig(Config):
     DEBUG = True
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'data-dev.sqlite')
+    SQLALCHEMY_DATABASE_URI = 'postgresql://lvcong:password@localhost/flask_blog'
 
 
 class TestingConfig(Config):
     WTF_CSRF_ENABLE = False
     DEBUG = True
-    SQLALCHEMY_DATABASE_URI = 'postgresql://root:password@localhost/Flask_Blog'
+    SQLALCHEMY_DATABASE_URI = 'postgresql://lvcong:password@localhost/flask_test'
 
 class ProductionConfig(Config):
-    SQLALCHEMY_DATABASE_URI = 'postgresql://root:password@localhost/Flask_Blog'
+    SQLALCHEMY_DATABASE_URI = 'postgresql://lvcong:password@localhost/flask_blog'
 
     @classmethod
     def init_app(cls, app):
