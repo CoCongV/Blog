@@ -1,4 +1,4 @@
-from flask import g
+from flask import g, request
 from flask_restful import reqparse
 
 from app.models import User
@@ -8,10 +8,11 @@ from app.api_v1 import BaseResource
 class LoginView(BaseResource):
 
     def __init__(self):
+        super(LoginView, self).__init__()
         self.expiration = 86400
         self.reqparse = reqparse.RequestParser()
-        self.reqparse.add_argument('email', type=str, required=True, location='json')
-        self.reqparse.add_argument('password', type=str, required=True, location='json')
+        self.reqparse.add_argument('email', required=True, location='json')
+        self.reqparse.add_argument('password', required=True, location='json')
 
     def post(self):
         args = self.reqparse.parse_args()

@@ -23,7 +23,8 @@ class CommentView(BaseResource):
         Comment.create(**kwargs)
         return self.CREATED
 
-    def get(self):
+    @staticmethod
+    def get():
         post = Post.query.get(request.args['post'])
         page = request.args.get('page', 1)
         pagination = post.comments.order_by(db.desc('timestamp')).paginate(

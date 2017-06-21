@@ -26,7 +26,7 @@ class Post(CRUDMixin, db.Model):
     def on_change_body(target, value, oldvalue, initiator):
         allowed_tags = ['a', 'abbr', 'acronym', 'b', 'blockquote', 'code',
                         'em', 'i', 'li', 'ol', 'pre', 'strong', 'ul',
-                        'h1', 'h2', 'h3', 'p']
+                        'h1', 'h2', 'h3', 'p', 'img']
         target.body_html = bleach.linkify(bleach.clean(
             markdown(value, output_format='html'),
             tags=allowed_tags, strip=True
@@ -43,12 +43,14 @@ class Post(CRUDMixin, db.Model):
             _next = url_for('comment.commentview', post=self.id, page=2)
         json_data = {
             "post_id": self.id,
+            'tags': self.tags,
             "url": url_for('post.postview', id=self.id),
             "title": self.title,
             'body': self.body,
             'body_html': self.body_html,
             'timestamp': self.timestamp.strftime('%Y-%m-%d %H:%M'),
             'author': self.author.username,
+            'avatar': self.author.avatar,
             'author_url': url_for('user.userview', id=self.author_id),
             'view': self.view,
             'comments': [i.to_json() for i in comments],

@@ -1,9 +1,5 @@
 # coding: utf-8
-import os
 from flask import Flask
-
-# from flask_assets import Environment
-# from flask_dashed.admin import Admin
 from flask_debugtoolbar import DebugToolbarExtension
 from flask_login import LoginManager
 from flask_moment import Moment
@@ -36,9 +32,6 @@ def create_app(config_name):
     db.init_app(app)
     login_manager.init_app(app)
     assets.init_app(app)
-
-    # from .auth import auth as auth_blueprint
-    # app.register_blueprint(auth_blueprint)
 
     from .main import main as main_blueprint
     app.register_blueprint(main_blueprint)

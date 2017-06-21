@@ -19,6 +19,7 @@ post_parser.add_argument(
 post_parser.add_argument(
     'tags',
     location='json',
+    action='append',
     required=True
 )
 

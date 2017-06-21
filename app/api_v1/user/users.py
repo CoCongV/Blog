@@ -15,6 +15,7 @@ class UserView(BaseResource):
         self.reqparse.add_argument('password', type=str, required=True, location='json')
         self.reqparse.add_argument('location', type=str, location='json')
         self.reqparse.add_argument('about', type=str, location='json')
+        self.reqparse.add_argument('avatar', location='file')
 
     @token_auth.login_required
     def get(self):

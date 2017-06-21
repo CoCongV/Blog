@@ -16,13 +16,14 @@ class User(CRUDMixin, UserMixin, db.Model, Serializer):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(64), index=True, unique=True)
     username = db.Column(db.String(32), index=True, unique=True)
+    avatar = db.Column(db.Text, default='static/images.png')
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
     password_hash = db.Column(db.String(256))
     confirmed = db.Column(db.Boolean, default=False)
     location = db.Column(db.String(64))
     about_me = db.Column(db.String(128))
     member_since = db.Column(db.DateTime, default=lambda: datetime.utcnow())
-    last_seen = db.Column(db.DateTime, default=datetime.utcnow())
+    last_seen = db.Column(db.DateTime, default=lambda: datetime.utcnow())
     posts = db.relationship('Post', backref='author', lazy='dynamic')
     comments = db.relationship('Comment', backref='author', lazy='dynamic')
 
@@ -118,8 +119,6 @@ class User(CRUDMixin, UserMixin, db.Model, Serializer):
         except:
             return None
         return User.query.get(data['confirm_id'])
-
-    # def to_json(self):
 
 
 class AnonymousUser(AnonymousUserMixin):
