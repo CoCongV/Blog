@@ -2,14 +2,15 @@ from flask import g, request, current_app, url_for
 from markdown import markdown
 
 from app import db
-from app.api_v1 import BaseResource, token_auth
-from app.models import Post, Comment
+from app.api_v1 import BaseResource, token_auth, permission_required
+from app.models import Post, Comment, Permission
 from . import comment_parse
 
 
 class CommentView(BaseResource):
 
     @token_auth.login_required
+    @permission_required(Permission.COMMENT)
     def post(self):
         args = comment_parse.parse_args()
         reply = args.get('reply')

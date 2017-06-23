@@ -9,7 +9,8 @@ from . import post_parser
 
 class PostView(BaseResource):
 
-    @token_auth.login_required
+    decorators = [token_auth.login_required]
+
     @permission_required(Permission.ADMINISTER)
     def post(self):
         # 新建文章
@@ -22,7 +23,6 @@ class PostView(BaseResource):
         post = Post.create(title=title, body=body, tags=tags, author=author)
         return {'url': url_for('post.postview', id=post.id), 'id': post.id}, self.CREATED
 
-    @token_auth.login_required
     def get(self):
         _delete = True
         post = Post.get_or_404(request.args.get('id')).update(view=Post.view + 1)
@@ -30,7 +30,6 @@ class PostView(BaseResource):
             _delete = False
         return {"post": post.to_json(), 'delete_permission': _delete}, self.SUCCESS
 
-    @token_auth.login_required
     @permission_required(Permission.ADMINISTER)
     def put(self):
         # 修改文章
@@ -47,7 +46,6 @@ class PostView(BaseResource):
         post.save()
         return self.SUCCESS
 
-    @token_auth.login_required
     @permission_required(Permission.ADMINISTER)
     def delete(self):
         print(request.args['post_id'])

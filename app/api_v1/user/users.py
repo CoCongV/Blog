@@ -9,6 +9,7 @@ class UserView(BaseResource):
     # decorators = [token_auth.login_required]
 
     def __init__(self):
+        super(UserView, self).__init__()
         self.reqparse = reqparse.RequestParser()
         self.reqparse.add_argument('email', type=str, required=True, location='json')
         self.reqparse.add_argument('username', type=str, required=True, location='json')
@@ -20,8 +21,11 @@ class UserView(BaseResource):
     @token_auth.login_required
     def get(self):
         # get user info
-        user = g.current_user.json()
-        return user, self.SUCCESS
+        user = g.current_user
+        if user.is_administrator():
+            json_user = user.json()
+            return json_user, self.SUCCESS
+        return {'username': ''}, 200
 
     def post(self):
         # register user

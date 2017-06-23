@@ -21,7 +21,7 @@ class PostsView(BaseResource):
         if pagination.has_next:
             _next = url_for('api.get_posts', page=page + 1, _external=True)
         return {
-            'posts': [post.to_json() for post in posts],
+            'posts': [post.to_json(500) for post in posts],
             'prev': prev,
             'next': _next,
             'count': pagination.total

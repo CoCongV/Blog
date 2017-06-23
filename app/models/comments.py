@@ -5,15 +5,17 @@ import bleach
 from markdown import markdown
 
 from app import db
-from app.models.minixs import CRUDMixin
+from app.models.minixs import CRUDMixin, Serializer
 
 
-class Reply(db.Model, CRUDMixin):
+class Reply(db.Model, CRUDMixin, Serializer):
     __tablename__ = 'replies'
     reply_id = db.Column(db.Integer, db.ForeignKey('comments.id'), primary_key=True)
     replied_id = db.Column(db.Integer, db.ForeignKey('comments.id'))
     timestamp = db.Column(db.DateTime, default=datetime.utcnow())
 
+    def __repr__(self):
+        return str(self.json()).replace(',', '\n')
 
 class Comment(db.Model, CRUDMixin):
     __tablename__ = 'comments'
@@ -34,6 +36,9 @@ class Comment(db.Model, CRUDMixin):
                               backref=db.backref('replied', lazy='joined'),
                               lazy='dynamic',
                               cascade='all, delete-orphan')
+
+    def __repr__(self):
+        return str(self.json()).replace(',', '\n')
 
     @staticmethod
     def on_change_body(target, value, oldvalue, initiator):

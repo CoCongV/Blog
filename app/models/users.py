@@ -35,6 +35,9 @@ class User(CRUDMixin, UserMixin, db.Model, Serializer):
             if self.role is None:
                 self.role = Role.query.filter_by(default=True).first()
 
+    def __repr__(self):
+        return str(self.json()).replace(',', '\n')
+
     @property
     def password(self):
         raise AttributeError('password is not a readable attribute')
