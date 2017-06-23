@@ -25,7 +25,7 @@ class Config:
     MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
     BLOG_POST_PER_PAGE = 10
     BLOG_COMMENT_PAGE = 30
-    BLOG_SLOW_DB_QUERY_TIME = 0.5
+    BLOG_SLOW_DB_QUERY_TIME = 0.1
     _LOG_FILE = './log/'
     _MAX_LOG_SIZE = 10 * 1024 * 1024
     _FORMAT = '[%(time)r][%(level)r][%(filename)r:%(line)d][%(threadName)r]: %(message)r'
@@ -38,6 +38,8 @@ class Config:
 
 
 class DevelopmentConfig(Config):
+    SQLALCHEMY_RECORD_QUERIES = True
+    FLASKY_DB_QUERY_TIMEOUT = 0.5
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = 'postgresql://lvcong:password@localhost/flask_blog'
 
