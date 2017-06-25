@@ -9,7 +9,6 @@ from app.models import Post
 from app import db
 
 
-
 class Tag(BaseResource):
 
     @staticmethod

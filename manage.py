@@ -3,6 +3,7 @@ import os
 from flask_script import Shell, Manager
 from flask_migrate import Migrate, MigrateCommand
 from flask_admin import Admin
+from flask_whooshalchemyplus import whoosh_index
 
 from app import create_app, db
 from app.models.comments import Comment
@@ -25,6 +26,7 @@ if os.path.exists('.env'):
 app = create_app(os.getenv('FLASK_CONFIG') or 'default')
 manager = Manager(app)
 migrate = Migrate(app, db)
+whoosh_index(app, Post)
 admin = Admin(app, name='Cong Blog', template_mode="bootstrap3")
 
 

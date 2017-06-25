@@ -8,11 +8,18 @@ from app.models import Post
 class PostsView(BaseResource):
 
     def get(self):
+        uid = request.args.get('uid')
         page = request.args.get('page', 1, type=int)
-        pagination = Post.query.order_by(db.desc('timestamp')).paginate(
-            page, per_page=current_app.config['BLOG_POST_PER_PAGE'],
-            error_out=False
-        )
+        if uid:
+            pagination = Post.query.filter_by(author_id=uid).order_by(db.desc('timestamp')).paginate(
+                page, per_page=current_app.config['BLOG_POST_PER_PAGE'],
+                error_out=False
+            )
+        else:
+            pagination = Post.query.order_by(db.desc('timestamp')).paginate(
+                page, per_page=current_app.config['BLOG_POST_PER_PAGE'],
+                error_out=False
+            )
         posts = pagination.items
         prev = None
         if pagination.has_prev:

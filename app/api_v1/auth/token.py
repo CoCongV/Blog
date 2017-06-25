@@ -1,14 +1,15 @@
-from flask import g
+from flask import request, g
 
-from app.api_v1 import BaseResource
+from app.api_v1 import BaseResource, token_auth
+from app.models import Permission
 
 
 class Token(BaseResource):
 
+    @token_auth.login_required
     def get(self):
-        if g.current_user is None or g.token_used:
-            return {"message": "Invalid credentials"},
-        return {
-            "token": g.current_user.generate_confirm_token(),
-            "expiration": 86400
-        }, self.SUCCESS
+        code = self.UNAUTHORIZED_ACCESS
+        print(code)
+        if g.current_user.can(Permission.COMMENT):
+            code = self.SUCCESS
+        return {}, code

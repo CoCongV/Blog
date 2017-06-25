@@ -54,3 +54,6 @@ pre.ql-syntax {
   text-align: center;
   background-color: #80deea;
 }
+#quill-container {
+  height: 200px !important;
+}

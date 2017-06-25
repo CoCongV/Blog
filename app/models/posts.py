@@ -3,6 +3,8 @@ from datetime import datetime
 
 import bleach
 from flask import url_for, current_app
+from whoosh.analysis import SimpleAnalyzer
+
 from markdown import markdown
 from sqlalchemy.dialects import postgresql
 
@@ -12,13 +14,15 @@ from app.models.minixs import CRUDMixin, Serializer
 
 class Post(CRUDMixin, db.Model, Serializer):
     __tablename__ = 'posts'
+    __searchable__ = ['body', 'title']
+    __analyzer__ = SimpleAnalyzer()
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(32), index=True)
     body = db.Column(db.Text)
     body_html = db.Column(db.Text)
     timestamp = db.Column(db.DateTime, default=lambda: datetime.utcnow(), index=True)
     author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    comments = db.relationship('Comment', backref='post', lazy='dynamic')
+    comments = db.relationship('Comment', backref='post', lazy='dynamic', cascade='all, delete-orphan')
     tags = db.Column(postgresql.ARRAY(db.String(32)))
     view = db.Column(db.Integer, default=0)
 
@@ -27,13 +31,6 @@ class Post(CRUDMixin, db.Model, Serializer):
 
     @staticmethod
     def on_change_body(target, value, oldvalue, initiator):
-        allowed_tags = ['a', 'abbr', 'acronym', 'b', 'blockquote', 'code',
-                        'em', 'i', 'li', 'ol', 'pre', 'strong', 'ul',
-                        'h1', 'h2', 'h3', 'p', 'img']
-        # target.body_html = bleach.linkify(bleach.clean(
-        #     markdown(value, output_format='html'),
-        #     tags=allowed_tags, strip=True
-        # ))
         target.body_html = bleach.linkify(
             markdown(value, output_format='html')
         )
@@ -47,7 +44,6 @@ class Post(CRUDMixin, db.Model, Serializer):
             'timestamp': self.timestamp.strftime('%Y-%m-%d %H:%M'),
             'author': self.author.username,
             'avatar': self.author.avatar,
-            'author_url': url_for('user.userview', id=self.author_id),
             'view': self.view
         }
         if split:
@@ -62,6 +58,7 @@ class Post(CRUDMixin, db.Model, Serializer):
             if pagination.has_next:
                 _next = url_for('comment.commentview', post=self.id, page=2)
             json_data.update({'body_html': self.body_html,
+                              'author_url': url_for('user.user_profile', uid=self.author_id),
                               'comments': [i.to_json() for i in comments],
                               'next': _next})
         return json_data

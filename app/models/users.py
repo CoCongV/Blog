@@ -25,7 +25,7 @@ class User(CRUDMixin, UserMixin, db.Model, Serializer):
     member_since = db.Column(db.DateTime, default=lambda: datetime.utcnow())
     last_seen = db.Column(db.DateTime, default=lambda: datetime.utcnow())
     posts = db.relationship('Post', backref='author', lazy='dynamic')
-    comments = db.relationship('Comment', backref='author', lazy='dynamic')
+    comments = db.relationship('Comment', backref='author', lazy='dynamic', cascade='all, delete-orphan')
 
     def __int__(self, **kwargs):
         super(User, self).__init__(**kwargs)
@@ -122,6 +122,17 @@ class User(CRUDMixin, UserMixin, db.Model, Serializer):
         except:
             return None
         return User.query.get(data['confirm_id'])
+
+    def to_json(self):
+        json_data = {
+            "uid": self.id,
+            "email": self.email,
+            "username": self.username,
+            "avatar": self.avatar,
+            "location": self.location,
+            "about_me": self.about_me
+        }
+        return json_data
 
 
 class AnonymousUser(AnonymousUserMixin):

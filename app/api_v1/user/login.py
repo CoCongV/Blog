@@ -11,8 +11,8 @@ class LoginView(BaseResource):
         super(LoginView, self).__init__()
         self.expiration = 86400
         self.reqparse = reqparse.RequestParser()
-        self.reqparse.add_argument('email', required=True, location='json')
-        self.reqparse.add_argument('password', required=True, location='json')
+        self.reqparse.add_argument('email', required=True, location='json', type=str)
+        self.reqparse.add_argument('password', required=True, location='json', type=str)
 
     def post(self):
         args = self.reqparse.parse_args()
@@ -28,7 +28,8 @@ class LoginView(BaseResource):
             g.current_user = user
             token = user.generate_confirm_token(expiration=self.expiration)
             return {
-                       "token": token,
-                       "expiration": self.expiration,
-                       "username": user.username
+                       'token': token,
+                       'expiration': self.expiration,
+                       'username': user.username,
+                       'permission': user.role.permissions
                    }, self.SUCCESS

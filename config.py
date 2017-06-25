@@ -2,6 +2,8 @@
 import os
 import logging
 
+from whoosh.analysis import StemmingAnalyzer
+
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 
@@ -26,6 +28,9 @@ class Config:
     BLOG_POST_PER_PAGE = 10
     BLOG_COMMENT_PAGE = 30
     BLOG_SLOW_DB_QUERY_TIME = 0.1
+    WHOOSH_BASE = '/tmp/whoosh/base'
+    WHOOSH_ANALYZER = StemmingAnalyzer()
+    DEBUG_TB_INTERCEPT_REDIRECTS = False
     _LOG_FILE = './log/'
     _MAX_LOG_SIZE = 10 * 1024 * 1024
     _FORMAT = '[%(time)r][%(level)r][%(filename)r:%(line)d][%(threadName)r]: %(message)r'

@@ -1,9 +1,4 @@
-from operator import itemgetter
-from collections import deque
-import json
-
-from sqlalchemy import func
-from sqlalchemy import extract, distinct
+from sqlalchemy import extract
 from sqlalchemy.orm import sessionmaker
 
 from app.api_v1 import BaseResource
