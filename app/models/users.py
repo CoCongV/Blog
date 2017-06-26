@@ -55,18 +55,38 @@ class User(CRUDMixin, UserMixin, db.Model, Serializer):
         token = s.dumps({'confirm_id': self.id})
         return str(token, encoding='utf8')
 
-    def verify_email_token(self, token):
+    @staticmethod
+    def verify_auth_token(token):
+        s = TimedJSONWebSignatureSerializer(current_app.config['SECRET_KEY'])
+        try:
+            data = s.loads(token)
+        except:
+            return None
+        return User.query.get(data['confirm_id'])
+
+    def generate_email_token(self, expiration=3600):
+        s = TimedJSONWebSignatureSerializer(current_app.config['SECRET_KEY'], expires_in=expiration)
+        token = s.dumps({'email': self.email})
+        return str(token, encoding='utf-8')
+
+    @staticmethod
+    def verify_email_token(token):
         s = TimedJSONWebSignatureSerializer(current_app.config['SECRET_KEY'])
         try:
             data = s.loads(token)
         except:
             return False
-        if data.get('confirm_id') != self.id:
+        user = User.query.filter_by(email=data.get('email')).first()
+        if not user:
             return False
-        self.confimed = True
-        db.session.add(self)
+        user.confirmed = True
+        db.session.add(user)
         db.session.commit()
         return True
+
+    def generate_reset_token(self, expiration=3600):
+        s = TimedJSONWebSignatureSerializer(current_app.config['SECRET_KEY'], expiration)
+        return s.dumps({'reset': self.id})
 
     def verify_reset_token(self, token, new_password):
         s = TimedJSONWebSignatureSerializer(current_app.config['SECRET_KEY'])
@@ -83,7 +103,7 @@ class User(CRUDMixin, UserMixin, db.Model, Serializer):
 
     def generate_change_mail_token(self, new_email, expiration=3600):
         s = TimedJSONWebSignatureSerializer(current_app.config['SECRET_KEY'], expires_in=expiration)
-        return s.dumps({'confirm_id': self.id, 'new_email': new_email})
+        return s.dumps({'change_mail': self.id, 'new_email': new_email})
 
     def verify_change_mail(self, token):
         s = TimedJSONWebSignatureSerializer(current_app.config['SECRET_KEY'])
@@ -91,7 +111,7 @@ class User(CRUDMixin, UserMixin, db.Model, Serializer):
             data = s.loads(token)
         except:
             return False
-        if data.get('confirm_id') != self.id:
+        if data.get('change_mail') != self.id:
             return False
         new_email = data.get('new_email')
         if new_email is None:
@@ -113,15 +133,6 @@ class User(CRUDMixin, UserMixin, db.Model, Serializer):
         self.last_seen = datetime.utcnow()
         db.session.add(self)
         db.session.commit()
-
-    @staticmethod
-    def verify_auth_token(token):
-        s = TimedJSONWebSignatureSerializer(current_app.config['SECRET_KEY'])
-        try:
-            data = s.loads(token)
-        except:
-            return None
-        return User.query.get(data['confirm_id'])
 
     def to_json(self):
         json_data = {

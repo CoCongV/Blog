@@ -1,4 +1,5 @@
 # coding: utf-8
+from celery import Celery
 from flask import Flask
 from flask_debugtoolbar import DebugToolbarExtension
 from flask_login import LoginManager
@@ -9,6 +10,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 from config import config
 from app.utils import assets
+# from app.lib.celery import FlaskCelery
 
 toolbar = DebugToolbarExtension()
 mail = Mail()
@@ -19,6 +21,8 @@ db = SQLAlchemy()
 login_manager = LoginManager()
 login_manager.session_protection = 'strong'
 login_manager.login_view = 'auth.login'
+
+celery = Celery(__name__, broker='redis://localhost:6379')
 
 
 def create_app(config_name):
@@ -32,6 +36,7 @@ def create_app(config_name):
     db.init_app(app)
     login_manager.init_app(app)
     assets.init_app(app)
+    # celery.init_app(app)
 
     from .main import main as main_blueprint
     app.register_blueprint(main_blueprint)
@@ -49,3 +54,17 @@ def create_app(config_name):
     app.register_blueprint(api_comment)
 
     return app
+
+
+def make_celery(app, _celery):
+    _celery.conf.update(app.config)
+    TaskBase = _celery.Task
+
+    class ContextTask(TaskBase):
+        abstract = True
+
+        def __call__(self, *args, **kwargs):
+            with app.app_context():
+                return TaskBase.__call__(self, *args, **kwargs)
+    _celery.Task = ContextTask
+    return _celery
