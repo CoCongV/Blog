@@ -10,27 +10,35 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 class Config:
     SECRET_KEY = '272c635e-a0b2-49b1-9a8b-afc671f850ee'
     SSL_DISABLE = False
-    SQLALCHEMY_COMMIT_ON_TEARDOWN = True
-    SQLALCHEMY_RECORD_QUERIES = True
-    SQLALCHEMY_TRACK_MODIFICATIONS = True
+
     FLASK_MAIL_SUBJECT_PREFIX = '[Cong\' Blog]'
-    FLASK_MAIL_SENDER = 'Admin <cong.lv@outlook.com>'
+    FLASK_MAIL_SENDER = 'cong.lv@outlook.com'
     FLASK_ADMIN = os.environ.get('BLOG_ADMIN')
     UPLOADED_PHOTOS_DEST = './media/photos'
     UPLOADED_FILES_DEST = './media/files'
     ALLOWED_EXTENSIONS = ['png', 'jpg', 'jpeg', 'gif', 'webp']
     MAX_CONTENT_LENGTH = 16 * 1024 * 1024
-    MAIL_SERVER = 'smtp-mail.outlook.com'
-    MAIL_PORT = 587
-    MAIL_USE_TLE = True
-    MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
-    MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
+    # sqlalchemy config
+    SQLALCHEMY_COMMIT_ON_TEARDOWN = True
+    SQLALCHEMY_RECORD_QUERIES = True
+    SQLALCHEMY_TRACK_MODIFICATIONS = True
     BLOG_POST_PER_PAGE = 10
     BLOG_COMMENT_PAGE = 30
     BLOG_SLOW_DB_QUERY_TIME = 0.1
+    # mail config
+    MAIL_SERVER = 'smtp.gmail.com'
+    MAIL_PORT = 465
+    MAIL_USE_SSL = True
+    MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
+    MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
+    # whoosh config
     WHOOSH_BASE = '/tmp/whoosh/base'
     WHOOSH_ANALYZER = StemmingAnalyzer()
     DEBUG_TB_INTERCEPT_REDIRECTS = False
+    # celery config
+    BROKER_URL = 'redis://localhost:6379'
+    CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+
     _LOG_FILE = './log/'
     _MAX_LOG_SIZE = 10 * 1024 * 1024
     _FORMAT = '[%(time)r][%(level)r][%(filename)r:%(line)d][%(threadName)r]: %(message)r'

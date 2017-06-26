@@ -5,7 +5,7 @@ from flask_migrate import Migrate, MigrateCommand
 from flask_admin import Admin
 from flask_whooshalchemyplus import whoosh_index
 
-from app import create_app, db
+from app import create_app, db, make_celery, celery as celery_worker
 from app.models.comments import Comment
 from app.models.users import User
 from app.models.posts import Post
@@ -28,6 +28,7 @@ manager = Manager(app)
 migrate = Migrate(app, db)
 whoosh_index(app, Post)
 admin = Admin(app, name='Cong Blog', template_mode="bootstrap3")
+celery = make_celery(app, celery_worker)
 
 
 def make_shell_context():
