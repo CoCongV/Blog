@@ -40,6 +40,7 @@ class PostView(BaseResource):
         return {'url': url_for('post.postview', id=post.id), 'id': post.id}, self.CREATED
 
     def get(self):
+        # 认证权限与请求文章分离
         _delete = True
         post = Post.get_or_404(request.args.get('id')).update(view=Post.view + 1)
         if not g.current_user.can(Permission.ADMINISTER) and g.current_user != post.author:

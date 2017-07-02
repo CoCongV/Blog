@@ -15,8 +15,7 @@ class UserView(BaseResource):
         self.reqparse.add_argument('email', type=str, required=True, location='json')
         self.reqparse.add_argument('username', type=str, required=True, location='json')
         self.reqparse.add_argument('location', type=str, location='json')
-        self.reqparse.add_argument('about', type=str, location='json')
-        self.reqparse.add_argument('avatar', location='file')
+        self.reqparse.add_argument('about_me', type=str, location='json')
 
     @token_auth.login_required
     def get(self):
@@ -46,13 +45,15 @@ class UserView(BaseResource):
 
     @token_auth.login_required
     def put(self):
+        # update user
         args = self.reqparse.parse_args()
         username = args['username']
         email = args['email']
-        user = User.query.filter(User.id != g.current_user.id, username=username)
+        user = User.query.filter(User.id != g.current_user.id).filter_by(username=username).first()
         if user:
             return {'message': '用户名已被使用'}, self.USER_EXIST
-        user = User.query.filter(User.id != g.current_user.id, email=email)
+        user = User.query.filter(User.id != g.current_user.id, User.email == email).first()
         if user:
             return {'message': '邮箱被占用'}, self.USER_EXIST
-        return self.SUCCESS
+        g.current_user.update(**args)
+        return {}, self.SUCCESS

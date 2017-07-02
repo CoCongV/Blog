@@ -26,6 +26,7 @@ class CommentView(BaseResource):
 
     @staticmethod
     def get():
+        # 评论增加Email验证权限
         post = Post.query.get(request.args['post'])
         page = request.args.get('page', 1)
         pagination = post.comments.order_by(db.desc('timestamp')).paginate(

@@ -155,6 +155,9 @@ class AnonymousUser(AnonymousUserMixin):
     def is_administrator():
         return False
 
+    def is_anonymous(self):
+        return True
+
 login_manager.anonymous_user = AnonymousUser
 
 

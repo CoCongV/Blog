@@ -9,6 +9,7 @@ class UserProfile(BaseResource):
     decorators = [token_auth.login_required]
 
     def get(self, uid):
+        # 用户权限更改
         user = User.query.get(uid)
         edit_permission = False
         if g.current_user == user or g.current_user.can(Permission.ADMINISTER):
@@ -17,4 +18,4 @@ class UserProfile(BaseResource):
         return {
             "user": user.to_json(),
             "edit_permission": edit_permission
-        }, 200
+        }, self.SUCCESS
