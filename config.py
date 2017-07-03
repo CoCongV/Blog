@@ -23,7 +23,7 @@ class Config:
     SQLALCHEMY_RECORD_QUERIES = True
     SQLALCHEMY_TRACK_MODIFICATIONS = True
     BLOG_POST_PER_PAGE = 10
-    BLOG_COMMENT_PAGE = 30
+    BLOG_COMMENT_PAGE = 10
     BLOG_SLOW_DB_QUERY_TIME = 0.1
     # mail config
     MAIL_SERVER = 'smtp.gmail.com'

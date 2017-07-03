@@ -23,10 +23,10 @@ class PostsView(BaseResource):
         posts = pagination.items
         prev = None
         if pagination.has_prev:
-            prev = url_for('api.get_posts', page=page - 1, _external=True)
+            prev = url_for('post.postsview', page=page - 1, _external=True)
         _next = None
         if pagination.has_next:
-            _next = url_for('api.get_posts', page=page + 1, _external=True)
+            _next = url_for('post.postsview', page=page + 1, _external=True)
         return {
             'posts': [post.to_json(500) for post in posts],
             'prev': prev,

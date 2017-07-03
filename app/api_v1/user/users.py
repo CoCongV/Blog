@@ -7,7 +7,6 @@ from app.api_v1 import token_auth, BaseResource
 
 
 class UserView(BaseResource):
-    # decorators = [token_auth.login_required]
 
     def __init__(self):
         super(UserView, self).__init__()
@@ -22,7 +21,7 @@ class UserView(BaseResource):
         # get user info
         user = g.current_user
         if not user.is_anonymous:
-            json_user = user.json()
+            json_user = user.to_json()
             return json_user, self.SUCCESS
         return {'username': ''}, self.SUCCESS
 

@@ -16,7 +16,7 @@ class User(CRUDMixin, UserMixin, db.Model, Serializer):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(64), index=True, unique=True)
     username = db.Column(db.String(32), index=True, unique=True)
-    avatar = db.Column(db.Text, default='static/images.png')
+    avatar = db.Column(db.Text, default='static/img/images.png')
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
     password_hash = db.Column(db.String(256))
     confirmed = db.Column(db.Boolean, default=False)
@@ -141,7 +141,10 @@ class User(CRUDMixin, UserMixin, db.Model, Serializer):
             "username": self.username,
             "avatar": self.avatar,
             "location": self.location,
-            "about_me": self.about_me
+            "about_me": self.about_me,
+            "last_seen": self.last_seen.strftime('%Y-%m-%d %H:%M'),
+            "member_since": self.member_since.strftime('%Y-%m-%d %H:%M'),
+            "confirmed": self.confirmed
         }
         return json_data
 

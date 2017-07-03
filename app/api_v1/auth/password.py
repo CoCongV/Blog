@@ -3,7 +3,6 @@ from flask_restful import reqparse
 
 from app.api_v1 import BaseResource, token_auth, permission_required
 from app.models import Permission
-from app.lib.send_mail import send_email
 
 
 class Password(BaseResource):
@@ -21,7 +20,7 @@ class Password(BaseResource):
         args = self._reqparse.parse_args()
         old_password = args['old_password']
         new_password = args['new_password']
-        verify = g.current_user.verify_passwor(old_password)
+        verify = g.current_user.verify_password(old_password)
         if not verify:
             return {}, self.UNAUTHORIZED_ACCESS
         g.current_user.update(password=new_password)
