@@ -1,8 +1,8 @@
 from flask import g, url_for
 
 from app.api_v1 import BaseResource, token_auth, permission_required
+from app.utils.send_mail import send_email
 from app.models import Permission
-from app.lib.send_mail import send_email
 
 
 class SendEmailAuth(BaseResource):

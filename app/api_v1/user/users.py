@@ -1,9 +1,9 @@
 from flask import g, url_for
 from flask_restful import reqparse
 
-from app.models import User
-from app.lib.send_mail import send_email
 from app.api_v1 import token_auth, BaseResource
+from app.utils.send_mail import send_email
+from app.models import User
 
 
 class UserView(BaseResource):
