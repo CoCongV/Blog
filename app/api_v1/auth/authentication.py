@@ -1,3 +1,4 @@
+from datetime import datetime
 from flask import g, make_response, jsonify
 
 from app.models import User, AnonymousUser
@@ -9,6 +10,7 @@ def verify_token(token):
     g.current_user = User.verify_auth_token(token)
     if g.current_user:
         g.token_used = True
+        g.current_user.update(last_seen=datetime.utcnow())
     else:
         g.current_user = AnonymousUser()
     return True

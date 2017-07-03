@@ -44,6 +44,12 @@ body {
   right: 10% !important;
   bottom: 60px !important;
 }
+.mobile-tear-sheet-container {
+  border: 0 !important;
+}
+.moon-content {
+  margin-bottom: 60px;
+}
 pre.ql-syntax {
   background-color: #23241f;
   color: #f8f8f2;

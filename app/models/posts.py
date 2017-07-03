@@ -49,19 +49,24 @@ class Post(CRUDMixin, db.Model, Serializer):
         if split:
             json_data.update({'body_html': self.body_html[:500]})
         else:
-            pagination = self.comments.order_by(db.desc('timestamp')).paginate(
-                1, per_page=current_app.config['BLOG_COMMENT_PAGE'],
-                error_out=False
-            )
-            comments = pagination.items
-            _next = None
-            if pagination.has_next:
-                _next = url_for('comment.commentview', post=self.id, page=2)
             json_data.update({'body_html': self.body_html,
-                              'author_url': url_for('user.user_profile', uid=self.author_id),
-                              'comments': [i.to_json() for i in comments],
-                              'next': _next})
+                              'author_url': url_for('user.user_profile', uid=self.author_id)
+                              })
         return json_data
+
+    @staticmethod
+    def generate_fake(count=100):
+        from random import seed, randint
+        import forgery_py
+
+        seed()
+        for i in range(count):
+            post = Post.create(
+                title='测试',
+                body=forgery_py.lorem_ipsum.sentences(randint(1, 3)),
+                author_id=1,
+                tags=['测试']
+            )
 
 
 db.event.listen(Post.body, 'set', Post.on_change_body)

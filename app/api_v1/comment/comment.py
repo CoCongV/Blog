@@ -24,10 +24,11 @@ class CommentView(BaseResource):
         Comment.create(**kwargs)
         return self.CREATED
 
-    @staticmethod
-    def get():
+    def get(self):
+        # 评论增加Email验证权限
+        # 获取评论
         post = Post.query.get(request.args['post'])
-        page = request.args.get('page', 1)
+        page = int(request.args.get('page', 1))
         pagination = post.comments.order_by(db.desc('timestamp')).paginate(
             page, per_page=current_app.config['BLOG_COMMENT_PAGE'],
             error_out=False
@@ -44,4 +45,4 @@ class CommentView(BaseResource):
             'prev': prev,
             'next': _next,
             'count': pagination.total
-        }
+        }, self.SUCCESS

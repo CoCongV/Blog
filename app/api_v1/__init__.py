@@ -9,7 +9,7 @@ class BaseResource(Resource):
     CREATED = 201
     UNAUTHORIZED_ACCESS = 401
     PERMISSION_FORBIDDEN = 403
-    USER_EXIST = 504  # 用户信息已被使用
+    USER_EXIST = 506  # 用户信息已被使用
 
     def __init__(self):
         super(BaseResource, self).__init__()
