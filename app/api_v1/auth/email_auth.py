@@ -1,4 +1,4 @@
-from flask import g
+from flask import g, url_for
 
 from app.api_v1 import BaseResource, token_auth, permission_required
 from app.models import Permission
