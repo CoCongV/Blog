@@ -12,7 +12,7 @@ class Config:
     SSL_DISABLE = False
 
     FLASK_MAIL_SUBJECT_PREFIX = '[Cong\' Blog]'
-    FLASK_MAIL_SENDER = 'cong.lv@outlook.com'
+    FLASK_MAIL_SENDER = 'cong.lv.blog@gmail.com'
     FLASK_ADMIN = os.environ.get('BLOG_ADMIN')
     UPLOADED_PHOTOS_DEST = './media/photos'
     UPLOADED_FILES_DEST = './media/files'
@@ -62,8 +62,10 @@ class TestingConfig(Config):
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = 'postgresql://lvcong:password@localhost/flask_test'
 
+
 class ProductionConfig(Config):
     SQLALCHEMY_DATABASE_URI = 'postgresql://lvcong:password@localhost/flask_blog'
+    DEBUG = False
 
     @classmethod
     def init_app(cls, app):
