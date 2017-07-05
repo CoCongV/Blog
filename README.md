@@ -1,2 +1,2 @@
 # Flask_Blog
-power of Python2 and Flask
+Power of Flask and Vue
