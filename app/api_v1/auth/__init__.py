@@ -6,7 +6,7 @@ from .token_auth import EmailAuth
 from .post_permission import PostPermission
 from .comment_permission import CommentPermission
 from .user_permission import UserPermission
-from .email_auth import SendEmailAuth
+from .email_auth import SendEmailAuth, EmailExist
 from .password import Password
 
 
@@ -20,3 +20,5 @@ api.add_resource(CommentPermission, '/comment_permission', endpoint='comment_per
 api.add_resource(UserPermission, '/user_permission', endpoint='user_permission')
 api.add_resource(SendEmailAuth, '/send_email_auth/', endpoint='send_email_auth')
 api.add_resource(Password, '/password/')
+api.add_resource(EmailExist, '/email_exist/', endpoint='email_exist')
+

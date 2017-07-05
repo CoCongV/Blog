@@ -1,10 +1,10 @@
 from sqlalchemy import extract
 from sqlalchemy.orm import sessionmaker
 
-from flask_restful import reqparse
+from flask_restful import reqparse, Resource
 
 from app import db
-from app.api_v1 import BaseResource
+from app.api_v1 import HTTPStatusCode
 from app.models import Post
 
 
@@ -14,7 +14,7 @@ search_parse.add_argument('year', location='args')
 search_parse.add_argument('search', location='args')
 
 
-class PostSearch(BaseResource):
+class PostSearch(Resource, HTTPStatusCode):
 
     def get(self):
         _Session = sessionmaker(db.engine)

@@ -1,10 +1,11 @@
-from flask import g, request
+from flask import g
+from flask_restful import Resource
 
-from app.api_v1 import BaseResource, token_auth
-from app.models import Permission, User
+from app.api_v1 import HTTPStatusCode, token_auth
+from app.models import Permission
 
 
-class CommentPermission(BaseResource):
+class CommentPermission(Resource, HTTPStatusCode):
 
     decorators = [token_auth.login_required]
 

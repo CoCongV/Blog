@@ -1,11 +1,11 @@
 from flask import g
-from flask_restful import reqparse
+from flask_restful import reqparse, Resource
 
-from app.api_v1 import BaseResource, token_auth, permission_required
+from app.api_v1 import HTTPStatusCode, token_auth, permission_required
 from app.models import Permission
 
 
-class Password(BaseResource):
+class Password(Resource, HTTPStatusCode):
 
     decorators = [permission_required(Permission.COMMENT),
                   token_auth.login_required]

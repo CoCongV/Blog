@@ -1,11 +1,11 @@
-from flask import g, request
-from flask_restful import reqparse
+from flask import g
+from flask_restful import reqparse, Resource
 
 from app.models import User
-from app.api_v1 import BaseResource
+from app.api_v1 import HTTPStatusCode
 
 
-class LoginView(BaseResource):
+class LoginView(Resource, HTTPStatusCode):
 
     def __init__(self):
         super(LoginView, self).__init__()

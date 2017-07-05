@@ -1,13 +1,14 @@
 from flask import g, request, current_app, url_for
+from flask_restful import Resource
 from markdown import markdown
 
 from app import db
-from app.api_v1 import BaseResource, token_auth, permission_required
+from app.api_v1 import HTTPStatusCode, token_auth, permission_required
 from app.models import Post, Comment, Permission
 from . import comment_parse
 
 
-class CommentView(BaseResource):
+class CommentView(Resource, HTTPStatusCode):
 
     @token_auth.login_required
     @permission_required(Permission.COMMENT)

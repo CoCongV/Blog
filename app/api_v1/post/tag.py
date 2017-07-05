@@ -3,13 +3,14 @@ from collections import deque
 
 from sqlalchemy import func
 from sqlalchemy.orm import sessionmaker
+from flask_restful import Resource
 
-from app.api_v1 import BaseResource
+from app.api_v1 import HTTPStatusCode
 from app.models import Post
 from app import db
 
 
-class Tag(BaseResource):
+class Tag(Resource, HTTPStatusCode):
 
     @staticmethod
     def get():

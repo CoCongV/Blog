@@ -1,10 +1,11 @@
 from flask import g
+from flask_restful import Resource
 
 from app.models import User, Permission
-from app.api_v1 import BaseResource, token_auth
+from app.api_v1 import HTTPStatusCode, token_auth
 
 
-class UserProfile(BaseResource):
+class UserProfile(Resource, HTTPStatusCode):
 
     decorators = [token_auth.login_required]
 

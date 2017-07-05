@@ -1,12 +1,14 @@
 from flask import g, url_for
-from flask_restful import reqparse
+from flask_restful import reqparse, Resource
+from sqlalchemy.exc import IntegrityError, InvalidRequestError, InternalError
 
-from app.api_v1 import token_auth, BaseResource
+from app import db
+from app.api_v1 import token_auth, HTTPStatusCode, UserAlreadyExistsError
 from app.utils.send_mail import send_email
 from app.models import User, Role
 
 
-class UserView(BaseResource):
+class UserView(Resource, HTTPStatusCode):
 
     def __init__(self):
         super(UserView, self).__init__()
@@ -27,15 +29,19 @@ class UserView(BaseResource):
 
     def post(self):
         # register user
-        role = Role.query.filter_by(permissions=2).first()
         self.reqparse.add_argument('password', type=str, required=True, location='json')
         args = self.reqparse.parse_args()
-        user = User.create(email=args['email'],
-                           username=args['username'],
-                           password=args['password'],
-                           location=args.get('location'),
-                           about_me=args.get('about'),
-                           role=role)
+        try:
+            role = Role.query.filter_by(permissions=2).first()
+            user = User.create(email=args['email'],
+                               username=args['username'],
+                               password=args['password'],
+                               location=args.get('location'),
+                               about_me=args.get('about'),
+                               role=role)
+        except (IntegrityError, InvalidRequestError, InternalError):
+            db.session.rollback()
+            raise UserAlreadyExistsError()
         token = user.generate_confirm_token(expiration=86400)
         email_token = user.generate_email_token()
         send_email.delay(to=user.email, subject='Confirm Your Account',

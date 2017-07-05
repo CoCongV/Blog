@@ -1,13 +1,13 @@
 from flask import g
-from flask_restful import reqparse
+from flask_restful import reqparse, Resource
 
-from app.api_v1 import BaseResource, token_auth
+from app.api_v1 import HTTPStatusCode, token_auth
 
 permission_reqparse = reqparse.RequestParser()
 permission_reqparse.add_argument('permission', type=int, location='args', required=True)
 
 
-class PermissionAuth(BaseResource):
+class PermissionAuth(Resource, HTTPStatusCode):
 
     @token_auth.login_required
     def get(self):

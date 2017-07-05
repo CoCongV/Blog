@@ -1,5 +1,6 @@
 # coding: utf-8
 from celery import Celery
+import logging
 from flask import Flask
 from flask_debugtoolbar import DebugToolbarExtension
 from flask_login import LoginManager
