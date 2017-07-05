@@ -41,7 +41,11 @@ class CRUDMixin(object):
     def save(self, commit=True):
         db.session.add(self)
         if commit:
-            db.session.commit()
+            try:
+                db.session.commit()
+            except Exception as e:
+                db.session.rollback()
+                raise e
         return self
 
     def delete(self, commit=True):

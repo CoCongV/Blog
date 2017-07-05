@@ -8,6 +8,7 @@ from .comment_permission import CommentPermission
 from .user_permission import UserPermission
 from .email_auth import SendEmailAuth, EmailExist
 from .password import Password
+from .user_auth import UsernameExist
 
 
 api_auth = Blueprint('auth', __name__, url_prefix='/auth')
@@ -21,4 +22,4 @@ api.add_resource(UserPermission, '/user_permission', endpoint='user_permission')
 api.add_resource(SendEmailAuth, '/send_email_auth/', endpoint='send_email_auth')
 api.add_resource(Password, '/password/')
 api.add_resource(EmailExist, '/email_exist/', endpoint='email_exist')
-
+api.add_resource(UsernameExist, '/username_exist/', endpoint='username_exist')

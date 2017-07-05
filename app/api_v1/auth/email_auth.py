@@ -1,7 +1,8 @@
 from flask import g, url_for, request
-from flask_restful import Resource
+from flask_restful import Resource, reqparse
 
 from app.api_v1 import HTTPStatusCode, token_auth, permission_required
+from app.api_v1.error import UserAlreadyExistsError
 from app.utils.send_mail import send_email
 from app.models import Permission, User
 
@@ -25,8 +26,10 @@ class SendEmailAuth(Resource, HTTPStatusCode):
 class EmailExist(Resource, HTTPStatusCode):
 
     def get(self):
-        email = request.args.get('email')
-        user = User.query.filter_by(email=email)
+        _reqparse = reqparse.RequestParser()
+        _reqparse.add_argument('email', type=str, location='args')
+        email = _reqparse.parse_args()['email']
+        user = User.query.filter_by(email=email).first()
         if user:
-            return {}, self.USER_EXIST
+            raise UserAlreadyExistsError()
         return {}, self.SUCCESS

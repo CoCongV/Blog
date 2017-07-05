@@ -39,8 +39,7 @@ class UserView(Resource, HTTPStatusCode):
                                location=args.get('location'),
                                about_me=args.get('about'),
                                role=role)
-        except (IntegrityError, InvalidRequestError, InternalError):
-            db.session.rollback()
+        except (IntegrityError, InvalidRequestError):
             raise UserAlreadyExistsError()
         token = user.generate_confirm_token(expiration=86400)
         email_token = user.generate_email_token()
