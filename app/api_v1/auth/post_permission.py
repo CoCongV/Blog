@@ -14,4 +14,4 @@ class PostPermission(Resource, HTTPStatusCode):
         post = Post.query.get(post_id)
         if g.current_user == post.author or g.current_user.can(Permission.ADMINISTER):
             return {}, self.SUCCESS
-        return PermissionForbiddenError()
+        raise PermissionForbiddenError()
