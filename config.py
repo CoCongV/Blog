@@ -64,6 +64,7 @@ class TestingConfig(Config):
 
 
 class ProductionConfig(Config):
+    SERVER_NAME = os.environ.get('ADDRESS')
     SQLALCHEMY_DATABASE_URI = 'postgresql://lvcong:password@localhost/flask_blog'
     DEBUG = False
 
