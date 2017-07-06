@@ -46,7 +46,7 @@ class UserView(Resource, HTTPStatusCode):
         send_email.delay(to=user.email, subject='Confirm Your Account',
                          template='mail/confirm', user=user.username,
                          url=url_for('auth.email_auth', token=email_token, _external=True))
-        return {'token': token}, self.SUCCESS
+        return {'token': token, 'permission': user.role.permissions}, self.SUCCESS
 
     @token_auth.login_required
     def put(self):

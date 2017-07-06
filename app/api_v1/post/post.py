@@ -62,7 +62,7 @@ class PostView(Resource, HTTPStatusCode):
         post.title = title
         post.tags = tags
         post.save()
-        return self.SUCCESS
+        return {'url': url_for('post.postview', id=post.id), 'post_id': post.id}, self.SUCCESS
 
     @permission_required(Permission.ADMINISTER)
     def delete(self):
@@ -70,4 +70,4 @@ class PostView(Resource, HTTPStatusCode):
         if g.current_user != post.author and not g.current_user.can(Permission.ADMINISTER):
             return {"message": "Insufficient permissions"}, self.PERMISSION_FORBIDDEN
         post.delete()
-        return 200
+        return {}, self.SUCCESS

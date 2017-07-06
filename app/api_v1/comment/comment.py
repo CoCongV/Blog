@@ -16,7 +16,6 @@ class CommentView(Resource, HTTPStatusCode):
         args = comment_parse.parse_args()
         reply = args.get('reply')
         post = Post.get(args['post'])
-        print(markdown(args['body'], output_format='html'))
         kwargs = {'body': args['body'],
                   'author': g.current_user,
                   'post': post}
@@ -28,7 +27,7 @@ class CommentView(Resource, HTTPStatusCode):
     def get(self):
         # 评论增加Email验证权限
         # 获取评论
-        post = Post.query.get(request.args['post'])
+        post = Post.query.get(request.args['post_id'])
         page = int(request.args.get('page', 1))
         pagination = post.comments.order_by(db.desc('timestamp')).paginate(
             page, per_page=current_app.config['BLOG_COMMENT_PAGE'],

@@ -50,6 +50,7 @@ class Post(CRUDMixin, db.Model, Serializer):
             json_data.update({'body_html': self.body_html[:500]})
         else:
             json_data.update({'body_html': self.body_html,
+                              'body': self.body,
                               'author_url': url_for('user.user_profile', uid=self.author_id)
                               })
         return json_data
