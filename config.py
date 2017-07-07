@@ -25,6 +25,7 @@ class Config:
     BLOG_POST_PER_PAGE = 10
     BLOG_COMMENT_PAGE = 10
     BLOG_SLOW_DB_QUERY_TIME = 0.1
+    FLASKY_DB_QUERY_TIMEOUT = 0.5
     # mail config
     MAIL_SERVER = 'smtp.gmail.com'
     MAIL_PORT = 465
@@ -51,8 +52,6 @@ class Config:
 
 
 class DevelopmentConfig(Config):
-    SQLALCHEMY_RECORD_QUERIES = True
-    FLASKY_DB_QUERY_TIMEOUT = 0.5
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = 'postgresql://lvcong:password@localhost/flask_blog'
 
