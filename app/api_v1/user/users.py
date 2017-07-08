@@ -1,6 +1,6 @@
 from flask import g, url_for
 from flask_restful import reqparse, Resource
-from sqlalchemy.exc import IntegrityError, InvalidRequestError, InternalError
+from sqlalchemy.exc import IntegrityError, InvalidRequestError, DataError
 
 from app import db
 from app.api_v1 import token_auth, HTTPStatusCode, UserAlreadyExistsError
@@ -40,6 +40,8 @@ class UserView(Resource, HTTPStatusCode):
                                about_me=args.get('about'),
                                role=role)
         except (IntegrityError, InvalidRequestError):
+            raise UserAlreadyExistsError()
+        except DataError:
             raise UserAlreadyExistsError()
         token = user.generate_confirm_token(expiration=86400)
         email_token = user.generate_email_token()

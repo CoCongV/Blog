@@ -14,20 +14,6 @@ class HTTPStatusCode(object):
     def __init__(self):
         super(HTTPStatusCode, self).__init__()
 
-errors = {
-    'PermissionForbiddenError': {
-        'message': "Permission Forbidden",
-        'status': 403
-    },
-    'UserAlreadyExistsError': {
-        'message': 'A user with that username or email already exists',
-        'status': 409
-    },
-    'AuthorizedError': {
-        'status': 401
-    }
-}
-
 # api_comment = Blueprint('comment', __name__, url_prefix='/comment/')
 token_auth = HTTPTokenAuth(scheme='token')
 
