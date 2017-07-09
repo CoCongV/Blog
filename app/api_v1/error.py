@@ -4,10 +4,10 @@ from . import HTTPStatusCode
 
 
 class PermissionForbiddenError(HTTPException, HTTPStatusCode):
-    def __init__(self, description=None, response=None):
+    def __init__(self, description="Permission Forbidden", response=None):
         super(PermissionForbiddenError, self).__init__(description, response)
         self.code = self.PERMISSION_FORBIDDEN
-        self.description = "Permission Forbidden"
+        self.description = description
 
     def __str__(self):
         return self.__class__.__name__
@@ -15,10 +15,10 @@ class PermissionForbiddenError(HTTPException, HTTPStatusCode):
 
 class UserAlreadyExistsError(HTTPException, HTTPStatusCode):
 
-    def __init__(self, description=None, response=None):
+    def __init__(self, description='A user with that username or email already exists', response=None):
         super(UserAlreadyExistsError, self).__init__(description, response)
         self.code = self.USER_EXIST
-        self.description = 'A user with that username or email already exists'
+        self.description = description
 
     def __str__(self):
         return self.__class__.__name__ + ' code: %d' % self.code
@@ -26,6 +26,7 @@ class UserAlreadyExistsError(HTTPException, HTTPStatusCode):
 
 class AuthorizedError(HTTPException, HTTPStatusCode):
 
-    def __init__(self, description=None, response=None):
+    def __init__(self, description="Auth Fail", response=None):
         super(AuthorizedError, self).__init__(description, response)
         self.code = self.UNAUTHORIZED_ACCESS
+        self.description = description

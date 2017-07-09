@@ -23,7 +23,6 @@ class PostSearch(Resource, HTTPStatusCode):
         tag = args.get('tag')
         year = args.get('year')
         content = args.get('search')
-        print(content)
         if tag:
             posts = session.query(Post)\
                 .filter(Post.tags.any(tag))\

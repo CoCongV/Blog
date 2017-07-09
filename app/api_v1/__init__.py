@@ -1,7 +1,4 @@
 from flask_httpauth import HTTPTokenAuth
-from flask_restful import Resource
-
-from .decorators import permission_required
 
 
 class HTTPStatusCode(object):
@@ -18,4 +15,3 @@ class HTTPStatusCode(object):
 token_auth = HTTPTokenAuth(scheme='token')
 
 from .auth import authentication
-from .error import PermissionForbiddenError, UserAlreadyExistsError, AuthorizedError

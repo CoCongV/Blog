@@ -2,8 +2,8 @@ from flask import g, url_for
 from flask_restful import reqparse, Resource
 from sqlalchemy.exc import IntegrityError, InvalidRequestError, DataError
 
-from app import db
-from app.api_v1 import token_auth, HTTPStatusCode, UserAlreadyExistsError
+from app.api_v1 import token_auth, HTTPStatusCode
+from app.api_v1.error import UserAlreadyExistsError
 from app.utils.send_mail import send_email
 from app.models import User, Role
 
@@ -58,9 +58,9 @@ class UserView(Resource, HTTPStatusCode):
         email = args['email']
         user = User.query.filter(User.id != g.current_user.id).filter_by(username=username).first()
         if user:
-            return {'message': '用户名已被使用'}, self.USER_EXIST
+            raise UserAlreadyExistsError('Username Exist')
         user = User.query.filter(User.id != g.current_user.id, User.email == email).first()
         if user:
-            return {'message': '邮箱被占用'}, self.USER_EXIST
+            raise UserAlreadyExistsError('Email Exist')
         g.current_user.update(**args)
         return {}, self.SUCCESS

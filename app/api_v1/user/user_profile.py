@@ -10,7 +10,6 @@ class UserProfile(Resource, HTTPStatusCode):
     decorators = [token_auth.login_required]
 
     def get(self, uid):
-        # 用户权限更改
         user = User.query.get(uid)
         edit_permission = False
         if g.current_user == user or g.current_user.can(Permission.ADMINISTER):

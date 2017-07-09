@@ -1,7 +1,9 @@
 from flask import g
 from flask_restful import reqparse, Resource
 
-from app.api_v1 import HTTPStatusCode, token_auth, permission_required
+from app.api_v1 import HTTPStatusCode, token_auth
+from app.api_v1.decorators import permission_required
+from app.api_v1.error import AuthorizedError
 from app.models import Permission
 
 
@@ -22,6 +24,6 @@ class Password(Resource, HTTPStatusCode):
         new_password = args['new_password']
         verify = g.current_user.verify_password(old_password)
         if not verify:
-            return {}, self.UNAUTHORIZED_ACCESS
+            raise AuthorizedError()
         g.current_user.update(password=new_password)
         return {}, self.SUCCESS

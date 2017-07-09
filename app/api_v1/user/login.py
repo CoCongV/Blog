@@ -3,6 +3,7 @@ from flask_restful import reqparse, Resource
 
 from app.models import User
 from app.api_v1 import HTTPStatusCode
+from app.api_v1.error import AuthorizedError
 
 
 class LoginView(Resource, HTTPStatusCode):
@@ -20,10 +21,10 @@ class LoginView(Resource, HTTPStatusCode):
         password = args['password']
         user = User.query.filter_by(email=email).first()
         if not user:
-            return {'message': 'Email error'}, self.UNAUTHORIZED_ACCESS
+            return AuthorizedError('Email Error')
         verify = user.verify_password(password)
         if not verify:
-            return {'message': 'Password error!'}, self.UNAUTHORIZED_ACCESS
+            return AuthorizedError('Password Error')
         else:
             g.current_user = user
             token = user.generate_confirm_token(expiration=self.expiration)

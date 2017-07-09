@@ -2,7 +2,8 @@ from flask import g, url_for
 from flask_restful import request, reqparse, Resource
 
 from app.models import Post, Permission
-from app.api_v1 import permission_required, HTTPStatusCode, token_auth
+from app.api_v1 import HTTPStatusCode, token_auth
+from app.api_v1.decorators import permission_required
 
 post_parser = reqparse.RequestParser()
 post_parser.add_argument(

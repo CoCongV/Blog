@@ -13,4 +13,4 @@ class Timeline(Resource, HTTPStatusCode):
         _Session = sessionmaker(db.engine)
         session = _Session()
         results = tuple(set(session.query(extract('year', Post.timestamp)).all()))
-        return {'time': results}, 200
+        return {'time': results}, self.SUCCESS

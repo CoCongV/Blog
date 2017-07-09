@@ -3,7 +3,8 @@ from flask_restful import Resource
 from markdown import markdown
 
 from app import db
-from app.api_v1 import HTTPStatusCode, token_auth, permission_required
+from app.api_v1 import HTTPStatusCode, token_auth
+from app.api_v1.decorators import permission_required
 from app.models import Post, Comment, Permission
 from . import comment_parse
 
