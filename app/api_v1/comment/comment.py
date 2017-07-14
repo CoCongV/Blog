@@ -1,6 +1,5 @@
 from flask import g, request, current_app, url_for
 from flask_restful import Resource
-from markdown import markdown
 
 from app import db
 from app.api_v1 import HTTPStatusCode, token_auth

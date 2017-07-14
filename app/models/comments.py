@@ -17,6 +17,7 @@ class Reply(db.Model, CRUDMixin, Serializer):
     def __repr__(self):
         return str(self.json()).replace(',', '\n')
 
+
 class Comment(db.Model, CRUDMixin, Serializer):
     __tablename__ = 'comments'
     id = db.Column(db.Integer, primary_key=True)
