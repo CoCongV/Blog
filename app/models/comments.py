@@ -41,6 +41,11 @@ class Comment(db.Model, CRUDMixin, Serializer):
     def __repr__(self):
         return str(self.json()).replace(',', '\n')
 
+    def comment(self, comment):
+        reply = Reply(replies=self, replied=comment)
+        db.session.add(reply)
+        db.session.commit()
+
     @staticmethod
     def on_change_body(target, value, oldvalue, initiator):
         allowed_tags = ['a', 'abbr', 'acronym', 'b', 'code', 'em', 'i', 'blockquote'
