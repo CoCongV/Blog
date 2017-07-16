@@ -14,14 +14,15 @@ class CommentView(Resource, HTTPStatusCode):
     @permission_required(Permission.COMMENT)
     def post(self):
         args = comment_parse.parse_args()
-        reply = args.get('reply')
+        comment_id = args.get('comment_id')
         post = Post.get(args['post'])
         kwargs = {'body': args['body'],
                   'author': g.current_user,
                   'post': post}
-        if reply:
-            kwargs.update({'replies': Comment.get(reply)})
-        Comment.create(**kwargs)
+        comment = Comment.create(**kwargs)
+        if comment_id:
+            reply = Comment.query.get(comment_id)
+            comment.reply(reply)
         return self.CREATED
 
     def get(self):

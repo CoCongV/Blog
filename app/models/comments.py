@@ -41,7 +41,7 @@ class Comment(db.Model, CRUDMixin, Serializer):
     def __repr__(self):
         return str(self.json()).replace(',', '\n')
 
-    def comment(self, comment):
+    def reply(self, comment):
         reply = Reply(replies=self, replied=comment)
         db.session.add(reply)
         db.session.commit()

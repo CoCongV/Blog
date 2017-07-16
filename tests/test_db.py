@@ -106,4 +106,4 @@ class TestPostModel(unittest.TestCase):
         reply = Comment.create(body='reply',
                                author=self.user,
                                post=self.post)
-        reply.comment(comment)
+        reply.reply(comment)

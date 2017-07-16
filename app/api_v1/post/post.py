@@ -4,6 +4,7 @@ from flask_restful import request, reqparse, Resource
 from app.models import Post, Permission
 from app.api_v1 import HTTPStatusCode, token_auth
 from app.api_v1.decorators import permission_required
+from app.api_v1.error import PermissionForbiddenError
 
 post_parser = reqparse.RequestParser()
 post_parser.add_argument(
@@ -58,7 +59,7 @@ class PostView(Resource, HTTPStatusCode):
         tags = args['tags']
         post = Post.get(args['post_id'])
         if g.current_user != post.author and not g.current_user.can(Permission.ADMINISTER):
-            return {"message": "Insufficient permissions"}, self.PERMISSION_FORBIDDEN
+            raise PermissionForbiddenError(description="Insufficient permissions")
         post.body = body
         post.title = title
         post.tags = tags
@@ -69,6 +70,6 @@ class PostView(Resource, HTTPStatusCode):
     def delete(self):
         post = Post.get_or_404(request.args['post_id'])
         if g.current_user != post.author and not g.current_user.can(Permission.ADMINISTER):
-            return {"message": "Insufficient permissions"}, self.PERMISSION_FORBIDDEN
+           raise PermissionForbiddenError(description='Insufficient permissions')
         post.delete()
         return {}, self.SUCCESS
