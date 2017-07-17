@@ -1,14 +1,14 @@
 from flask import g, url_for, request
 from flask_restful import Resource, reqparse
 
-from app.api_v1 import HTTPStatusCode, token_auth
+from app.api_v1 import HTTPStatusCodeMixin, token_auth
 from app.api_v1.decorators import permission_required
 from app.api_v1.error import UserAlreadyExistsError
 from app.utils.send_mail import send_email
 from app.models import Permission, User
 
 
-class SendEmailAuth(Resource, HTTPStatusCode):
+class SendEmailAuth(Resource, HTTPStatusCodeMixin):
 
     decorators = [permission_required(Permission.COMMENT),
                   token_auth.login_required]
@@ -24,7 +24,7 @@ class SendEmailAuth(Resource, HTTPStatusCode):
         return {}, self.SUCCESS
 
 
-class EmailExist(Resource, HTTPStatusCode):
+class EmailExist(Resource, HTTPStatusCodeMixin):
 
     def get(self):
         _reqparse = reqparse.RequestParser()

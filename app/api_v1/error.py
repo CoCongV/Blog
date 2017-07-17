@@ -1,10 +1,13 @@
 from flask_restful import HTTPException
 
-from . import HTTPStatusCode
+from . import HTTPStatusCodeMixin
 
 
-class PermissionForbiddenError(HTTPException, HTTPStatusCode):
-    def __init__(self, description="Permission Forbidden", response=None):
+class PermissionForbiddenError(HTTPException, HTTPStatusCodeMixin):
+    """
+    Permission Exception
+    """
+    def __init__(self, description="Permission Exception", response=None):
         super(PermissionForbiddenError, self).__init__(description, response)
         self.code = self.PERMISSION_FORBIDDEN
         self.description = description
@@ -13,9 +16,11 @@ class PermissionForbiddenError(HTTPException, HTTPStatusCode):
         return self.__class__.__name__
 
 
-class UserAlreadyExistsError(HTTPException, HTTPStatusCode):
-
-    def __init__(self, description='A user with that username or email already exists', response=None):
+class UserAlreadyExistsError(HTTPException, HTTPStatusCodeMixin):
+    """
+    User Info Already Exists
+    """
+    def __init__(self, description='User Info Already Exists', response=None):
         super(UserAlreadyExistsError, self).__init__(description, response)
         self.code = self.USER_EXIST
         self.description = description
@@ -24,9 +29,11 @@ class UserAlreadyExistsError(HTTPException, HTTPStatusCode):
         return self.__class__.__name__ + ' code: %d' % self.code
 
 
-class AuthorizedError(HTTPException, HTTPStatusCode):
-
-    def __init__(self, description="Auth Fail", response=None):
+class AuthorizedError(HTTPException, HTTPStatusCodeMixin):
+    """
+    Authentication Failed
+    """
+    def __init__(self, description="Authentication Fail", response=None):
         super(AuthorizedError, self).__init__(description, response)
         self.code = self.UNAUTHORIZED_ACCESS
         self.description = description

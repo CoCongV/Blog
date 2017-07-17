@@ -2,7 +2,7 @@ from flask import g, url_for
 from flask_restful import request, reqparse, Resource
 
 from app.models import Post, Permission
-from app.api_v1 import HTTPStatusCode, token_auth
+from app.api_v1 import HTTPStatusCodeMixin, token_auth
 from app.api_v1.decorators import permission_required
 from app.api_v1.error import PermissionForbiddenError
 
@@ -25,7 +25,7 @@ post_parser.add_argument(
 )
 
 
-class PostView(Resource, HTTPStatusCode):
+class PostView(Resource, HTTPStatusCodeMixin):
 
     decorators = [token_auth.login_required]
 

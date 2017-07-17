@@ -1,12 +1,12 @@
 from flask import g, request
 from flask_restful import Resource
 
-from app.api_v1 import HTTPStatusCode, token_auth
+from app.api_v1 import HTTPStatusCodeMixin, token_auth
 from app.models import Permission, Post
 from app.api_v1.error import PermissionForbiddenError
 
 
-class PostPermission(Resource, HTTPStatusCode):
+class PostPermission(Resource, HTTPStatusCodeMixin):
     decorators = [token_auth.login_required]
 
     def get(self):

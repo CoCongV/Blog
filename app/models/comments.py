@@ -64,7 +64,8 @@ class Comment(db.Model, CRUDMixin, Serializer):
         json_data = {
             'body_html': self.body_html,
             'timestamp': self.timestamp.strftime('%Y-%m-%d %H:%M:%S'),
-            'author': self.author.username
+            'author': self.author.username,
+            'avatar': self.author.avatar
         }
         return json_data
 

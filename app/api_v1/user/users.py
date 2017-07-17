@@ -2,13 +2,13 @@ from flask import g, url_for
 from flask_restful import reqparse, Resource
 from sqlalchemy.exc import IntegrityError, InvalidRequestError, DataError
 
-from app.api_v1 import token_auth, HTTPStatusCode
+from app.api_v1 import token_auth, HTTPStatusCodeMixin
 from app.api_v1.error import UserAlreadyExistsError
 from app.utils.send_mail import send_email
 from app.models import User, Role
 
 
-class UserView(Resource, HTTPStatusCode):
+class UserView(Resource, HTTPStatusCodeMixin):
 
     def __init__(self):
         super(UserView, self).__init__()

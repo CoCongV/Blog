@@ -2,11 +2,11 @@ from flask import g
 from flask_restful import reqparse, Resource
 
 from app.models import User
-from app.api_v1 import HTTPStatusCode
+from app.api_v1 import HTTPStatusCodeMixin
 from app.api_v1.error import AuthorizedError
 
 
-class LoginView(Resource, HTTPStatusCode):
+class LoginView(Resource, HTTPStatusCodeMixin):
 
     def __init__(self):
         super(LoginView, self).__init__()

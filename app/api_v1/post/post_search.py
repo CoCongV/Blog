@@ -4,7 +4,7 @@ from flask import current_app, url_for
 from flask_restful import reqparse, Resource
 
 from app import db
-from app.api_v1 import HTTPStatusCode
+from app.api_v1 import HTTPStatusCodeMixin
 from app.models import Post
 
 
@@ -14,7 +14,7 @@ search_parse.add_argument('year', location='args')
 search_parse.add_argument('search', location='args')
 
 
-class PostSearch(Resource, HTTPStatusCode):
+class PostSearch(Resource, HTTPStatusCodeMixin):
 
     def get(self):
         prev = None
@@ -49,6 +49,7 @@ class PostSearch(Resource, HTTPStatusCode):
             )
         else:
             pagination = None
+
         if pagination:
             posts = pagination.items
             total = pagination.total
@@ -62,3 +63,6 @@ class PostSearch(Resource, HTTPStatusCode):
                 'prev': prev,
                 'next': _next,
                 'count': total}, self.SUCCESS
+
+    async def handle_post_json(self):
+        pass

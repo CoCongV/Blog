@@ -2,11 +2,11 @@ from flask import current_app, request, url_for
 from flask_restful import Resource
 
 from app import db
-from app.api_v1 import HTTPStatusCode
+from app.api_v1 import HTTPStatusCodeMixin
 from app.models import Post
 
 
-class PostsView(Resource, HTTPStatusCode):
+class PostsView(Resource, HTTPStatusCodeMixin):
 
     def get(self):
         uid = request.args.get('uid')

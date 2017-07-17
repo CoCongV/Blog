@@ -3,6 +3,7 @@ from flask import g, make_response, jsonify
 
 from app.models import User, AnonymousUser
 from app.api_v1 import token_auth
+from app.api_v1.error import AuthorizedError
 
 
 @token_auth.verify_token
