@@ -1,0 +1,65 @@
+html {
+  height: 100%;
+}
+body {
+  min-height: 100%;
+  margin: 0;
+  padding: 0;
+  position: relative;
+}
+/*#app {*/
+  /*font-family: 'Avenir', Helvetica, Arial, sans-serif;*/
+  /*-webkit-font-smoothing: antialiased;*/
+  /*-moz-osx-font-smoothing: grayscale;*/
+  /*text-align: center;*/
+  /*color: #2c3e50;*/
+/*}*/
+#foot-bar {
+  position: absolute;
+  bottom: 0px;
+  width: 100%;
+}
+.article {
+  margin-bottom: 120px;
+}
+.article-head .article-body{
+  text-align: left;
+}
+.article-title {
+  text-align: center !important;
+}
+.article-foot {
+  text-align: left;
+}
+.comment-input {
+  height: 20%;
+}
+.comment-button {
+  border: 1px solid #ccc;
+  border-top: 0;
+  text-align: right !important;
+}
+.dialog {
+  position: fixed !important;
+  right: 10% !important;
+  bottom: 60px !important;
+}
+.mobile-tear-sheet-container {
+  border: 0 !important;
+}
+.moon-content {
+  margin-bottom: 60px;
+}
+pre.ql-syntax {
+  background-color: #23241f;
+  color: #f8f8f2;
+  overflow: visible;
+}
+.tag {
+  max-width: 100px;
+  text-align: center;
+  background-color: #80deea;
+}
+#quill-container {
+  height: 200px !important;
+}
