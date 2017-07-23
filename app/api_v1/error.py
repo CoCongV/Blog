@@ -37,3 +37,6 @@ class AuthorizedError(HTTPException, HTTPStatusCodeMixin):
         super(AuthorizedError, self).__init__(description, response)
         self.code = self.UNAUTHORIZED_ACCESS
         self.description = description
+
+    def __str__(self):
+        return self.__class__.__name__ + '{}'.format(self.description)

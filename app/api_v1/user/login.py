@@ -21,10 +21,10 @@ class LoginView(Resource, HTTPStatusCodeMixin):
         password = args['password']
         user = User.query.filter_by(email=email).first()
         if not user:
-            return AuthorizedError('Email Error')
+            raise AuthorizedError('Email Error')
         verify = user.verify_password(password)
         if not verify:
-            return AuthorizedError('Password Error')
+            raise AuthorizedError('Password Error')
         else:
             g.current_user = user
             token = user.generate_confirm_token(expiration=self.expiration)

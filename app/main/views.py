@@ -1,16 +1,18 @@
 # coding: utf-8
-from flask import render_template, request, current_app
+from flask import render_template
 
 from . import main
-from app.models.posts import Post
+from .. import cache
+# from app.models.posts import Post
 
 
+# @cache.cached(timeout=50)
 @main.route('/')
 def index():
-    page = request.args.get('page', 1, type=int)
-    pagination = Post.query.order_by(Post.timestamp.desc()).paginate(
-        page, per_page=current_app.config['BLOG_POST_PER_PAGE'], error_out=False
-    )
+    # page = request.args.get('page', 1, type=int)
+    # pagination = Post.query.order_by(Post.timestamp.desc()).paginate(
+    #     page, per_page=current_app.config['BLOG_POST_PER_PAGE'], error_out=False
+    # )
     # posts = pagination.items
     return render_template('index.html')
 
