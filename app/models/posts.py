@@ -2,13 +2,13 @@
 from datetime import datetime
 
 import bleach
-from flask import url_for, current_app
+from flask import url_for
 from whoosh.analysis import SimpleAnalyzer
 
 from markdown import markdown
 from sqlalchemy.dialects import postgresql
 
-from app import db
+from app import db, cache
 from app.models.minixs import CRUDMixin, Serializer
 
 
@@ -35,6 +35,7 @@ class Post(CRUDMixin, db.Model, Serializer):
             markdown(value, output_format='html')
         )
 
+    @cache.memoize(timeout=300)
     def to_json(self, split=False):
         json_data = {
             "post_id": self.id,
@@ -62,7 +63,7 @@ class Post(CRUDMixin, db.Model, Serializer):
 
         seed()
         for i in range(count):
-            post = Post.create(
+            Post.create(
                 title='测试',
                 body=forgery_py.lorem_ipsum.sentences(randint(1, 3)),
                 author_id=1,

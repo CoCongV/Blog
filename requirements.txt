@@ -11,6 +11,7 @@ coverage==4.4.1
 Flask==0.12.2
 Flask-Admin==1.5.0
 Flask-Assets==0.12
+Flask-Cache==0.13.1
 Flask-Dashed==0.1b2
 Flask-DebugToolbar==0.10.1
 Flask-HTTPAuth==3.2.3
@@ -25,6 +26,7 @@ Flask-SQLAlchemy==2.2
 Flask-WhooshAlchemyPlus==0.7.5
 Flask-WTF==0.14.2
 ForgeryPy==0.1
+gunicorn==19.7.1
 html5lib==0.9999999
 itsdangerous==0.24
 Jinja2==2.9.6

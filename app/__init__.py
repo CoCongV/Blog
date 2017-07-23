@@ -1,6 +1,5 @@
 # coding: utf-8
 from celery import Celery
-import logging
 from flask import Flask
 from flask_debugtoolbar import DebugToolbarExtension
 from flask_login import LoginManager
@@ -8,6 +7,7 @@ from flask_moment import Moment
 from flask_mail import Mail
 from flask_pagedown import PageDown
 from flask_sqlalchemy import SQLAlchemy
+from flask_cache import Cache
 
 from config import config
 from app.utils import assets
@@ -18,6 +18,8 @@ mail = Mail()
 moment = Moment()
 pagedown = PageDown()
 db = SQLAlchemy()
+cache = Cache(config={'CACHE_TYPE': 'simple'})
+
 
 login_manager = LoginManager()
 login_manager.session_protection = 'strong'
@@ -37,6 +39,7 @@ def create_app(config_name):
     db.init_app(app)
     login_manager.init_app(app)
     assets.init_app(app)
+    cache.init_app(app)
     # celery.init_app(app)
 
     from .main import main as main_blueprint
