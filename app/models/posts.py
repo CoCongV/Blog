@@ -7,6 +7,8 @@ from whoosh.analysis import SimpleAnalyzer
 
 from markdown import markdown
 from sqlalchemy.dialects import postgresql
+import graphene
+from graphene_sqlalchemy import SQLAlchemyObjectType
 
 from app import db, cache
 from app.models.minixs import CRUDMixin, Serializer

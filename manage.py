@@ -31,6 +31,10 @@ admin = Admin(app, name='Cong Blog', template_mode="bootstrap3")
 celery = make_celery(app, celery_worker)
 
 
+@app.teardown_appcontext
+def shutdown_session(exception=None):
+    return db.session.remove()
+
 def make_shell_context():
     return dict(app=app, db=db, User=User, Role=Role, Comment=Comment, Permission=Permission, Post=Post)
 

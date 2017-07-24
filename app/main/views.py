@@ -1,15 +1,32 @@
 # coding: utf-8
-from flask import render_template
+from flask import render_template, current_app
 
 from . import main
-from .. import cache
-# from app.models.posts import Post
+from .. import cache, db
 
 
 @cache.cached(timeout=50)
 @main.route('/')
 def index():
     return render_template('index.html')
+
+
+default_query = '''
+{
+    allPosts {
+        edges {
+            node {
+                id,
+                name,
+                posts {
+                    id,
+                    title,
+                    body
+                }
+            }
+        }
+    }
+}'''.strip()
 
 
 # @main.route('/publish_post', methods=['GET', 'POST'])
