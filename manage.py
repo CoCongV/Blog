@@ -35,10 +35,20 @@ celery = make_celery(app, celery_worker)
 def shutdown_session(exception=None):
     return db.session.remove()
 
-def make_shell_context():
-    return dict(app=app, db=db, User=User, Role=Role, Comment=Comment, Permission=Permission, Post=Post)
 
-manager.add_command("shell", Shell(make_context=make_shell_context))
+def make_shell_context():
+    return dict(
+        app=app,
+        db=db,
+        User=User,
+        Role=Role,
+        Comment=Comment,
+        Permission=Permission,
+        Post=Post)
+
+
+manager.add_command("shell",
+                    Shell(use_ipython=True, make_context=make_shell_context))
 manager.add_command('db', MigrateCommand)
 
 
@@ -62,6 +72,7 @@ def test(coverage=False):
         COV.html_report(directory=covdir)
         print('HTML version: file://%s/index.html' % covdir)
         COV.erase()
+
 
 if __name__ == '__main__':
     manager.run()

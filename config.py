@@ -66,6 +66,9 @@ class ProductionConfig(Config):
     SERVER_NAME = os.environ.get('ADDRESS')
     SQLALCHEMY_DATABASE_URI = 'postgresql://lvcong:password@localhost/flask_blog'
     DEBUG = False
+    # SENTRY CONFIGURE
+    SENTRY_DSN = os.environ.get('SENTRY_DSN')
+    SENTRY_DSN = ['username', 'email']
 
     @classmethod
     def init_app(cls, app):
