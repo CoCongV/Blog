@@ -1,4 +1,3 @@
-import os
 import multiprocessing
 
 bind = '127.0.0.1:8080'
@@ -9,4 +8,3 @@ debug = True
 proc_name = 'gunicorn.pid'
 pidfile = './tmp/log/gunicorn/debug.log'
 loglevel = 'debug'
-

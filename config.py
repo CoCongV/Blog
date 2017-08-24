@@ -11,9 +11,11 @@ class Config:
     SECRET_KEY = '272c635e-a0b2-49b1-9a8b-afc671f850ee'
     SSL_DISABLE = False
 
+    # FLASK EMAIL
     FLASK_MAIL_SUBJECT_PREFIX = '[Cong\' Blog]'
     FLASK_MAIL_SENDER = 'cong.lv.blog@gmail.com'
     FLASK_ADMIN = os.environ.get('BLOG_ADMIN')
+    # FILE UPLOAD
     UPLOADED_PHOTOS_DEST = './media/photos'
     UPLOADED_FILES_DEST = './media/files'
     ALLOWED_EXTENSIONS = ['png', 'jpg', 'jpeg', 'gif', 'webp']
@@ -88,14 +90,14 @@ class ProductionConfig(Config):
             toaddrs=[cls.FLASK_ADMIN],
             subject=cls.FLASK_MAIL_SUBJECT_PREFIX + ' Application Error',
             credentials=credentials,
-            secure=secure
-        )
+            secure=secure)
         mail_handler.setLevel(logging.ERROR)
         app.logger.addHandler(mail_handler)
 
+
 config = {
-        'development': DevelopmentConfig,
-        'testing': TestingConfig,
-        'production': ProductionConfig,
-        'default': DevelopmentConfig
-        }
+    'development': DevelopmentConfig,
+    'testing': TestingConfig,
+    'production': ProductionConfig,
+    'default': DevelopmentConfig
+}
