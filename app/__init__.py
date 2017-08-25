@@ -15,6 +15,8 @@ from raven.contrib.flask import Sentry
 from config import config
 from app.utils import assets
 
+app = None
+
 toolbar = DebugToolbarExtension()
 mail = Mail()
 moment = Moment()
@@ -31,6 +33,7 @@ celery = Celery(__name__, broker='redis://localhost:6379')
 
 
 def create_app(config_name):
+    global app
     app = Flask(__name__)
     app.config.from_object(config[config_name])
     # config[config_name].init_app(app)
