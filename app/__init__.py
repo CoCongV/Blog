@@ -9,13 +9,14 @@ from flask_moment import Moment
 from flask_mail import Mail
 from flask_pagedown import PageDown
 from flask_sqlalchemy import SQLAlchemy
+from flask_uploads import UploadSet, IMAGES, configure_uploads
 from flask_cache import Cache
 from raven.contrib.flask import Sentry
 
 from config import config
 from app.utils import assets
 
-app = None
+# app = None
 
 toolbar = DebugToolbarExtension()
 mail = Mail()
@@ -31,15 +32,18 @@ login_manager.login_view = 'auth.login'
 
 celery = Celery(__name__, broker='redis://localhost:6379')
 
+photos = UploadSet('photos', IMAGES)
+
 
 def create_app(config_name):
-    global app
+    # global app
     app = Flask(__name__)
     app.config.from_object(config[config_name])
     # config[config_name].init_app(app)
     _config = config[config_name]
     _config.init_app(app)
 
+    configure_uploads(app, (photos, ))
     toolbar.init_app(app)
     mail.init_app(app)
     pagedown.init_app(app)

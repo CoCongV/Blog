@@ -15,11 +15,13 @@ class Config:
     FLASK_MAIL_SUBJECT_PREFIX = '[Cong\' Blog]'
     FLASK_MAIL_SENDER = 'cong.lv.blog@gmail.com'
     FLASK_ADMIN = os.environ.get('BLOG_ADMIN')
+
     # FILE UPLOAD
     UPLOADED_PHOTOS_DEST = './media/photos'
     UPLOADED_FILES_DEST = './media/files'
     ALLOWED_EXTENSIONS = ['png', 'jpg', 'jpeg', 'gif', 'webp']
     MAX_CONTENT_LENGTH = 16 * 1024 * 1024
+
     # sqlalchemy config
     SQLALCHEMY_COMMIT_ON_TEARDOWN = True
     SQLALCHEMY_RECORD_QUERIES = True
@@ -28,16 +30,19 @@ class Config:
     BLOG_COMMENT_PAGE = 10
     BLOG_SLOW_DB_QUERY_TIME = 0.1
     FLASKY_DB_QUERY_TIMEOUT = 0.5
+
     # mail config
     MAIL_SERVER = 'smtp.gmail.com'
     MAIL_PORT = 465
     MAIL_USE_SSL = True
     MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
     MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
+
     # whoosh config
     WHOOSH_BASE = '/tmp/whoosh/base'
     WHOOSH_ANALYZER = StemmingAnalyzer()
     DEBUG_TB_INTERCEPT_REDIRECTS = False
+
     # celery config
     BROKER_URL = 'redis://localhost:6379'
     CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
@@ -68,6 +73,7 @@ class ProductionConfig(Config):
     SERVER_NAME = os.environ.get('ADDRESS')
     SQLALCHEMY_DATABASE_URI = 'postgresql://lvcong:password@localhost/flask_blog'
     DEBUG = False
+
     # SENTRY CONFIGURE
     SENTRY_DSN = os.environ.get('SENTRY_DSN')
     SENTRY_DSN = ['username', 'email']

@@ -11,14 +11,14 @@ from .post import PostView
 from .tag import Tag
 from .timeline import Timeline
 from .post_search import PostSearch
-from .upload import Upload
+from .media import PhotoStorage
 
 api.add_resource(PostView, '/post/')
 api.add_resource(PostsView, '/posts/')
 api.add_resource(Tag, '/tag/')
 api.add_resource(Timeline, '/time/')
 api.add_resource(PostSearch, '/search/', endpoint='post_search')
-api.add_resource(Upload, '/upload/', endpoint='upload')
+api.add_resource(PhotoStorage, '/photo/', endpoint='upload')
 
 
 @api_post.after_app_request
