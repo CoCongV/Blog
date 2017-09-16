@@ -54,7 +54,6 @@ class CRUDMixin(object):
         return commit and db.session.commit()
 
     def update(self, commit=True, **kwargs):
-        print(kwargs)
         for attr, value in kwargs.items():
             setattr(self, attr, value)
         return commit and self.save() or self

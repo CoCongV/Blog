@@ -2,21 +2,19 @@ from flask import g, url_for
 from flask_restful import reqparse, Resource
 from sqlalchemy.exc import IntegrityError, InvalidRequestError, DataError
 
-from app.api_v1 import token_auth, HTTPStatusCodeMixin
+from app.api_v1 import token_auth
 from app.api_v1.error import UserAlreadyExistsError
-from app.utils.send_mail import send_email
 from app.models import User, Role
+from app.utils.send_mail import send_email
+from app.utils.web import HTTPStatusCodeMixin
 
 
 class UserView(Resource, HTTPStatusCodeMixin):
-
-    def __init__(self):
-        super(UserView, self).__init__()
-        self.reqparse = reqparse.RequestParser()
-        self.reqparse.add_argument('email', type=str, required=True, location='json')
-        self.reqparse.add_argument('username', type=str, required=True, location='json')
-        self.reqparse.add_argument('location', type=str, location='json')
-        self.reqparse.add_argument('about_me', type=str, location='json')
+    reqparse = reqparse.RequestParser()
+    reqparse.add_argument('email', type=str, required=True, location='json')
+    reqparse.add_argument('username', type=str, required=True, location='json')
+    reqparse.add_argument('location', type=str, location='json')
+    reqparse.add_argument('about_me', type=str, location='json')
 
     @token_auth.login_required
     def get(self):

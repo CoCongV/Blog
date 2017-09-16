@@ -1,10 +1,14 @@
 # coding: utf-8
 import os
 
-from flask import render_template, send_from_directory, current_app
+from flask import (render_template,
+                   send_from_directory,
+                   current_app,
+                   send_file)
 
 from . import main
 from .. import cache
+from ..api_v1.error import FileError
 
 
 @cache.cached(timeout=50)
@@ -31,10 +35,19 @@ default_query = '''
 }'''.strip()
 
 
-@main.route('/favicon.ico')
+@main.route('/favicon.ico', methods=['GET'])
 def favicon():
-    print(current_app.root_path)
     return send_from_directory(
         os.path.join(current_app.root_path, 'static'),
         'favicon.ico',
         mimetype='image/vnd.microsoft.icon')
+
+
+@main.route('/images/<int:uid>/<image>', methods=['GET'])
+def image(uid, image):
+    path = os.path.join(current_app.config['UPLOADED_PHOTOS_DEST'],
+                        str(uid), image)
+    if not os.path.exists(path):
+        raise FileError()
+    print(path)
+    return send_file(path)

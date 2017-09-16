@@ -1,10 +1,11 @@
-from flask import g, url_for, request
+from flask import g, url_for
 from flask_restful import Resource, reqparse
 
-from app.api_v1 import HTTPStatusCodeMixin, token_auth
+from app.api_v1 import token_auth
 from app.api_v1.decorators import permission_required
 from app.api_v1.error import UserAlreadyExistsError
 from app.utils.send_mail import send_email
+from app.utils.web import HTTPStatusCodeMixin
 from app.models import Permission, User
 
 

@@ -2,7 +2,7 @@ from sqlalchemy import extract
 from sqlalchemy.orm import sessionmaker
 from flask_restful import Resource
 
-from app.api_v1 import HTTPStatusCodeMixin
+from app.utils.web import HTTPStatusCodeMixin
 from app.models import Post
 from app import db, cache
 

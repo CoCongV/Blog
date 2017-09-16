@@ -17,8 +17,10 @@ class Config:
     FLASK_ADMIN = os.environ.get('BLOG_ADMIN')
 
     # FILE UPLOAD
-    UPLOADED_PHOTOS_DEST = './media/photos'
-    UPLOADED_FILES_DEST = './media/files'
+    # UPLOADED_PHOTOS_DEST = './app/media/photos'
+    UPLOADED_PHOTOS_DEST = os.path.join(basedir, 'app/media/photos/')
+    UPLOADED_PHOTOS_URL = 'images/'
+    UPLOADED_FILES_DEST = './app/media/files'
     ALLOWED_EXTENSIONS = ['png', 'jpg', 'jpeg', 'gif', 'webp']
     MAX_CONTENT_LENGTH = 16 * 1024 * 1024
 

@@ -1,6 +1,6 @@
 from flask_restful import HTTPException
 
-from . import HTTPStatusCodeMixin
+from app.utils.web import HTTPStatusCodeMixin
 
 
 class PermissionForbiddenError(HTTPException, HTTPStatusCodeMixin):
@@ -52,7 +52,7 @@ class FileError(HTTPException, HTTPStatusCodeMixin):
 
     def __init__(self, description="File Not Exist", response=None):
         super().__init__(description, response)
-        self.code = self.NOT_FOUND
+        self.code = self.NOT_ALLOWED
         self.description = description
 
     def __str__(self):

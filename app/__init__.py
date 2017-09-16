@@ -44,7 +44,7 @@ def create_app(config_name):
     _config.init_app(app)
 
     configure_uploads(app, (photos, ))
-    toolbar.init_app(app)
+    # toolbar.init_app(app)
     mail.init_app(app)
     pagedown.init_app(app)
     db.init_app(app)

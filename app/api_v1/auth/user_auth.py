@@ -1,9 +1,9 @@
 from flask import request
 from flask_restful import Resource
 
-from app.api_v1 import HTTPStatusCodeMixin
-from app.models import User
 from app.api_v1.error import UserAlreadyExistsError
+from app.models import User
+from app.utils.web import HTTPStatusCodeMixin
 
 
 class UsernameExist(Resource, HTTPStatusCodeMixin):
