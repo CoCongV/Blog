@@ -6,8 +6,7 @@ api_post = Blueprint('post', __name__)
 api = Api(api_post)
 
 
-from .posts import PostsView
-from .post import PostView
+from .post import PostView, PostsView
 from .tag import Tag
 from .timeline import Timeline
 from .post_search import PostSearch
@@ -26,6 +25,7 @@ def after_request(response):
     for query in get_debug_queries():
         if query.duration >= current_app.config['BLOG_SLOW_DB_QUERY_TIME']:
             current_app.logger.warning(
-                'Slow query: %s\nParameters: %s\nDuration: %fs\nContext: %s\n' % (query.statement, query.parameters, query.duration, query.context)
-            )
+                'Slow query: %s\nParameters: %s\nDuration: %fs\nContext: %s\n'
+                % (query.statement, query.parameters, query.duration,
+                   query.context))
     return response

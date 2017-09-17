@@ -63,6 +63,3 @@ class PostSearch(Resource, HTTPStatusCodeMixin):
                 'prev': prev,
                 'next': _next,
                 'count': total}, self.SUCCESS
-
-    async def handle_post_json(self):
-        pass
