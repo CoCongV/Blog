@@ -3,14 +3,17 @@ import logging
 
 from celery import Celery
 from flask import Flask
+from flask_cache import Cache
 from flask_debugtoolbar import DebugToolbarExtension
 from flask_login import LoginManager
-from flask_moment import Moment
 from flask_mail import Mail
+from flask_moment import Moment
 from flask_pagedown import PageDown
 from flask_sqlalchemy import SQLAlchemy
-from flask_uploads import UploadSet, IMAGES, configure_uploads
-from flask_cache import Cache
+from flask_uploads import (UploadSet,
+                           IMAGES,
+                           configure_uploads,
+                           patch_request_class)
 from raven.contrib.flask import Sentry
 
 from config import config
@@ -44,6 +47,7 @@ def create_app(config_name):
     _config.init_app(app)
 
     configure_uploads(app, (photos, ))
+    patch_request_class(app, None)
     # toolbar.init_app(app)
     mail.init_app(app)
     pagedown.init_app(app)

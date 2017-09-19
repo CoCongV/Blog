@@ -22,7 +22,7 @@ class Config:
     UPLOADED_PHOTOS_URL = 'images/'
     UPLOADED_FILES_DEST = './app/media/files'
     ALLOWED_EXTENSIONS = ['png', 'jpg', 'jpeg', 'gif', 'webp']
-    MAX_CONTENT_LENGTH = 16 * 1024 * 1024
+    MAX_CONTENT_LENGTH = 10 * 1024 * 1024
 
     # sqlalchemy config
     SQLALCHEMY_COMMIT_ON_TEARDOWN = True

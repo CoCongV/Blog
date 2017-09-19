@@ -13,5 +13,5 @@ class Timeline(Resource, HTTPStatusCodeMixin):
     def get(self):
         _Session = sessionmaker(db.engine)
         session = _Session()
-        results = tuple(set(session.query(extract('year', Post.timestamp)).all()))
-        return {'time': results}, self.SUCCESS
+        results = set(session.query(extract('year', Post.timestamp)).all())
+        return {'time': tuple(results)}, self.SUCCESS

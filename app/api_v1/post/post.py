@@ -1,6 +1,7 @@
-from flask import g, url_for
+from flask import g, url_for, current_app
 from flask_restful import request, reqparse, Resource
 
+from app import db
 from app.models import Post, Permission
 from app.api_v1 import token_auth
 from app.api_v1.decorators import permission_required
@@ -24,6 +25,10 @@ post_parser.add_argument(
     action='append',
     required=True
 )
+post_parser.add_argument(
+    'post_id',
+    location='json'
+)
 
 
 class PostView(Resource, HTTPStatusCodeMixin):
@@ -40,13 +45,18 @@ class PostView(Resource, HTTPStatusCodeMixin):
 
         author = g.current_user
         post = Post.create(title=title, body=body, tags=tags, author=author)
-        return {'url': url_for('post.postview', id=post.id), 'id': post.id}, self.CREATED
+        return {
+            'url': url_for('post.postview', id=post.id),
+            'id': post.id
+        }, self.CREATED
 
     def get(self):
         # 认证权限与请求文章分离
         _delete = True
-        post = Post.get_or_404(request.args.get('id')).update(view=Post.view + 1)
-        if not g.current_user.can(Permission.ADMINISTER) and g.current_user != post.author:
+        post = Post.get_or_404(request.args.get('id')).update(
+            view=Post.view + 1)
+        if not g.current_user.can(
+                Permission.ADMINISTER) and g.current_user != post.author:
             _delete = False
         return {"post": post.to_json(),
                 'delete_permission': _delete}, self.SUCCESS
@@ -59,18 +69,56 @@ class PostView(Resource, HTTPStatusCodeMixin):
         body = args['content']
         tags = args['tags']
         post = Post.get(args['post_id'])
-        if g.current_user != post.author and not g.current_user.can(Permission.ADMINISTER):
-            raise PermissionForbiddenError(description="Insufficient permissions")
+        if g.current_user != post.author and not g.current_user.can(
+                Permission.ADMINISTER):
+            raise PermissionForbiddenError(
+                description="Insufficient permissions")
         post.body = body
         post.title = title
         post.tags = tags
         post.save()
-        return {'url': url_for('post.postview', id=post.id), 'post_id': post.id}, self.SUCCESS
+        return {
+            'url': url_for('post.postview', id=post.id),
+            'post_id': post.id
+        }, self.SUCCESS
 
     @permission_required(Permission.ADMINISTER)
     def delete(self):
         post = Post.get_or_404(request.args['post_id'])
-        if g.current_user != post.author and not g.current_user.can(Permission.ADMINISTER):
-           raise PermissionForbiddenError(description='Insufficient permissions')
+        if g.current_user != post.author and not g.current_user.can(
+                Permission.ADMINISTER):
+            raise PermissionForbiddenError(
+                description='Insufficient permissions')
         post.delete()
         return {}, self.SUCCESS
+
+
+class PostsView(Resource, HTTPStatusCodeMixin):
+
+    def get(self):
+        uid = request.args.get('uid')
+        page = request.args.get('page', 1, type=int)
+        if uid:
+            pagination = Post.query.filter_by(
+                author_id=uid).order_by(db.desc('timestamp')).paginate(
+                    page,
+                    per_page=current_app.config['BLOG_POST_PER_PAGE'],
+                    error_out=False)
+        else:
+            pagination = Post.query.order_by(db.desc('timestamp')).paginate(
+                page, per_page=current_app.config['BLOG_POST_PER_PAGE'],
+                error_out=False
+            )
+        posts = pagination.items
+        prev = None
+        if pagination.has_prev:
+            prev = url_for('post.postsview', page=page - 1, _external=True)
+        _next = None
+        if pagination.has_next:
+            _next = url_for('post.postsview', page=page + 1, _external=True)
+        return {
+            'posts': [post.to_json(500) for post in posts],
+            'prev': prev,
+            'next': _next,
+            'count': pagination.total
+        }, self.SUCCESS
