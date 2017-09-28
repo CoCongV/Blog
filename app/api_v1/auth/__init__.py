@@ -10,8 +10,6 @@ from .auth import (SendEmailAuth,
                    EmailExist,
                    EmailAuth,
                    UsernameExist)
-# from .email_auth import SendEmailAuth, EmailExist
-# from .user_auth import UsernameExist
 
 
 api_auth = Blueprint('auth', __name__, url_prefix='/auth')

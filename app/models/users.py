@@ -131,8 +131,8 @@ class User(CRUDMixin, UserMixin, db.Model, Serializer):
         db.session.commit()
 
     def can(self, permissions):
-        return self.role is not None and \
-               (self.role.permissions & permissions) == permissions
+        return self.role is not None and (
+            self.role.permissions & permissions) == permissions
 
     def is_administrator(self):
         return self.can(Permission.ADMINISTER)

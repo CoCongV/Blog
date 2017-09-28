@@ -16,8 +16,6 @@ from flask_uploads import (UploadSet,
 from config import config
 from app.utils import assets
 
-# app = None
-
 toolbar = DebugToolbarExtension()
 mail = Mail()
 moment = Moment()

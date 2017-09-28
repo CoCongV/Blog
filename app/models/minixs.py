@@ -64,7 +64,8 @@ class Serializer(object):
 
     def json(self):
         serialized_fields = self.serialized_fields
-        cls_serialized_fields = set([column.name for column in self.__class__.__table__.columns])
+        cls_serialized_fields = set(
+            [column.name for column in self.__class__.__table__.columns])
 
         for primary_key in inspect(self.__class__).primary_key:
             if not getattr(self, primary_key.name):
