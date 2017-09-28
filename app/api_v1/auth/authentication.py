@@ -5,7 +5,6 @@ from app.models import User, AnonymousUser
 from app.api_v1 import token_auth
 
 
-
 @token_auth.verify_token
 def verify_token(token):
     g.current_user = User.verify_auth_token(token)

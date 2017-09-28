@@ -3,7 +3,7 @@ from flask_restful import reqparse, Resource
 
 from app.models import User
 from app.utils.web import HTTPStatusCodeMixin
-from app.api_v1.error import AuthorizedError
+from app.errors import AuthorizedError
 
 
 class LoginView(Resource, HTTPStatusCodeMixin):
@@ -29,8 +29,8 @@ class LoginView(Resource, HTTPStatusCodeMixin):
             g.current_user = user
             token = user.generate_confirm_token(expiration=self.expiration)
             return {
-                       'token': token,
-                       'expiration': self.expiration,
-                       'username': user.username,
-                       'permission': user.role.permissions
-                   }, self.SUCCESS
+                'token': token,
+                'expiration': self.expiration,
+                'username': user.username,
+                'permission': user.role.permissions
+            }, self.SUCCESS

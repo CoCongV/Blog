@@ -3,18 +3,35 @@ from flask_restful import reqparse, Resource
 from sqlalchemy.exc import IntegrityError, InvalidRequestError, DataError
 
 from app.api_v1 import token_auth
-from app.api_v1.error import UserAlreadyExistsError
+from app.errors import UserAlreadyExistsError
 from app.models import User, Role
-from app.utils.send_mail import send_email
+from app.utils.celery.email import send_email
 from app.utils.web import HTTPStatusCodeMixin
 
 
+user_reqparse = reqparse.RequestParser()
+user_reqparse.add_argument('email', type=str, required=True, location='json')
+user_reqparse.add_argument(
+    'username', type=str, required=True, location='json')
+user_reqparse.add_argument('location', type=str, location='json')
+user_reqparse.add_argument('about_me', type=str, location='json')
+user_reqparse.add_argument(
+    'password', type=str, required=True, location='json')
+
+reqparse_patch = reqparse.RequestParser()
+reqparse_patch.add_argument(
+    'email', type=str, location='json', store_missing=True)
+reqparse_patch.add_argument(
+    'username', type=str, location='json', store_missing=True)
+reqparse_patch.add_argument(
+    'location', type=str, location='json', store_missing=True)
+reqparse_patch.add_argument(
+    'about_me', type=str, location='json', store_missing=True)
+reqparse_patch.add_argument(
+    'password', type=str, location='json', store_missing=True)
+
+
 class UserView(Resource, HTTPStatusCodeMixin):
-    reqparse = reqparse.RequestParser()
-    reqparse.add_argument('email', type=str, required=True, location='json')
-    reqparse.add_argument('username', type=str, required=True, location='json')
-    reqparse.add_argument('location', type=str, location='json')
-    reqparse.add_argument('about_me', type=str, location='json')
 
     @token_auth.login_required
     def get(self):
@@ -27,8 +44,7 @@ class UserView(Resource, HTTPStatusCodeMixin):
 
     def post(self):
         # register user
-        self.reqparse.add_argument('password', type=str, required=True, location='json')
-        args = self.reqparse.parse_args()
+        args = user_reqparse.parse_args()
         try:
             role = Role.query.filter_by(permissions=2).first()
             user = User.create(email=args['email'],
@@ -43,22 +59,19 @@ class UserView(Resource, HTTPStatusCodeMixin):
             raise UserAlreadyExistsError()
         token = user.generate_confirm_token(expiration=86400)
         email_token = user.generate_email_token()
-        send_email.delay(to=user.email, subject='Confirm Your Account',
-                         template='mail/confirm', user=user.username,
-                         url=url_for('auth.email_auth', token=email_token, _external=True))
-        return {'token': token, 'permission': user.role.permissions}, self.SUCCESS
+        send_email.delay(
+            to=user.email,
+            subject='Confirm Your Account',
+            template='mail/confirm',
+            user=user.username,
+            url=url_for('auth.email_auth', token=email_token, _external=True))
+        return {
+            'token': token,
+            'permission': user.role.permissions
+        }, self.SUCCESS
 
     @token_auth.login_required
-    def put(self):
-        # update user
-        args = self.reqparse.parse_args()
-        username = args['username']
-        email = args['email']
-        user = User.query.filter(User.id != g.current_user.id).filter_by(username=username).first()
-        if user:
-            raise UserAlreadyExistsError('Username Exist')
-        user = User.query.filter(User.id != g.current_user.id, User.email == email).first()
-        if user:
-            raise UserAlreadyExistsError('Email Exist')
+    def patch(self):
+        args = reqparse_patch.parse_args()
         g.current_user.update(**args)
         return {}, self.SUCCESS
