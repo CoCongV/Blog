@@ -9,7 +9,7 @@ from app import db, cache
 
 class Timeline(Resource, HTTPStatusCodeMixin):
 
-    @cache.cached(timeout=300)
+    @cache.cached(timeout=86400)
     def get(self):
         _Session = sessionmaker(db.engine)
         session = _Session()

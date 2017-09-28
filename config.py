@@ -1,7 +1,9 @@
 # coding: utf-8
 import os
 import logging
+from logging.handlers import TimedRotatingFileHandler
 
+from raven.contrib.flask import Sentry
 from whoosh.analysis import StemmingAnalyzer
 
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -11,9 +13,14 @@ class Config:
     SECRET_KEY = '272c635e-a0b2-49b1-9a8b-afc671f850ee'
     SSL_DISABLE = False
 
+    # CACHE CONFIG
+    CACHE_TYPE = 'redis'
+    CACHE_KEY_PREFIX = 'blog:'
+    CACHE_REDIS_DB = 1
+
     # FLASK EMAIL
     FLASK_MAIL_SUBJECT_PREFIX = '[Cong\' Blog]'
-    FLASK_MAIL_SENDER = 'cong.lv.blog@gmail.com'
+    FLASK_MAIL_SENDER = os.environ.get('FLASK_MAIL_SENDER')
     FLASK_ADMIN = os.environ.get('BLOG_ADMIN')
 
     # FILE UPLOAD
@@ -49,11 +56,11 @@ class Config:
     BROKER_URL = 'redis://localhost:6379'
     CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
 
-    _LOG_FILE = './log/'
-    _MAX_LOG_SIZE = 10 * 1024 * 1024
-    _FORMAT = '[%(time)r][%(level)r][%(filename)r:%(line)d][%(threadName)r]: %(message)r'
-    _LOG_LEVEL = logging.DEBUG
-    _formatter = logging.Formatter(_FORMAT)
+    # logger
+    LOG_NAME = 'blog.log'
+    LOG_PATH = '/logs/blog/'
+    LOG_TIME = 'D'
+    LOG_BACK_COUNT = 10
 
     @staticmethod
     def init_app(app):
@@ -83,7 +90,6 @@ class ProductionConfig(Config):
     @classmethod
     def init_app(cls, app):
         Config.init_app(app)
-        import logging
         from logging.handlers import SMTPHandler
         credentials = None
         secure = None
@@ -101,6 +107,16 @@ class ProductionConfig(Config):
             secure=secure)
         mail_handler.setLevel(logging.ERROR)
         app.logger.addHandler(mail_handler)
+        logfile = os.path.join(cls.LOG_PATH, cls.LOG_NAME)
+        handler = TimedRotatingFileHandler(
+            logfile,
+            when=cls.LOG_TIME,
+            backupCount=cls.LOG_BACK_COUNT)
+
+        app.logger.addHandler(handler)
+        sentry = Sentry()
+        sentry.init_app(
+            app, dsn=cls.SENTRY_DSN, logging=True, level=logging.ERROR)
 
 
 config = {

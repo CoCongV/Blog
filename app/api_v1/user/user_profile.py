@@ -11,6 +11,7 @@ class UserProfile(Resource, HTTPStatusCodeMixin):
     decorators = [token_auth.login_required]
 
     def get(self, uid):
+        # 权限分离
         user = User.query.get(uid)
         edit_permission = False
         if g.current_user == user or g.current_user.can(Permission.ADMINISTER):

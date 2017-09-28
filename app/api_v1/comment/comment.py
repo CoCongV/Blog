@@ -1,5 +1,5 @@
 from flask import g, request, current_app, url_for
-from flask_restful import Resource
+from flask_restful import Resource, reqparse
 
 from app import db
 from app.api_v1 import token_auth
@@ -7,7 +7,22 @@ from app.api_v1.decorators import permission_required
 from app.models import Post, Comment, Permission
 from app.utils.web import HTTPStatusCodeMixin
 
-from . import comment_parse
+comment_parse = reqparse.RequestParser()
+comment_parse.add_argument(
+    'body',
+    location='json',
+    required=True
+)
+comment_parse.add_argument(
+    'reply',
+    location='json',
+    required=False
+)
+comment_parse.add_argument(
+    'post',
+    location='json',
+    required=True
+)
 
 
 class CommentView(Resource, HTTPStatusCodeMixin):
@@ -25,7 +40,7 @@ class CommentView(Resource, HTTPStatusCodeMixin):
         if comment_id:
             reply = Comment.query.get(comment_id)
             comment.reply(reply)
-        return self.CREATED
+        return {}, self.CREATED
 
     def get(self):
         # 评论增加Email验证权限

@@ -1,6 +1,4 @@
 # coding: utf-8
-import logging
-
 from celery import Celery
 from flask import Flask
 from flask_cache import Cache
@@ -14,20 +12,16 @@ from flask_uploads import (UploadSet,
                            IMAGES,
                            configure_uploads,
                            patch_request_class)
-from raven.contrib.flask import Sentry
 
 from config import config
 from app.utils import assets
-
-# app = None
 
 toolbar = DebugToolbarExtension()
 mail = Mail()
 moment = Moment()
 pagedown = PageDown()
 db = SQLAlchemy()
-cache = Cache(config={'CACHE_TYPE': 'simple'})
-sentry = Sentry()
+cache = Cache()
 
 login_manager = LoginManager()
 login_manager.session_protection = 'strong'
@@ -55,9 +49,6 @@ def create_app(config_name):
     login_manager.init_app(app)
     assets.init_app(app)
     cache.init_app(app)
-    if config_name == "production":
-        sentry.init_app(
-            app, dsn=_config.SENTRY_DSN, logging=True, level=logging.ERROR)
 
     from .main import main as main_blueprint
     app.register_blueprint(main_blueprint)

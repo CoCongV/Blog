@@ -6,9 +6,10 @@ from flask import (render_template,
                    current_app,
                    send_file)
 
+from app.errors import FileError
+
 from . import main
 from .. import cache
-from ..api_v1.error import FileError
 
 
 @cache.cached(timeout=50)

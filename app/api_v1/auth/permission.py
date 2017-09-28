@@ -2,7 +2,7 @@ from flask import g, request
 from flask_restful import Resource
 
 from app.api_v1 import token_auth
-from app.api_v1.error import PermissionForbiddenError
+from app.errors import PermissionForbiddenError
 from app.models import Permission, User, Post
 from app.utils.web import HTTPStatusCodeMixin
 

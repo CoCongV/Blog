@@ -12,7 +12,7 @@ from app.utils.web import HTTPStatusCodeMixin
 
 class Tag(Resource, HTTPStatusCodeMixin):
 
-    @cache.cached(timeout=300)
+    @cache.cached(timeout=1800)
     def get(self):
         _Session = sessionmaker(db.engine)
         session = _Session()

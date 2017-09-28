@@ -1,11 +1,11 @@
 from flask import g, url_for, current_app
 from flask_restful import request, reqparse, Resource
 
-from app import db
+from app import db, cache
+from app.errors import PermissionForbiddenError
 from app.models import Post, Permission
 from app.api_v1 import token_auth
 from app.api_v1.decorators import permission_required
-from app.api_v1.error import PermissionForbiddenError
 from app.utils.web import HTTPStatusCodeMixin
 
 post_parser = reqparse.RequestParser()
@@ -33,42 +33,26 @@ post_parser.add_argument(
 
 class PostView(Resource, HTTPStatusCodeMixin):
 
-    decorators = [token_auth.login_required]
-
-    @permission_required(Permission.ADMINISTER)
-    def post(self):
-        # 新建文章
-        args = post_parser.parse_args()
-        title = args['title']
-        body = args['content']
-        tags = args['tags']
-
-        author = g.current_user
-        post = Post.create(title=title, body=body, tags=tags, author=author)
-        return {
-            'url': url_for('post.postview', id=post.id),
-            'id': post.id
-        }, self.CREATED
-
-    def get(self):
+    @cache.cached(1800)
+    def get(self, post_id):
         # 认证权限与请求文章分离
         _delete = True
-        post = Post.get_or_404(request.args.get('id')).update(
-            view=Post.view + 1)
+        post = Post.get_or_404(post_id).update(view=Post.view + 1)
         if not g.current_user.can(
                 Permission.ADMINISTER) and g.current_user != post.author:
             _delete = False
         return {"post": post.to_json(),
                 'delete_permission': _delete}, self.SUCCESS
 
+    @token_auth.login_required
     @permission_required(Permission.ADMINISTER)
-    def put(self):
+    def put(self, post_id):
         # 修改文章
         args = post_parser.parse_args()
         title = args['title']
         body = args['content']
         tags = args['tags']
-        post = Post.get(args['post_id'])
+        post = Post.get(post_id)
         if g.current_user != post.author and not g.current_user.can(
                 Permission.ADMINISTER):
             raise PermissionForbiddenError(
@@ -82,9 +66,10 @@ class PostView(Resource, HTTPStatusCodeMixin):
             'post_id': post.id
         }, self.SUCCESS
 
+    @token_auth.login_required
     @permission_required(Permission.ADMINISTER)
-    def delete(self):
-        post = Post.get_or_404(request.args['post_id'])
+    def delete(self, post_id):
+        post = Post.get_or_404(post_id)
         if g.current_user != post.author and not g.current_user.can(
                 Permission.ADMINISTER):
             raise PermissionForbiddenError(
@@ -95,6 +80,7 @@ class PostView(Resource, HTTPStatusCodeMixin):
 
 class PostsView(Resource, HTTPStatusCodeMixin):
 
+    @cache.cached(300)
     def get(self):
         uid = request.args.get('uid')
         page = request.args.get('page', 1, type=int)
@@ -122,3 +108,19 @@ class PostsView(Resource, HTTPStatusCodeMixin):
             'next': _next,
             'count': pagination.total
         }, self.SUCCESS
+
+    @token_auth.login_required
+    @permission_required(Permission.ADMINISTER)
+    def post(self):
+        # 新建文章
+        args = post_parser.parse_args(strict=True)
+        title = args['title']
+        body = args['content']
+        tags = args['tags']
+
+        author = g.current_user
+        post = Post.create(title=title, body=body, tags=tags, author=author)
+        return {
+            'url': url_for('post.postview', id=post.id),
+            'id': post.id
+        }, self.CREATED
