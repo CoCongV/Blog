@@ -11,6 +11,11 @@ class Config:
     SECRET_KEY = '272c635e-a0b2-49b1-9a8b-afc671f850ee'
     SSL_DISABLE = False
 
+    # CACHE CONFIG
+    CACHE_TYPE = 'redis'
+    CACHE_KEY_PREFIX = 'blog:'
+    CACHE_REDIS_DB = 1
+
     # FLASK EMAIL
     FLASK_MAIL_SUBJECT_PREFIX = '[Cong\' Blog]'
     FLASK_MAIL_SENDER = 'cong.lv.blog@gmail.com'

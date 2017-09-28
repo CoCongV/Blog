@@ -1,7 +1,7 @@
 from flask import g, url_for, current_app
 from flask_restful import request, reqparse, Resource
 
-from app import db
+from app import db, cache
 from app.models import Post, Permission
 from app.api_v1 import token_auth
 from app.api_v1.decorators import permission_required
@@ -38,7 +38,7 @@ class PostView(Resource, HTTPStatusCodeMixin):
     @permission_required(Permission.ADMINISTER)
     def post(self):
         # 新建文章
-        args = post_parser.parse_args()
+        args = post_parser.parse_args(strict=True)
         title = args['title']
         body = args['content']
         tags = args['tags']
@@ -95,6 +95,7 @@ class PostView(Resource, HTTPStatusCodeMixin):
 
 class PostsView(Resource, HTTPStatusCodeMixin):
 
+    @cache.cached(300)
     def get(self):
         uid = request.args.get('uid')
         page = request.args.get('page', 1, type=int)

@@ -26,7 +26,7 @@ mail = Mail()
 moment = Moment()
 pagedown = PageDown()
 db = SQLAlchemy()
-cache = Cache(config={'CACHE_TYPE': 'simple'})
+cache = Cache()
 sentry = Sentry()
 
 login_manager = LoginManager()
