@@ -1,8 +1,4 @@
 # coding: utf-8
-import logging
-from logging.handlers import TimedRotatingFileHandler
-import os
-
 from celery import Celery
 from flask import Flask
 from flask_cache import Cache
@@ -29,7 +25,6 @@ moment = Moment()
 pagedown = PageDown()
 db = SQLAlchemy()
 cache = Cache()
-sentry = Sentry()
 
 login_manager = LoginManager()
 login_manager.session_protection = 'strong'
@@ -57,17 +52,6 @@ def create_app(config_name):
     login_manager.init_app(app)
     assets.init_app(app)
     cache.init_app(app)
-
-    # logger
-    logfile = os.path.join(_config['LOG_PATH'], _config['LOG_NAME'])
-    handler = TimedRotatingFileHandler(
-        logfile,
-        when=_config['LOG_TIME'],
-        backupCount=_config['LOG_BACK_COUNT'])
-    app.logger.addHandler(handler)
-    if config_name == "production":
-        sentry.init_app(
-            app, dsn=_config.SENTRY_DSN, logging=True, level=logging.ERROR)
 
     from .main import main as main_blueprint
     app.register_blueprint(main_blueprint)

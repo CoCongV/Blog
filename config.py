@@ -1,7 +1,9 @@
 # coding: utf-8
 import os
 import logging
+from logging.handlers import TimedRotatingFileHandler
 
+from raven.contrib.flask import Sentry
 from whoosh.analysis import StemmingAnalyzer
 
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -18,7 +20,7 @@ class Config:
 
     # FLASK EMAIL
     FLASK_MAIL_SUBJECT_PREFIX = '[Cong\' Blog]'
-    FLASK_MAIL_SENDER = 'cong.lv.blog@gmail.com'
+    FLASK_MAIL_SENDER = os.environ.get('FLASK_MAIL_SENDER')
     FLASK_ADMIN = os.environ.get('BLOG_ADMIN')
 
     # FILE UPLOAD
@@ -105,6 +107,16 @@ class ProductionConfig(Config):
             secure=secure)
         mail_handler.setLevel(logging.ERROR)
         app.logger.addHandler(mail_handler)
+        logfile = os.path.join(cls.LOG_PATH, cls.LOG_NAME)
+        handler = TimedRotatingFileHandler(
+            logfile,
+            when=cls.LOG_TIME,
+            backupCount=cls.LOG_BACK_COUNT)
+
+        app.logger.addHandler(handler)
+        sentry = Sentry()
+        sentry.init_app(
+            app, dsn=cls.SENTRY_DSN, logging=True, level=logging.ERROR)
 
 
 config = {
