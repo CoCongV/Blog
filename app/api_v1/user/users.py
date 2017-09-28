@@ -1,4 +1,4 @@
-from flask import g, url_for
+from flask import g, url_for, current_app
 from flask_restful import reqparse, Resource
 from sqlalchemy.exc import IntegrityError, InvalidRequestError, DataError
 
@@ -65,6 +65,8 @@ class UserView(Resource, HTTPStatusCodeMixin):
             template='mail/confirm',
             user=user.username,
             url=url_for('auth.email_auth', token=email_token, _external=True))
+        current_app.logger.info(
+            'New User Exist: {}, {}'.format(user.id, user.email))
         return {
             'token': token,
             'permission': user.role.permissions

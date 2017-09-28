@@ -108,12 +108,10 @@ class ProductionConfig(Config):
         mail_handler.setLevel(logging.ERROR)
         app.logger.addHandler(mail_handler)
         logfile = os.path.join(cls.LOG_PATH, cls.LOG_NAME)
-        handler = TimedRotatingFileHandler(
-            logfile,
-            when=cls.LOG_TIME,
-            backupCount=cls.LOG_BACK_COUNT)
-
-        app.logger.addHandler(handler)
+        file_handler = TimedRotatingFileHandler(
+            logfile, when=cls.LOG_TIME, backupCount=cls.LOG_BACK_COUNT)
+        file_handler.setLevel(logging.info)
+        app.logger.addHandler(file_handler)
         sentry = Sentry()
         sentry.init_app(
             app, dsn=cls.SENTRY_DSN, logging=True, level=logging.ERROR)
