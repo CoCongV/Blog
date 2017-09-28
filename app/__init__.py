@@ -1,5 +1,7 @@
 # coding: utf-8
 import logging
+from logging.handlers import TimedRotatingFileHandler
+import os
 
 from celery import Celery
 from flask import Flask
@@ -55,6 +57,14 @@ def create_app(config_name):
     login_manager.init_app(app)
     assets.init_app(app)
     cache.init_app(app)
+
+    # logger
+    logfile = os.path.join(_config['LOG_PATH'], _config['LOG_NAME'])
+    handler = TimedRotatingFileHandler(
+        logfile,
+        when=_config['LOG_TIME'],
+        backupCount=_config['LOG_BACK_COUNT'])
+    app.logger.addHandler(handler)
     if config_name == "production":
         sentry.init_app(
             app, dsn=_config.SENTRY_DSN, logging=True, level=logging.ERROR)

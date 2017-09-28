@@ -54,11 +54,11 @@ class Config:
     BROKER_URL = 'redis://localhost:6379'
     CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
 
-    _LOG_FILE = './log/'
-    _MAX_LOG_SIZE = 10 * 1024 * 1024
-    _FORMAT = '[%(time)r][%(level)r][%(filename)r:%(line)d][%(threadName)r]: %(message)r'
-    _LOG_LEVEL = logging.DEBUG
-    _formatter = logging.Formatter(_FORMAT)
+    # logger
+    LOG_NAME = 'blog.log'
+    LOG_PATH = '/logs/blog/'
+    LOG_TIME = 'D'
+    LOG_BACK_COUNT = 10
 
     @staticmethod
     def init_app(app):
@@ -88,7 +88,6 @@ class ProductionConfig(Config):
     @classmethod
     def init_app(cls, app):
         Config.init_app(app)
-        import logging
         from logging.handlers import SMTPHandler
         credentials = None
         secure = None
