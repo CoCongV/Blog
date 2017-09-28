@@ -12,7 +12,6 @@ from flask_uploads import (UploadSet,
                            IMAGES,
                            configure_uploads,
                            patch_request_class)
-from raven.contrib.flask import Sentry
 
 from config import config
 from app.utils import assets
