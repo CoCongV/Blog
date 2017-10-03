@@ -1,5 +1,8 @@
 # coding: utf-8
 import os
+import time
+
+from flask import g
 from flask_script import Shell, Manager
 from flask_migrate import Migrate, MigrateCommand
 from flask_admin import Admin
@@ -36,6 +39,17 @@ celery = make_celery(app, celery_worker)
 @app.teardown_appcontext
 def shutdown_session(exception=None):
     return db.session.remove()
+
+
+@app.before_request
+def record_time():
+    g.start_time = time.time()
+
+
+@app.after_request
+def com_time(response):
+    app.logger.info(time.time() - g.start_time)
+    return response
 
 
 def make_shell_context():

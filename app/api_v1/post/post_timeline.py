@@ -3,18 +3,20 @@ from sqlalchemy import extract
 from flask import current_app, url_for
 from flask_restful import reqparse, Resource
 
-from app import db
+from app import db, cache
 from app.utils.web import HTTPStatusCodeMixin
 from app.models import Post
 
+_parse = reqparse.RequestParser()
+_parse.add_argument('year', location='args')
+_parse.add_argument('page', location='args')
+
 
 class PostTimeLine(Resource, HTTPStatusCodeMixin):
-    _parse = reqparse.RequestParser()
-    _parse.add_argument('year', location='args')
-    _parse.add_argument('page', location='args')
 
+    @cache.cached(1800)
     def get(self):
-        args = self._parse.parse_args()
+        args = _parse.parse_args()
         year = args['year']
         page = args.get('page', 1)
         pagination = Post.query.filter(extract('year', Post.timestamp) == year) \

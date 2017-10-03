@@ -54,15 +54,14 @@ class PostSearch(Resource, HTTPStatusCodeMixin):
             posts = pagination.items
             total = pagination.total
             if pagination.has_prev:
-                prev = url_for('post.post_search', page=page - 1, _external=True)
+                prev = url_for(
+                    'post.post_search', page=page - 1, _external=True)
             if pagination.has_next:
-                _next = url_for('post.post_search', page=page + 1, _external=True)
+                _next = url_for(
+                    'post.post_search', page=page + 1, _external=True)
         else:
             posts = []
         return {'posts': [i.to_json(True) for i in posts],
                 'prev': prev,
                 'next': _next,
                 'count': total}, self.SUCCESS
-
-    async def handle_post_json(self):
-        pass

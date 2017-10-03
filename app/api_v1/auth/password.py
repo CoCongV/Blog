@@ -3,7 +3,7 @@ from flask_restful import reqparse, Resource
 
 from app.api_v1 import token_auth
 from app.api_v1.decorators import permission_required
-from app.api_v1.error import AuthorizedError
+from app.errors import AuthorizedError
 from app.models import Permission
 from app.utils.web import HTTPStatusCodeMixin
 
@@ -18,8 +18,10 @@ class Password(Resource, HTTPStatusCodeMixin):
         self._reqparse = reqparse.RequestParser()
 
     def post(self):
-        self._reqparse.add_argument('old_password', location='json', required=True)
-        self._reqparse.add_argument('new_password', location='json', required=True)
+        self._reqparse.add_argument(
+            'old_password', location='json', required=True)
+        self._reqparse.add_argument(
+            'new_password', location='json', required=True)
         args = self._reqparse.parse_args()
         old_password = args['old_password']
         new_password = args['new_password']

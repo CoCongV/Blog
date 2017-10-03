@@ -10,5 +10,5 @@ def send_email(to, subject, template, **kwargs):
     msg = Message(app.config['FLASK_MAIL_SUBJECT_PREFIX'] + ' ' + subject,
                   sender=app.config['FLASK_MAIL_SENDER'],
                   recipients=[to])
-    msg.html = render_template(template +'.html', **kwargs)
+    msg.html = render_template(template + '.html', **kwargs)
     mail.send(msg)

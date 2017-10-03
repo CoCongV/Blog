@@ -21,6 +21,7 @@ class EditProfileForm(Form):
         if user is not None:
             return ValidationError('用户名已被使用')
 
+
 class EditProfileAdminForm(Form):
     email = StringField('Email', validators=[DataRequired(), Length(1, 64), Email()])
     username = StringField('用户名', validators=[DataRequired(), Length(1,64)])

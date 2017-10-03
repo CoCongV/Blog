@@ -12,11 +12,12 @@ from app.utils.web import HTTPStatusCodeMixin
 
 class Tag(Resource, HTTPStatusCodeMixin):
 
-    @cache.cached(timeout=300)
+    @cache.cached(timeout=1800)
     def get(self):
         _Session = sessionmaker(db.engine)
         session = _Session()
-        result = session.query(Post.tags, func.count(Post.tags)).group_by(Post.tags).all()
+        result = session.query(
+            Post.tags, func.count(Post.tags)).group_by(Post.tags).all()
         result.sort(key=itemgetter(1))
         tags = list(deque(set(l for i in result for l in i[0]), maxlen=10))
         return {"tags": tags}, self.SUCCESS

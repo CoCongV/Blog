@@ -1,20 +1,23 @@
 from flask import current_app, url_for
 from flask_restful import reqparse, Resource
 
-from app import db
+from app import db, cache
 from app.utils.web import HTTPStatusCodeMixin
 from app.models import Post
 
 
-class PostTags(Resource, HTTPStatusCodeMixin):
-    _parse = reqparse.RequestParser()
-    _parse.add_argument('tag', location='args')
-    _parse.add_argument('page', location='args')
+tag_parse = reqparse.RequestParser()
+tag_parse.add_argument('tag', location='args')
+tag_parse.add_argument('page', location='args')
 
+
+class PostTags(Resource, HTTPStatusCodeMixin):
+
+    @cache.cached(300)
     def get(self):
         prev = None
 
-        args = self._parse.parse_args()
+        args = tag_parse.parse_args()
         tag = args['tag']
         page = args.get('page', 1)
 
