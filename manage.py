@@ -39,15 +39,15 @@ def shutdown_session(exception=None):
     return db.session.remove()
 
 
-@app.before_request
-def record_time():
-    g.start_time = time.time()
+# @app.before_request
+# def record_time():
+#     g.start_time = time.time()
 
 
-@app.after_request
-def com_time(response):
-    app.logger.info(time.time() - g.start_time)
-    return response
+# @app.after_request
+# def com_time(response):
+#     app.logger.info(time.time() - g.start_time)
+#     return response
 
 
 def make_shell_context():

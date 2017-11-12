@@ -33,16 +33,9 @@ post_parser.add_argument(
 
 class PostView(Resource, HTTPStatusCodeMixin):
 
-    @cache.cached(1800)
     def get(self, post_id):
-        # 认证权限与请求文章分离
-        _delete = True
         post = Post.get_or_404(post_id).update(view=Post.view + 1)
-        if not g.current_user.can(
-                Permission.ADMINISTER) and g.current_user != post.author:
-            _delete = False
-        return {"post": post.to_json(),
-                'delete_permission': _delete}, self.SUCCESS
+        return {"post": post.to_json()}, self.SUCCESS
 
     @token_auth.login_required
     @permission_required(Permission.ADMINISTER)
@@ -121,6 +114,6 @@ class PostsView(Resource, HTTPStatusCodeMixin):
         author = g.current_user
         post = Post.create(title=title, body=body, tags=tags, author=author)
         return {
-            'url': url_for('post.postview', id=post.id),
+            'url': url_for('post.postview', post_id=post.id),
             'id': post.id
         }, self.CREATED

@@ -12,7 +12,7 @@ from .timeline import Timeline
 from .post_search import PostSearch
 from .media import PhotoStorage
 
-api.add_resource(PostView, '/post/<int: post_id>/')
+api.add_resource(PostView, '/post/<int:post_id>/')
 api.add_resource(PostsView, '/posts/')
 api.add_resource(Tag, '/tag/')
 api.add_resource(Timeline, '/time/')

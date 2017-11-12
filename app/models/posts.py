@@ -20,9 +20,14 @@ class Post(CRUDMixin, db.Model, Serializer):
     title = db.Column(db.String(32), index=True)
     body = db.Column(db.Text)
     body_html = db.Column(db.Text)
-    timestamp = db.Column(db.DateTime, default=lambda: datetime.utcnow(), index=True)
+    timestamp = db.Column(
+        db.DateTime, default=lambda: datetime.utcnow(), index=True)
     author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    comments = db.relationship('Comment', backref='post', lazy='dynamic', cascade='all, delete-orphan')
+    comments = db.relationship(
+        'Comment',
+        backref='post',
+        lazy='dynamic',
+        cascade='all, delete-orphan')
     tags = db.Column(postgresql.ARRAY(db.String(32)))
     view = db.Column(db.Integer, default=0)
 
@@ -40,7 +45,7 @@ class Post(CRUDMixin, db.Model, Serializer):
         json_data = {
             "post_id": self.id,
             'tags': self.tags,
-            "url": url_for('post.postview', id=self.id),
+            "url": url_for('post.postview', post_id=self.id),
             "title": self.title,
             'timestamp': self.timestamp.strftime('%Y-%m-%d %H:%M'),
             'author': self.author.username,
@@ -50,10 +55,14 @@ class Post(CRUDMixin, db.Model, Serializer):
         if split:
             json_data.update({'body_html': self.body_html[:500]})
         else:
-            json_data.update({'body_html': self.body_html,
-                              'body': self.body,
-                              'author_url': url_for('user.user_profile', uid=self.author_id)
-                              })
+            json_data.update({
+                'body_html':
+                self.body_html,
+                'body':
+                self.body,
+                'author_url':
+                url_for('user.user_profile', uid=self.author_id)
+            })
         return json_data
 
     @staticmethod
