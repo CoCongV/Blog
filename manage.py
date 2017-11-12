@@ -7,6 +7,8 @@ from flask_script import Shell, Manager
 from flask_migrate import Migrate, MigrateCommand
 from flask_admin import Admin
 from flask_whooshalchemyplus import whoosh_index
+from gevent import wsgi
+# from werkzeug import 
 
 from app import create_app, db, make_celery, celery as celery_worker
 from app.models.comments import Comment
@@ -89,4 +91,6 @@ def test(coverage=False):
 
 
 if __name__ == '__main__':
+    # server = wsgi.WSGIServer(('localhost', 5000), app)
+    # server.serve_forever()
     manager.run()
