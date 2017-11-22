@@ -12,8 +12,10 @@ class LoginView(Resource, HTTPStatusCodeMixin):
         super(LoginView, self).__init__()
         self.expiration = 86400
         self.reqparse = reqparse.RequestParser()
-        self.reqparse.add_argument('email', required=True, location='json', type=str)
-        self.reqparse.add_argument('password', required=True, location='json', type=str)
+        self.reqparse.add_argument(
+            'email', required=True, location='json', type=str)
+        self.reqparse.add_argument(
+            'password', required=True, location='json', type=str)
 
     def post(self):
         args = self.reqparse.parse_args()

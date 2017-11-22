@@ -37,4 +37,4 @@ class CommentPermission(Resource, HTTPStatusCodeMixin):
     def get(self):
         if g.current_user.confirmed and g.current_user.can(Permission.COMMENT):
             return {}, self.SUCCESS
-        return PermissionForbiddenError()
+        raise PermissionForbiddenError()

@@ -27,6 +27,7 @@ Flask-SQLAlchemy==2.2
 Flask-WhooshAlchemyPlus==0.7.5
 Flask-WTF==0.14.2
 Flask-Uploads==0.2.1
+gevent==1.2.2
 graphene==1.4.1
 graphene-sqlalchemy==1.1.1
 graphql-core==1.1

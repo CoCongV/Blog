@@ -1,5 +1,6 @@
 from flask import g, url_for, current_app
 from flask_restful import request, reqparse, Resource
+from werkzeug.exceptions import Forbidden
 
 from app import db, cache
 from app.errors import PermissionForbiddenError
@@ -48,14 +49,13 @@ class PostView(Resource, HTTPStatusCodeMixin):
         post = Post.get(post_id)
         if g.current_user != post.author and not g.current_user.can(
                 Permission.ADMINISTER):
-            raise PermissionForbiddenError(
-                description="Insufficient permissions")
+            raise Forbidden(description="Insufficient permissions")
         post.body = body
         post.title = title
         post.tags = tags
         post.save()
         return {
-            'url': url_for('post.postview', id=post.id),
+            'url': url_for('post.postview', post_id=post.id),
             'post_id': post.id
         }, self.SUCCESS
 
@@ -73,7 +73,6 @@ class PostView(Resource, HTTPStatusCodeMixin):
 
 class PostsView(Resource, HTTPStatusCodeMixin):
 
-    @cache.cached(300)
     def get(self):
         uid = request.args.get('uid')
         page = request.args.get('page', 1, type=int)

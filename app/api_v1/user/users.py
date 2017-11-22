@@ -18,18 +18,6 @@ user_reqparse.add_argument('about_me', type=str, location='json')
 user_reqparse.add_argument(
     'password', type=str, required=True, location='json')
 
-reqparse_patch = reqparse.RequestParser()
-reqparse_patch.add_argument(
-    'email', type=str, location='json', store_missing=True)
-reqparse_patch.add_argument(
-    'username', type=str, location='json', store_missing=True)
-reqparse_patch.add_argument(
-    'location', type=str, location='json', store_missing=True)
-reqparse_patch.add_argument(
-    'about_me', type=str, location='json', store_missing=True)
-reqparse_patch.add_argument(
-    'password', type=str, location='json', store_missing=True)
-
 
 class UserView(Resource, HTTPStatusCodeMixin):
 
@@ -72,8 +60,8 @@ class UserView(Resource, HTTPStatusCodeMixin):
             'permission': user.role.permissions
         }, self.SUCCESS
 
-    @token_auth.login_required
-    def patch(self):
-        args = reqparse_patch.parse_args()
-        g.current_user.update(**args)
-        return {}, self.SUCCESS
+    # @token_auth.login_required
+    # def patch(self):
+    #     args = reqparse_patch.parse_args()
+    #     g.current_user.update(**args)
+    #     return {}, self.SUCCESS

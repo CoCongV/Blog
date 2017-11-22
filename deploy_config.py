@@ -7,4 +7,4 @@ backlog = 2048
 debug = True
 proc_name = 'gunicorn.pid'
 pidfile = './tmp/log/gunicorn/debug.log'
-loglevel = 'debug'
+loglevel = 'info'
