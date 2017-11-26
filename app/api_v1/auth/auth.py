@@ -1,4 +1,4 @@
-from flask import g, url_for, request
+from flask import g, url_for, request, redirect
 from flask_restful import Resource, reqparse
 
 from app.api_v1 import token_auth
@@ -46,8 +46,8 @@ class EmailAuth(Resource, HTTPStatusCodeMixin):
     def get(self, token):
         result = User.verify_email_token(token)
         if result:
-            return {}, self.SUCCESS
-        return AuthorizedError()
+            return redirect('/')
+        raise AuthorizedError()
 
 
 class UsernameExist(Resource, HTTPStatusCodeMixin):

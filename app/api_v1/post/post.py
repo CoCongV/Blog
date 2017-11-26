@@ -2,7 +2,7 @@ from flask import g, url_for, current_app
 from flask_restful import request, reqparse, Resource
 from werkzeug.exceptions import Forbidden
 
-from app import db, cache
+from app import db
 from app.errors import PermissionForbiddenError
 from app.models import Post, Permission
 from app.api_v1 import token_auth
