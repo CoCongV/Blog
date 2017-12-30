@@ -31,14 +31,6 @@ class User(CRUDMixin, UserMixin, db.Model, Serializer):
         lazy='dynamic',
         cascade='all, delete-orphan')
 
-    # def __init__(self, **kwargs):
-    #     super(User, self).__init__(**kwargs)
-    #     if self.role is None:
-    #         if self.email == current_app.config['FLASK_ADMIN']:
-    #             self.role = Role.query.filter_by(permission=0xff).first()
-    #         if self.role is None:
-    #             self.role = Role.query.filter_by(default=True).first()
-
     def __repr__(self):
         return str(self.json()).replace(',', '\n')
 

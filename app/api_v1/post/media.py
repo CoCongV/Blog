@@ -10,6 +10,7 @@ from app.utils.web import HTTPStatusCodeMixin
 
 
 class PhotoStorage(Resource, HTTPStatusCodeMixin):
+
     @token_auth.login_required
     @permission_required(Permission.ADMINISTER)
     def post(self):

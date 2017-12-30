@@ -51,17 +51,20 @@ def create_app(config_name):
     from .main import main as main_blueprint
     app.register_blueprint(main_blueprint)
 
-    from .api_v1.post import api_post
-    app.register_blueprint(api_post)
+    from .api_v1 import api_v1
+    app.register_blueprint(api_v1)
 
-    from .api_v1.auth import api_auth
-    app.register_blueprint(api_auth)
+    # from .api_v1.post import api_post
+    # app.register_blueprint(api_post)
 
-    from .api_v1.user import api_user
-    app.register_blueprint(api_user)
+    # from .api_v1.auth import api_auth
+    # app.register_blueprint(api_auth)
 
-    from .api_v1.comment import api_comment
-    app.register_blueprint(api_comment)
+    # from .api_v1.user import api_user
+    # app.register_blueprint(api_user)
+
+    # from .api_v1.comment import api_comment
+    # app.register_blueprint(api_comment)
 
     return app
 

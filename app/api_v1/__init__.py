@@ -7,7 +7,7 @@ from app.models import User, AnonymousUser
 from app.utils.web import NestableBlueprint
 
 
-api_v1 = NestableBlueprint('api_v1', __name__, url_prefix='/api_v1')
+api_v1 = NestableBlueprint('api_v1', __name__, url_prefix='/api/v1')
 token_auth = HTTPTokenAuth(scheme='token')
 
 
@@ -25,3 +25,14 @@ def verify_token(token):
 @token_auth.error_handler
 def unauthorized():
     return make_response(jsonify({'error': 'Unauthorized access'}), 403)
+
+
+from .post import api_post
+from .user import api_user
+from .comment import api_comment
+from .auth import api_auth
+
+api_v1.register_blueprint(api_post)
+api_v1.register_blueprint(api_user)
+api_v1.register_blueprint(api_comment)
+api_v1.register_blueprint(api_auth)

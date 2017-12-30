@@ -37,17 +37,6 @@ def shutdown_session(exception=None):
     return db.session.remove()
 
 
-# @app.before_request
-# def record_time():
-#     g.start_time = time.time()
-
-
-# @app.after_request
-# def com_time(response):
-#     app.logger.info(time.time() - g.start_time)
-#     return response
-
-
 def make_shell_context():
     return dict(
         app=app,
@@ -62,6 +51,19 @@ def make_shell_context():
 manager.add_command("shell",
                     Shell(use_ipython=True, make_context=make_shell_context))
 manager.add_command('db', MigrateCommand)
+
+
+@manager.command
+def deploy():
+    Role.insert_roles()
+    user = User(
+        email='lv.cong@gmail.com',
+        username='Lv Cong',
+        password='5f4dcc3b5aa765d61d8327deb882cf99',
+        confirmed=True)
+    role = Role.query.filter_by(name='Administrator').first()
+    user.role = role
+    user.save()
 
 
 @manager.command
@@ -87,6 +89,4 @@ def test(coverage=False):
 
 
 if __name__ == '__main__':
-    # server = wsgi.WSGIServer(('localhost', 5000), app)
-    # server.serve_forever()
     manager.run()

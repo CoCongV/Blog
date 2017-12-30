@@ -69,18 +69,18 @@ class Config:
 
 class DevelopmentConfig(Config):
     DEBUG = True
-    SQLALCHEMY_DATABASE_URI = 'postgresql://lvcong:password@localhost/flask_blog'
+    SQLALCHEMY_DATABASE_URI = 'postgresql://lvcong:password@/flask_blog'
 
 
 class TestingConfig(Config):
     WTF_CSRF_ENABLE = False
     DEBUG = True
-    SQLALCHEMY_DATABASE_URI = 'postgresql://lvcong:password@localhost/flask_test'
+    SQLALCHEMY_DATABASE_URI = 'postgresql://lvcong:password@/flask_test'
 
 
 class ProductionConfig(Config):
     SERVER_NAME = os.environ.get('ADDRESS')
-    SQLALCHEMY_DATABASE_URI = 'postgresql://lvcong:password@localhost/flask_blog'
+    SQLALCHEMY_DATABASE_URI = 'postgresql://lvcong:password@/flask_blog'
     DEBUG = False
 
     # SENTRY CONFIGURE

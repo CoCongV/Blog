@@ -20,11 +20,13 @@ Flask-Script
 Flask-SQLAlchemy
 Flask-Uploads
 flask_whooshalchemyplus
+gevent
 graphene
 graphene-sqlalchemy
 graphql-core
 graphql-relay
 Markdown
+psycopg2
 raven
 redis
 SQLAlchemy

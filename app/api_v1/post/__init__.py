@@ -2,7 +2,7 @@ from flask import Blueprint, current_app
 from flask_sqlalchemy import get_debug_queries
 from flask_restful import Api
 
-api_post = Blueprint('post', __name__)
+api_post = Blueprint('post', __name__, url_prefix='/post')
 api = Api(api_post)
 
 
@@ -12,8 +12,8 @@ from .timeline import Timeline
 from .post_search import PostSearch
 from .media import PhotoStorage
 
-api.add_resource(PostView, '/post/<int:post_id>/')
-api.add_resource(PostsView, '/posts/')
+api.add_resource(PostView, '/<int:post_id>/')
+api.add_resource(PostsView, '/list/')
 api.add_resource(Tag, '/tag/')
 api.add_resource(Timeline, '/time/')
 api.add_resource(PostSearch, '/search/', endpoint='post_search')
