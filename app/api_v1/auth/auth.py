@@ -26,7 +26,7 @@ class SendEmailAuth(Resource, HTTPStatusCodeMixin):
                 user=user.username,
                 url=url_for(
                     'auth.email_auth', token=email_token, _external=True))
-        return {}, self.SUCCESS
+        return {}
 
 
 class EmailExist(Resource, HTTPStatusCodeMixin):
