@@ -31,7 +31,6 @@ class CommentView(Resource, HTTPStatusCodeMixin):
     @permission_required(Permission.COMMENT)
     def post(self):
         args = comment_parse.parse_args()
-        print(args)
         comment_id = args.get('comment_id')
         post = Post.get(args['post'])
         kwargs = {'body': args['body'],

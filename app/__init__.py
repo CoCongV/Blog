@@ -5,7 +5,6 @@ from flask_cache import Cache
 from flask_debugtoolbar import DebugToolbarExtension
 from flask_login import LoginManager
 from flask_mail import Mail
-from flask_moment import Moment
 from flask_pagedown import PageDown
 from flask_sqlalchemy import SQLAlchemy
 from flask_uploads import (UploadSet,
@@ -18,7 +17,6 @@ from app.utils import assets
 
 toolbar = DebugToolbarExtension()
 mail = Mail()
-moment = Moment()
 pagedown = PageDown()
 db = SQLAlchemy()
 cache = Cache()

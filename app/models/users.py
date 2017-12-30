@@ -65,9 +65,11 @@ class User(CRUDMixin, UserMixin, db.Model, Serializer):
         s = TimedJSONWebSignatureSerializer(current_app.config['SECRET_KEY'])
         try:
             data = s.loads(token)
-        except:
+        except Exception as e:
+            current_app.logger.error(e)
             return None
-        return User.query.get(data['confirm_id'])
+        else:
+            return User.query.get(data['confirm_id'])
 
     def generate_email_token(self, expiration=3600):
         s = TimedJSONWebSignatureSerializer(
@@ -80,7 +82,8 @@ class User(CRUDMixin, UserMixin, db.Model, Serializer):
         s = TimedJSONWebSignatureSerializer(current_app.config['SECRET_KEY'])
         try:
             data = s.loads(token)
-        except:
+        except Exception as e:
+            current_app.logger.error(e)
             return False
         user = User.query.filter_by(email=data.get('email')).first()
         if not user:

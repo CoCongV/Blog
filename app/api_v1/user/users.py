@@ -1,6 +1,7 @@
 from flask import g, url_for, current_app
 from flask_restful import reqparse, Resource
 from sqlalchemy.exc import IntegrityError, InvalidRequestError, DataError
+from werkzeug.exceptions import Forbidden
 
 from app.api_v1 import token_auth
 from app.errors import UserAlreadyExistsError
@@ -18,17 +19,18 @@ user_reqparse.add_argument('about_me', type=str, location='json')
 user_reqparse.add_argument(
     'password', type=str, required=True, location='json')
 
+
 reqparse_patch = reqparse.RequestParser()
 reqparse_patch.add_argument(
-    'email', type=str, location='json', store_missing=True)
+    'email', type=str, location='json', store_missing=False)
 reqparse_patch.add_argument(
-    'username', type=str, location='json', store_missing=True)
+    'username', type=str, location='json', store_missing=False)
 reqparse_patch.add_argument(
-    'location', type=str, location='json', store_missing=True)
+    'location', type=str, location='json', store_missing=False)
 reqparse_patch.add_argument(
-    'about_me', type=str, location='json', store_missing=True)
+    'about_me', type=str, location='json', store_missing=False)
 reqparse_patch.add_argument(
-    'password', type=str, location='json', store_missing=True)
+    'password', type=str, location='json', store_missing=False)
 
 
 class UserView(Resource, HTTPStatusCodeMixin):
@@ -74,6 +76,11 @@ class UserView(Resource, HTTPStatusCodeMixin):
 
     @token_auth.login_required
     def patch(self):
+        uid = g.current_user.id
+        user = User.query.get(uid)
+        if g.current_user != user:
+            raise Forbidden()
         args = reqparse_patch.parse_args()
+        print(args)
         g.current_user.update(**args)
         return {}, self.SUCCESS

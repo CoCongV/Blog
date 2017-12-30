@@ -1,7 +1,6 @@
 from functools import wraps
 from flask import g
-
-from app.errors import PermissionForbiddenError
+from werkzeug.exceptions import Forbidden
 
 
 def permission_required(permission):
@@ -9,7 +8,7 @@ def permission_required(permission):
         @wraps(f)
         def decorated_function(*args, **kwargs):
             if not g.current_user.can(permission):
-                return PermissionForbiddenError()
+                raise Forbidden()
             return f(*args, **kwargs)
         return decorated_function
     return decorator
