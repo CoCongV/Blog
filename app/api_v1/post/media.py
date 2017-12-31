@@ -31,7 +31,10 @@ class PhotoStorage(Resource, HTTPStatusCodeMixin):
         if os.path.exists(
                 os.path.join(photos.config.destination, str(g.current_user.id),
                              args.get('image').filename)):
-            file_url = photos.url(args.get('image').filename)
+            file_url = photos.url(
+                os.path.join(
+                    str(g.current_user.id),
+                    args.get('image').filename))
         else:
             filename = photos.save(
                 args.get('image'), str(g.current_user.id))

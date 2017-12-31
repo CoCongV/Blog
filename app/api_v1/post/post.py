@@ -46,7 +46,7 @@ class PostView(Resource, HTTPStatusCodeMixin):
         title = args['title']
         body = args['content']
         tags = args['tags']
-        post = Post.get(post_id)
+        post = Post.get_or_404(post_id)
         if g.current_user != post.author and not g.current_user.can(
                 Permission.ADMINISTER):
             raise Forbidden(description="Insufficient permissions")

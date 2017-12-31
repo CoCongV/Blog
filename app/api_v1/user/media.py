@@ -1,6 +1,6 @@
 import os
 
-from flask import g, current_app
+from flask import g
 from flask_restful import Resource, reqparse
 from werkzeug.datastructures import FileStorage
 

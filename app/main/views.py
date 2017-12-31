@@ -44,7 +44,7 @@ def favicon():
         mimetype='image/vnd.microsoft.icon')
 
 
-@main.route('/images/<int:uid>/<image>', methods=['GET'])
+@main.route('/images/<uid>/<image>', methods=['GET'])
 def image(uid, image):
     path = os.path.join(current_app.config['UPLOADED_PHOTOS_DEST'],
                         str(uid), image)
