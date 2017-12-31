@@ -8,7 +8,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 from app import db, login_manager
 from app.models.minixs import CRUDMixin, Serializer
-from .roles import Role, Permission
+from .roles import Permission
 
 
 class User(CRUDMixin, UserMixin, db.Model, Serializer):
@@ -25,15 +25,11 @@ class User(CRUDMixin, UserMixin, db.Model, Serializer):
     member_since = db.Column(db.DateTime, default=lambda: datetime.utcnow())
     last_seen = db.Column(db.DateTime, default=lambda: datetime.utcnow())
     posts = db.relationship('Post', backref='author', lazy='dynamic')
-    comments = db.relationship('Comment', backref='author', lazy='dynamic', cascade='all, delete-orphan')
-
-    def __int__(self, **kwargs):
-        super(User, self).__init__(**kwargs)
-        if self.role is None:
-            if self.email == current_app.config['FLASK_ADMIN']:
-                self.role = Role.query.filter_by(permission=0xff).first()
-            if self.role is None:
-                self.role = Role.query.filter_by(default=True).first()
+    comments = db.relationship(
+        'Comment',
+        backref='author',
+        lazy='dynamic',
+        cascade='all, delete-orphan')
 
     def __repr__(self):
         return str(self.json()).replace(',', '\n')
@@ -51,7 +47,8 @@ class User(CRUDMixin, UserMixin, db.Model, Serializer):
 
     def generate_confirm_token(self, expiration=3600):
         """generate token for Email , reset password and verify password"""
-        s = TimedJSONWebSignatureSerializer(current_app.config['SECRET_KEY'], expires_in=expiration)
+        s = TimedJSONWebSignatureSerializer(
+            current_app.config['SECRET_KEY'], expires_in=expiration)
         token = s.dumps({'confirm_id': self.id})
         return str(token, encoding='utf8')
 
@@ -60,12 +57,15 @@ class User(CRUDMixin, UserMixin, db.Model, Serializer):
         s = TimedJSONWebSignatureSerializer(current_app.config['SECRET_KEY'])
         try:
             data = s.loads(token)
-        except:
+        except Exception as e:
+            current_app.logger.error(e)
             return None
-        return User.query.get(data['confirm_id'])
+        else:
+            return User.query.get(data['confirm_id'])
 
     def generate_email_token(self, expiration=3600):
-        s = TimedJSONWebSignatureSerializer(current_app.config['SECRET_KEY'], expires_in=expiration)
+        s = TimedJSONWebSignatureSerializer(
+            current_app.config['SECRET_KEY'], expires_in=expiration)
         token = s.dumps({'email': self.email})
         return str(token, encoding='utf-8')
 
@@ -74,7 +74,8 @@ class User(CRUDMixin, UserMixin, db.Model, Serializer):
         s = TimedJSONWebSignatureSerializer(current_app.config['SECRET_KEY'])
         try:
             data = s.loads(token)
-        except:
+        except Exception as e:
+            current_app.logger.error(e)
             return False
         user = User.query.filter_by(email=data.get('email')).first()
         if not user:
@@ -85,7 +86,8 @@ class User(CRUDMixin, UserMixin, db.Model, Serializer):
         return True
 
     def generate_reset_token(self, expiration=3600):
-        s = TimedJSONWebSignatureSerializer(current_app.config['SECRET_KEY'], expiration)
+        s = TimedJSONWebSignatureSerializer(current_app.config['SECRET_KEY'],
+                                            expiration)
         return s.dumps({'reset': self.id})
 
     def verify_reset_token(self, token, new_password):
@@ -102,7 +104,8 @@ class User(CRUDMixin, UserMixin, db.Model, Serializer):
         return True
 
     def generate_change_mail_token(self, new_email, expiration=3600):
-        s = TimedJSONWebSignatureSerializer(current_app.config['SECRET_KEY'], expires_in=expiration)
+        s = TimedJSONWebSignatureSerializer(
+            current_app.config['SECRET_KEY'], expires_in=expiration)
         return s.dumps({'change_mail': self.id, 'new_email': new_email})
 
     def verify_change_mail(self, token):
@@ -123,8 +126,8 @@ class User(CRUDMixin, UserMixin, db.Model, Serializer):
         db.session.commit()
 
     def can(self, permissions):
-        return self.role is not None and \
-               (self.role.permissions & permissions) == permissions
+        return self.role is not None and (
+            self.role.permissions & permissions) == permissions
 
     def is_administrator(self):
         return self.can(Permission.ADMINISTER)

@@ -1,23 +1,25 @@
 # coding: utf-8
 from celery import Celery
-import logging
 from flask import Flask
+from flask_cache import Cache
 from flask_debugtoolbar import DebugToolbarExtension
 from flask_login import LoginManager
-from flask_moment import Moment
 from flask_mail import Mail
 from flask_pagedown import PageDown
 from flask_sqlalchemy import SQLAlchemy
+from flask_uploads import (UploadSet,
+                           IMAGES,
+                           configure_uploads,
+                           patch_request_class)
 
 from config import config
 from app.utils import assets
-# from app.lib.celery import FlaskCelery
 
 toolbar = DebugToolbarExtension()
 mail = Mail()
-moment = Moment()
 pagedown = PageDown()
 db = SQLAlchemy()
+cache = Cache()
 
 login_manager = LoginManager()
 login_manager.session_protection = 'strong'
@@ -25,34 +27,32 @@ login_manager.login_view = 'auth.login'
 
 celery = Celery(__name__, broker='redis://localhost:6379')
 
+photos = UploadSet('photos', IMAGES)
+
 
 def create_app(config_name):
+    # global app
     app = Flask(__name__)
     app.config.from_object(config[config_name])
-    config[config_name].init_app(app)
+    # config[config_name].init_app(app)
+    _config = config[config_name]
+    _config.init_app(app)
 
-    toolbar.init_app(app)
+    configure_uploads(app, (photos, ))
+    patch_request_class(app, None)
+    # toolbar.init_app(app)
     mail.init_app(app)
     pagedown.init_app(app)
     db.init_app(app)
     login_manager.init_app(app)
     assets.init_app(app)
-    # celery.init_app(app)
+    cache.init_app(app)
 
     from .main import main as main_blueprint
     app.register_blueprint(main_blueprint)
 
-    from .api_v1.post import api_post
-    app.register_blueprint(api_post)
-
-    from .api_v1.auth import api_auth
-    app.register_blueprint(api_auth)
-
-    from .api_v1.user import api_user
-    app.register_blueprint(api_user)
-
-    from .api_v1.comment import api_comment
-    app.register_blueprint(api_comment)
+    from .api_v1 import api_v1
+    app.register_blueprint(api_v1)
 
     return app
 
@@ -67,5 +67,6 @@ def make_celery(app, _celery):
         def __call__(self, *args, **kwargs):
             with app.app_context():
                 return TaskBase.__call__(self, *args, **kwargs)
+
     _celery.Task = ContextTask
     return _celery

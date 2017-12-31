@@ -1,5 +1,6 @@
 # coding: utf-8
 import os
+
 from flask_script import Shell, Manager
 from flask_migrate import Migrate, MigrateCommand
 from flask_admin import Admin
@@ -31,11 +32,38 @@ admin = Admin(app, name='Cong Blog', template_mode="bootstrap3")
 celery = make_celery(app, celery_worker)
 
 
-def make_shell_context():
-    return dict(app=app, db=db, User=User, Role=Role, Comment=Comment, Permission=Permission, Post=Post)
+@app.teardown_appcontext
+def shutdown_session(exception=None):
+    return db.session.remove()
 
-manager.add_command("shell", Shell(make_context=make_shell_context))
+
+def make_shell_context():
+    return dict(
+        app=app,
+        db=db,
+        User=User,
+        Role=Role,
+        Comment=Comment,
+        Permission=Permission,
+        Post=Post)
+
+
+manager.add_command("shell",
+                    Shell(use_ipython=True, make_context=make_shell_context))
 manager.add_command('db', MigrateCommand)
+
+
+@manager.command
+def deploy():
+    Role.insert_roles()
+    user = User(
+        email='lv.cong@gmail.com',
+        username='Lv Cong',
+        password='5f4dcc3b5aa765d61d8327deb882cf99',
+        confirmed=True)
+    role = Role.query.filter_by(name='Administrator').first()
+    user.role = role
+    user.save()
 
 
 @manager.command
@@ -58,6 +86,7 @@ def test(coverage=False):
         COV.html_report(directory=covdir)
         print('HTML version: file://%s/index.html' % covdir)
         COV.erase()
+
 
 if __name__ == '__main__':
     manager.run()

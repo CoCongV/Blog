@@ -1,35 +1,38 @@
+from datetime import datetime
+
+from flask import g, make_response, jsonify
 from flask_httpauth import HTTPTokenAuth
-from flask_restful import Resource
 
-from .decorators import permission_required
+from app.models import User, AnonymousUser
+from app.utils.web import NestableBlueprint
 
 
-class HTTPStatusCode(object):
-    SUCCESS = 200
-    CREATED = 201
-    UNAUTHORIZED_ACCESS = 401
-    PERMISSION_FORBIDDEN = 403
-    USER_EXIST = 409  # 用户信息已被使用
-
-    def __init__(self):
-        super(HTTPStatusCode, self).__init__()
-
-errors = {
-    'PermissionForbiddenError': {
-        'message': "Permission Forbidden",
-        'status': 403
-    },
-    'UserAlreadyExistsError': {
-        'message': 'A user with that username or email already exists',
-        'status': 409
-    },
-    'AuthorizedError': {
-        'status': 401
-    }
-}
-
-# api_comment = Blueprint('comment', __name__, url_prefix='/comment/')
+api_v1 = NestableBlueprint('api_v1', __name__, url_prefix='/api/v1')
 token_auth = HTTPTokenAuth(scheme='token')
 
-from .auth import authentication
-from .error import PermissionForbiddenError, UserAlreadyExistsError, AuthorizedError
+
+@token_auth.verify_token
+def verify_token(token):
+    g.current_user = User.verify_auth_token(token)
+    if g.current_user:
+        g.token_used = True
+        g.current_user.update(last_seen=datetime.utcnow())
+    else:
+        g.current_user = AnonymousUser()
+    return True
+
+
+@token_auth.error_handler
+def unauthorized():
+    return make_response(jsonify({'error': 'Unauthorized access'}), 403)
+
+
+from .post import api_post
+from .user import api_user
+from .comment import api_comment
+from .auth import api_auth
+
+api_v1.register_blueprint(api_post)
+api_v1.register_blueprint(api_user)
+api_v1.register_blueprint(api_comment)
+api_v1.register_blueprint(api_auth)

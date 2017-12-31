@@ -2,16 +2,17 @@ from flask import g
 from flask_restful import Resource
 
 from app.models import User, Permission
-from app.api_v1 import HTTPStatusCode, token_auth
+from app.api_v1 import token_auth
+from app.utils.web import HTTPStatusCodeMixin
 
 
-class UserProfile(Resource, HTTPStatusCode):
+class UserProfile(Resource, HTTPStatusCodeMixin):
 
     decorators = [token_auth.login_required]
 
-    def get(self, uid):
-        # 用户权限更改
-        user = User.query.get(uid)
+    def get(self):
+        # 权限分离
+        user = User.get(g.current_user.id)
         edit_permission = False
         if g.current_user == user or g.current_user.can(Permission.ADMINISTER):
             edit_permission = True

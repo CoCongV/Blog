@@ -1,22 +1,39 @@
-from flask import g, url_for
+from flask import g, url_for, current_app
 from flask_restful import reqparse, Resource
-from sqlalchemy.exc import IntegrityError, InvalidRequestError, InternalError
+from sqlalchemy.exc import IntegrityError, InvalidRequestError, DataError
+from werkzeug.exceptions import Forbidden
 
-from app import db
-from app.api_v1 import token_auth, HTTPStatusCode, UserAlreadyExistsError
-from app.utils.send_mail import send_email
+from app.api_v1 import token_auth
+from app.errors import UserAlreadyExistsError
 from app.models import User, Role
+from app.utils.celery.email import send_email
+from app.utils.web import HTTPStatusCodeMixin
 
 
-class UserView(Resource, HTTPStatusCode):
+user_reqparse = reqparse.RequestParser()
+user_reqparse.add_argument('email', type=str, required=True, location='json')
+user_reqparse.add_argument(
+    'username', type=str, required=True, location='json')
+user_reqparse.add_argument('location', type=str, location='json')
+user_reqparse.add_argument('about_me', type=str, location='json')
+user_reqparse.add_argument(
+    'password', type=str, required=True, location='json')
 
-    def __init__(self):
-        super(UserView, self).__init__()
-        self.reqparse = reqparse.RequestParser()
-        self.reqparse.add_argument('email', type=str, required=True, location='json')
-        self.reqparse.add_argument('username', type=str, required=True, location='json')
-        self.reqparse.add_argument('location', type=str, location='json')
-        self.reqparse.add_argument('about_me', type=str, location='json')
+
+reqparse_patch = reqparse.RequestParser()
+reqparse_patch.add_argument(
+    'email', type=str, location='json', store_missing=False)
+reqparse_patch.add_argument(
+    'username', type=str, location='json', store_missing=False)
+reqparse_patch.add_argument(
+    'location', type=str, location='json', store_missing=False)
+reqparse_patch.add_argument(
+    'about_me', type=str, location='json', store_missing=False)
+reqparse_patch.add_argument(
+    'password', type=str, location='json', store_missing=False)
+
+
+class UserView(Resource, HTTPStatusCodeMixin):
 
     @token_auth.login_required
     def get(self):
@@ -29,8 +46,7 @@ class UserView(Resource, HTTPStatusCode):
 
     def post(self):
         # register user
-        self.reqparse.add_argument('password', type=str, required=True, location='json')
-        args = self.reqparse.parse_args()
+        args = user_reqparse.parse_args()
         try:
             role = Role.query.filter_by(permissions=2).first()
             user = User.create(email=args['email'],
@@ -41,24 +57,30 @@ class UserView(Resource, HTTPStatusCode):
                                role=role)
         except (IntegrityError, InvalidRequestError):
             raise UserAlreadyExistsError()
+        except DataError:
+            raise UserAlreadyExistsError()
         token = user.generate_confirm_token(expiration=86400)
         email_token = user.generate_email_token()
-        send_email.delay(to=user.email, subject='Confirm Your Account',
-                         template='mail/confirm', user=user.username,
-                         url=url_for('auth.email_auth', token=email_token, _external=True))
-        return {'token': token}, self.SUCCESS
+        send_email.delay(
+            to=user.email,
+            subject='Confirm Your Account',
+            template='mail/confirm',
+            user=user.username,
+            url=url_for('auth.email_auth', token=email_token, _external=True))
+        current_app.logger.info(
+            'New User Exist: {}, {}'.format(user.id, user.email))
+        return {
+            'token': token,
+            'permission': user.role.permissions
+        }, self.SUCCESS
 
     @token_auth.login_required
-    def put(self):
-        # update user
-        args = self.reqparse.parse_args()
-        username = args['username']
-        email = args['email']
-        user = User.query.filter(User.id != g.current_user.id).filter_by(username=username).first()
-        if user:
-            return {'message': '用户名已被使用'}, self.USER_EXIST
-        user = User.query.filter(User.id != g.current_user.id, User.email == email).first()
-        if user:
-            return {'message': '邮箱被占用'}, self.USER_EXIST
+    def patch(self):
+        uid = g.current_user.id
+        user = User.query.get(uid)
+        if g.current_user != user:
+            raise Forbidden()
+        args = reqparse_patch.parse_args()
+        print(args)
         g.current_user.update(**args)
         return {}, self.SUCCESS

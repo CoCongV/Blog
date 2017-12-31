@@ -1,34 +1,51 @@
 from flask import g, request, current_app, url_for
-from flask_restful import Resource
-from markdown import markdown
+from flask_restful import Resource, reqparse
 
 from app import db
-from app.api_v1 import HTTPStatusCode, token_auth, permission_required
+from app.api_v1 import token_auth
+from app.api_v1.decorators import permission_required
 from app.models import Post, Comment, Permission
-from . import comment_parse
+from app.utils.web import HTTPStatusCodeMixin
+
+comment_parse = reqparse.RequestParser()
+comment_parse.add_argument(
+    'body',
+    location='json',
+    required=True
+)
+comment_parse.add_argument(
+    'reply',
+    location='json',
+    required=False
+)
+comment_parse.add_argument(
+    'post',
+    location='json',
+    required=True
+)
 
 
-class CommentView(Resource, HTTPStatusCode):
+class CommentView(Resource, HTTPStatusCodeMixin):
 
     @token_auth.login_required
     @permission_required(Permission.COMMENT)
     def post(self):
         args = comment_parse.parse_args()
-        reply = args.get('reply')
+        comment_id = args.get('comment_id')
         post = Post.get(args['post'])
-        print(markdown(args['body'], output_format='html'))
         kwargs = {'body': args['body'],
                   'author': g.current_user,
                   'post': post}
-        if reply:
-            kwargs.update({'replies': Comment.get(reply)})
-        Comment.create(**kwargs)
-        return self.CREATED
+        comment = Comment.create(**kwargs)
+        if comment_id:
+            reply = Comment.query.get(comment_id)
+            comment.reply(reply)
+        return {}, self.CREATED
 
     def get(self):
         # 评论增加Email验证权限
         # 获取评论
-        post = Post.query.get(request.args['post'])
+        post = Post.query.get(request.args['post_id'])
         page = int(request.args.get('page', 1))
         pagination = post.comments.order_by(db.desc('timestamp')).paginate(
             page, per_page=current_app.config['BLOG_COMMENT_PAGE'],

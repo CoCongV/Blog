@@ -2,6 +2,7 @@ from sqlalchemy.inspection import inspect
 
 from app import db
 
+
 class CRUDMixin(object):
     """Implements methods to create, read, update, and delete"""
 
@@ -53,7 +54,6 @@ class CRUDMixin(object):
         return commit and db.session.commit()
 
     def update(self, commit=True, **kwargs):
-        print(kwargs)
         for attr, value in kwargs.items():
             setattr(self, attr, value)
         return commit and self.save() or self
@@ -64,7 +64,8 @@ class Serializer(object):
 
     def json(self):
         serialized_fields = self.serialized_fields
-        cls_serialized_fields = set([column.name for column in self.__class__.__table__.columns])
+        cls_serialized_fields = set(
+            [column.name for column in self.__class__.__table__.columns])
 
         for primary_key in inspect(self.__class__).primary_key:
             if not getattr(self, primary_key.name):
