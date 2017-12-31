@@ -1,3 +1,5 @@
+import os
+
 from flask import g
 from flask_restful import Resource, reqparse
 from werkzeug.datastructures import FileStorage
@@ -24,9 +26,15 @@ class PhotoStorage(Resource, HTTPStatusCodeMixin):
         permission_required(Permission.ADMINISTER), token_auth.login_required
     ]
 
-    def post(self):
+    def put(self):
         args = photo_reqparse.parse_args()
-        filename = photos.save(
-            args.get('image'), str(g.current_user.id))
-        file_url = photos.url(filename)
+        if os.path.exists(
+                os.path.join(photos.config.destination, str(g.current_user.id),
+                             args.get('image').filename)):
+            file_url = photos.url(args.get('image').filename)
+        else:
+            filename = photos.save(
+                args.get('image'), str(g.current_user.id))
+            file_url = photos.url(filename)
+
         return {'url': file_url}, self.CREATED
