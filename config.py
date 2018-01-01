@@ -23,6 +23,13 @@ class Config:
     FLASK_MAIL_SENDER = os.environ.get('FLASK_MAIL_SENDER')
     FLASK_ADMIN = os.environ.get('BLOG_ADMIN')
 
+    # mail config
+    MAIL_SERVER = 'smtp.gmail.com'
+    MAIL_PORT = 465
+    MAIL_USE_SSL = True
+    MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
+    MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
+
     # FILE UPLOAD
     # UPLOADED_PHOTOS_DEST = './app/media/photos'
     UPLOADED_PHOTOS_DEST = os.path.join(basedir, 'app/media/photos/')
@@ -39,13 +46,6 @@ class Config:
     BLOG_COMMENT_PAGE = 10
     BLOG_SLOW_DB_QUERY_TIME = 0.1
     FLASKY_DB_QUERY_TIMEOUT = 0.5
-
-    # mail config
-    MAIL_SERVER = 'smtp.gmail.com'
-    MAIL_PORT = 465
-    MAIL_USE_SSL = True
-    MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
-    MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
 
     # whoosh config
     WHOOSH_BASE = '/tmp/whoosh/base'
@@ -110,7 +110,7 @@ class ProductionConfig(Config):
         logfile = os.path.join(cls.LOG_PATH, cls.LOG_NAME)
         file_handler = TimedRotatingFileHandler(
             logfile, when=cls.LOG_TIME, backupCount=cls.LOG_BACK_COUNT)
-        file_handler.setLevel(logging.info)
+        file_handler.setLevel(logging.INFO)
         app.logger.addHandler(file_handler)
         sentry = Sentry()
         sentry.init_app(
