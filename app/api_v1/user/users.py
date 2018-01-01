@@ -34,13 +34,15 @@ reqparse_patch.add_argument(
 
 
 class UserView(Resource, HTTPStatusCodeMixin):
+    method_decorators = {
+        'get': [token_auth.login_required],
+        'patch': [token_auth.login_required]
+    }
 
-    @token_auth.login_required
     def get(self):
         # get user info
-        user = g.current_user
-        if not user.is_anonymous:
-            json_user = user.to_json()
+        if not g.current_user.is_anonymous:
+            json_user = g.current_user.to_json()
             return json_user, self.SUCCESS
         return {'username': ''}, self.SUCCESS
 
@@ -74,12 +76,7 @@ class UserView(Resource, HTTPStatusCodeMixin):
             'permission': user.role.permissions
         }, self.SUCCESS
 
-    @token_auth.login_required
     def patch(self):
-        uid = g.current_user.id
-        user = User.query.get(uid)
-        if g.current_user != user:
-            raise Forbidden()
         args = reqparse_patch.parse_args()
         print(args)
         g.current_user.update(**args)
