@@ -57,9 +57,8 @@ class User(CRUDMixin, UserMixin, db.Model, Serializer):
         s = TimedJSONWebSignatureSerializer(current_app.config['SECRET_KEY'])
         try:
             data = s.loads(token)
-        except Exception as e:
-            current_app.logger.error(e)
-            return None
+        except Exception:
+            return False
         else:
             return User.query.get(data['confirm_id'])
 
@@ -74,8 +73,7 @@ class User(CRUDMixin, UserMixin, db.Model, Serializer):
         s = TimedJSONWebSignatureSerializer(current_app.config['SECRET_KEY'])
         try:
             data = s.loads(token)
-        except Exception as e:
-            current_app.logger.error(e)
+        except Exception:
             return False
         user = User.query.filter_by(email=data.get('email')).first()
         if not user:
@@ -94,7 +92,7 @@ class User(CRUDMixin, UserMixin, db.Model, Serializer):
         s = TimedJSONWebSignatureSerializer(current_app.config['SECRET_KEY'])
         try:
             data = s.loads(token)
-        except:
+        except Exception:
             return False
         if data.get('confirm_id') != self.id:
             return False
@@ -112,7 +110,7 @@ class User(CRUDMixin, UserMixin, db.Model, Serializer):
         s = TimedJSONWebSignatureSerializer(current_app.config['SECRET_KEY'])
         try:
             data = s.loads(token)
-        except:
+        except Exception:
             return False
         if data.get('change_mail') != self.id:
             return False
@@ -163,6 +161,7 @@ class AnonymousUser(AnonymousUserMixin):
 
     def is_anonymous(self):
         return True
+
 
 login_manager.anonymous_user = AnonymousUser
 
