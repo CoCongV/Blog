@@ -35,6 +35,6 @@ class CommentPermission(Resource, HTTPStatusCodeMixin):
     decorators = [token_auth.login_required]
 
     def get(self):
-        if g.current_user.confirmed and g.current_user.can(Permission.COMMENT):
+        if g.current_user.confirmed and g.current_user.can(Permission.USER):
             return {}, self.SUCCESS
         raise PermissionForbiddenError()

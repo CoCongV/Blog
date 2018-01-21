@@ -11,6 +11,6 @@ class Token(Resource, HTTPStatusCodeMixin):
 
     @token_auth.login_required
     def get(self):
-        if g.current_user.can(Permission.COMMENT):
+        if g.current_user.can(Permission.USER):
             return {}, self.SUCCESS
         raise AuthorizedError()

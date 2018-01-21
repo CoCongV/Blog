@@ -5,7 +5,7 @@ from app import db
 from app.api_v1 import token_auth
 from app.api_v1.decorators import permission_required
 from app.models import Post, Comment, Permission
-from app.utils.web import HTTPStatusCodeMixin
+from app.utils.celery.email import send_email
 
 comment_parse = reqparse.RequestParser()
 comment_parse.add_argument(
@@ -19,28 +19,40 @@ comment_parse.add_argument(
     required=False
 )
 comment_parse.add_argument(
-    'post',
+    'post_id',
     location='json',
-    required=True
+    required=True,
+    type=int
 )
+comment_parse.add_argument('comment_id', location='json', type=int)
 
 
-class CommentView(Resource, HTTPStatusCodeMixin):
+class CommentApi(Resource):
 
-    @token_auth.login_required
-    @permission_required(Permission.COMMENT)
+    method_decorators = {
+        'post':
+        [token_auth.login_required,
+         permission_required(Permission.USER)]
+    }
+
     def post(self):
         args = comment_parse.parse_args()
-        comment_id = args.get('comment_id')
-        post = Post.get(args['post'])
-        kwargs = {'body': args['body'],
-                  'author': g.current_user,
-                  'post': post}
-        comment = Comment.create(**kwargs)
-        if comment_id:
-            reply = Comment.query.get(comment_id)
-            comment.reply(reply)
-        return {}, self.CREATED
+        post = Post.get(args.post_id)
+        email = Post.author.email
+        reply = Comment.create(
+            body=args.body, author=g.current_user, post=post)
+        if args.comment_id:
+            comment = Comment.query.get_or_404(args.comment_id)
+            comment.replies.append(reply)
+            email = comment.author.email
+            comment.save()
+        send_email.delay(
+            to=email,
+            subject='View The Comment Detail',
+            template='main/comment',
+            url=url_for(
+                'post.post_view', post_id=args.post_id, _external=True))
+        return {}, 201
 
     def get(self):
         # 评论增加Email验证权限

@@ -10,7 +10,7 @@ from app.utils.web import HTTPStatusCodeMixin
 
 class Password(Resource, HTTPStatusCodeMixin):
 
-    decorators = [permission_required(Permission.COMMENT),
+    decorators = [permission_required(Permission.USER),
                   token_auth.login_required]
 
     def __init__(self):

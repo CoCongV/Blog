@@ -11,7 +11,7 @@ from app.models import Permission, User
 
 class SendEmailAuth(Resource, HTTPStatusCodeMixin):
 
-    decorators = [permission_required(Permission.COMMENT),
+    decorators = [permission_required(Permission.USER),
                   token_auth.login_required]
 
     def get(self):

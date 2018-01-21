@@ -53,7 +53,7 @@ class TestUserModel(unittest.TestCase):
 
     def test_anonymousUser(self):
         user = AnonymousUser()
-        user.can(Permission.COMMENT)
+        user.can(Permission.USER)
         user.is_administrator()
         user.is_anonymous()
 

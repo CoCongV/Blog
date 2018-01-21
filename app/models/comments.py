@@ -28,7 +28,7 @@ class Comment(db.Model, CRUDMixin, Serializer):
     disabled = db.Column(db.Boolean, default=False)
     author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     post_id = db.Column(db.Integer, db.ForeignKey('posts.id'))
-    replied = db.relationship('Reply',
+    comment = db.relationship('Reply',
                               foreign_keys=[Reply.reply_id],
                               backref=db.backref('replies', lazy='joined'),
                               lazy='dynamic',

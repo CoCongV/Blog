@@ -4,7 +4,7 @@ from app.models.minixs import CRUDMixin, Serializer
 
 
 class Permission:
-    COMMENT = 0x02
+    USER = 0x02
     ADMINISTER = 0xff
 
 
@@ -22,7 +22,7 @@ class Role(db.Model, CRUDMixin, Serializer):
     @staticmethod
     def insert_roles():
         roles = {
-            'User': (Permission.COMMENT, True),
+            'User': (Permission.USER, True),
             'Administrator': (Permission.ADMINISTER, False)
         }
         for r in roles:
