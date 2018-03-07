@@ -2,7 +2,6 @@
 from celery import Celery
 from flask import Flask
 from flask_cache import Cache
-from flask_debugtoolbar import DebugToolbarExtension
 from flask_login import LoginManager
 from flask_mail import Mail
 from flask_pagedown import PageDown
@@ -15,7 +14,6 @@ from flask_uploads import (UploadSet,
 from config import config
 from app.utils import assets
 
-toolbar = DebugToolbarExtension()
 mail = Mail()
 pagedown = PageDown()
 db = SQLAlchemy()
@@ -40,7 +38,6 @@ def create_app(config_name):
 
     configure_uploads(app, (photos, ))
     patch_request_class(app, None)
-    # toolbar.init_app(app)
     mail.init_app(app)
     pagedown.init_app(app)
     db.init_app(app)

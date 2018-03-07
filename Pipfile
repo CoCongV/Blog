@@ -20,7 +20,6 @@ flask = "*"
 flask-admin = "*"
 flask-assets = "*"
 flask-cache = "*"
-flask-dashed = "*"
 flask-graphql = "*"
 flask-httpauth = "*"
 flask-login = "*"
@@ -44,6 +43,7 @@ redis = "*"
 sqlalchemy = "*"
 whoosh = "*"
 wtforms = "*"
+ipython = "*"
 
 
 [dev-packages]

@@ -1,6 +1,8 @@
-FROM python:3.5.3-slim
-RUN apt-get update -qq && apt-get install -y build-essential libgmp-dev libpq-dev
-ENV PYTHON_VERSION 3.5.3
+FROM python:3.6.4-alpine3.7
+RUN apk update && \
+    apk add --virtual build-deps gcc python-dev musl-dev && \
+    apk add postgresql-dev
+ENV PYTHON_VERSION 3.6.4
 RUN mkdir /Flask_Blog
 WORKDIR /Flask_Blog
 ADD ./requirements.txt .
