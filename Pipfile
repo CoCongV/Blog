@@ -1,57 +1,22 @@
 [[source]]
-
-name = "tsinghua"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
+url = "https://pypi.python.org/simple"
 verify_ssl = true
-
-
-[requires]
-
-python_version = "3.6"
-
+name = "pypi"
 
 [packages]
-
-bleach = "*"
-blinker = "*"
-celery = "*"
-click = "*"
-flask = "*"
-flask-admin = "*"
-flask-assets = "*"
-flask-cache = "*"
-flask-graphql = "*"
-flask-httpauth = "*"
-flask-login = "*"
-flask-mail = "*"
-flask-migrate = "*"
-flask-pagedown = "*"
-flask-restful = "*"
-flask-script = "*"
-flask-sqlalchemy = "*"
-flask-uploads = "*"
-flask-whooshalchemyplus = "*"
-gevent = "*"
-graphene = "*"
-graphene-sqlalchemy = "*"
-graphql-core = "*"
-graphql-relay = "*"
-markdown = "*"
-"psycopg2" = "*"
-raven = "*"
-redis = "*"
-sqlalchemy = "*"
-whoosh = "*"
-wtforms = "*"
-ipython = "*"
-
+sanic = "*"
+sanic-restful = "*"
+gino = "*"
+itsdangerous = "*"
+forgerypy = "*"
+aiofiles = "*"
 
 [dev-packages]
-
-coverage = "*"
-flask-debugtoolbar = "*"
-"flake8" = "*"
 pylint = "*"
+"flake8" = "*"
 rope = "*"
 yapf = "*"
 ipython = "*"
+
+[requires]
+python_version = "3.6"
