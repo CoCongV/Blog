@@ -17,9 +17,9 @@ class Login(Resource):
         user = await User.query.where(User.email == args.email).first()
 
         if not user:
-            raise Unauthorized('Unauthorized')
+            raise Unauthorized('用户不存在')
         elif not user.verify_password(args.password):
-            raise Unauthorized('Unauthorized')
+            raise Unauthorized('密码错误')
         else:
             return {
                 'token':
@@ -27,6 +27,11 @@ class Login(Resource):
                 'username': user.username,
                 'permission': user.role.permission
             }
+
+
+class Logout(Resource):
+
+    method_decorators = [login_requred]
 
     async def delete(self, request):
         pass

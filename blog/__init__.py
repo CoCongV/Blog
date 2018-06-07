@@ -1,10 +1,15 @@
 from gino import Gino
+from jinja2 import Environment, PackageLoader, select_autoescape
 from sanic import Sanic
 
 from blog.util import Upload
 
 db = Gino()
 photo = Upload()
+jinja_env = Environment(
+    loader=PackageLoader('blog'),
+    autoescape=select_autoescape(['html', 'xml', 'tpl']),
+    enable_async=True)
 
 
 def create_app(config):

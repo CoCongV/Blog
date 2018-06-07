@@ -15,7 +15,8 @@ class Avatar(Resource):
 
     decorators = [permission_reuired, login_requred]
 
-    async def put(self, request, user):
+    async def put(self, request):
+        user = request['user']
         path = request.app.config.AVATAR_PATH
         args = parser.parse_args(request)
         if os.path.exists(

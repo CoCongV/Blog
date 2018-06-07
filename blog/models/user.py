@@ -55,13 +55,14 @@ class User(db.Model):
             return await User.get(data['confirm_id'])
 
     async def generate_email_token(self, key, expiration=60 * 60):
-        s = TimedJSONWebSignatureSerializer(key, expires_in=expriation)
+        s = TimedJSONWebSignatureSerializer(
+            key, expires_in=expiration, salt='email')
         token = s.dumps({'email': self.email})
         return str(token)
 
     @staticmethod
     async def verify_email_token(token, key):
-        s = TimedJSONWebSignatureSerializer(key)
+        s = TimedJSONWebSignatureSerializer(key, salt='email')
         try:
             data = s.loads(token)
         except Exception:

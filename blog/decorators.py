@@ -13,9 +13,9 @@ def login_requred():
             user = await User.verify_auth_token(request.app.config.SECRET_KEY,
                                                 token)
             if not user:
-                raise Unauthorized('Unauthorized')
+                raise Unauthorized('Token Invalid')
             else:
-                kwargs['user'] = user
+                request['user'] = user
                 return f(request, *args, **kwargs)
         return wrapper
     return decorator

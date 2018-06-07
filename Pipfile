@@ -10,6 +10,9 @@ gino = "*"
 itsdangerous = "*"
 forgerypy = "*"
 aiofiles = "*"
+aiosmtplib = "*"
+aioredis = "*"
+"jinja2" = "*"
 
 [dev-packages]
 pylint = "*"
