@@ -15,7 +15,7 @@ def login_requred():
             if not user:
                 raise Unauthorized('Token Invalid')
             else:
-                request['user'] = user
+                request['current_user'] = user
                 return f(request, *args, **kwargs)
         return wrapper
     return decorator

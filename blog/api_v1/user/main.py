@@ -39,7 +39,7 @@ class UserResouce(Resource):
     }
 
     async def get(self, request):
-        user = request['user']
+        user = request['current_user']
         if not user.is_anonymous:
             json_user = user.to_json()
             return json_user
@@ -61,17 +61,15 @@ class UserResouce(Resource):
         token = user.generate_confirm_token(request.app.config.SECRET_KEY)
         email_token = user.generate_email_token(request.app.config.SECRET_KEY)
 
-        message = MIMEText('Sent via aiosmtplib')
-        message['From'] = request.app.config['BLOG_ADMIN']
-        message['To'] = user.email
-        message['Subject'] = 'Confirm Your Account'
         template = jinja_env.get_template('mail/confirm')
-        rendered_template = template.render_async(
+        rendered_template = await template.render_async(
             user=user.username,
             url=request.app.url_for(
                 'auth.email_auth', token=email_token, _external=True))
-        message.attach(MIMEText(rendered_template, 'html', 'utf8'))
-        asyncio.ensure_future(send_eamil(request.app, message))
+
+        asyncio.ensure_future(
+            send_eamil(request.app, user.email, 'Confirm Your Account',
+                       rendered_template))
         return {
             'token': token,
             'permission': user.role.permission
@@ -79,5 +77,5 @@ class UserResouce(Resource):
 
     async def patch(self, request):
         args = reqparse_patch.parse_args(request)
-        request['user'].update(**args).apply()
+        request['current_user'].update(**args).apply()
         return {}, 204

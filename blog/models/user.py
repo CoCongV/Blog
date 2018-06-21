@@ -73,7 +73,7 @@ class User(db.Model):
         await user.update(confirmed=True).apply()
         return True
 
-    async def generate_reset_token(self, key, expiration):
+    def generate_reset_token(self, key, expiration):
         s = TimedJSONWebSignatureSerializer(key, expiration)
         return s.dumps({'reset': self.id})
 
@@ -87,11 +87,11 @@ class User(db.Model):
             return False
         self.password = new_password
 
-    async def generate_change_email_token(self,
-                                          new_email,
-                                          token,
-                                          key,
-                                          expiration=60 * 60):
+    def generate_change_email_token(self,
+                                    new_email,
+                                    token,
+                                    key,
+                                    expiration=60 * 60):
         s = TimedJSONWebSignatureSerializer(key, expires_in=expiration)
         return s.dumps({'change_email': self.id, 'new_email': new_email})
 

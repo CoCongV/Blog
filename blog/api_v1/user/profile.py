@@ -15,7 +15,7 @@ class UserProfile(Resource):
 
     async def get(self, request):
         args = parser.parse_args(request)
-        current_user = request['user']
+        current_user = request['current_user']
         user = await User.get(args.uid)
         edit_permission = True if current_user == user\
             or current_user.can(Permission.ADMINISTER) else False
