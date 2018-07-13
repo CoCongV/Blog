@@ -36,7 +36,8 @@ class TestUserModel(unittest.TestCase):
         password_token = user.generate_reset_token()
         user.verify_reset_token(password_token, 'password')
 
-        change_email_token = user.generate_change_mail_token(new_email='cong.lv.yx@gamil.com')
+        change_email_token = user.generate_change_mail_token(
+            new_email='cong.lv.yx@gamil.com')
         user.verify_change_mail(change_email_token)
 
     def test_add_user(self):

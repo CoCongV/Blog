@@ -1,4 +1,3 @@
-from flask import g, current_app
 from flask_restful import reqparse, Resource
 from werkzeug.exceptions import Unauthorized
 
@@ -21,7 +20,6 @@ class LoginView(Resource):
         if not verify:
             raise Unauthorized('Password Error')
         else:
-            g.current_user = user
             token = user.generate_confirm_token()
             return {
                 'token': token,

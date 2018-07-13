@@ -1,8 +1,7 @@
-# coding: utf-8
-from flask import flash
 from flask_wtf import Form
-from wtforms import StringField, TextAreaField, BooleanField, SelectField, SubmitField
-from wtforms.validators import DataRequired, Length, Email, Regexp
+from wtforms import (StringField, TextAreaField, BooleanField, SelectField,
+                     SubmitField)
+from wtforms.validators import DataRequired, Length, Email
 from wtforms import ValidationError
 from flask_pagedown.fields import PageDownField
 
@@ -23,8 +22,11 @@ class EditProfileForm(Form):
 
 
 class EditProfileAdminForm(Form):
-    email = StringField('Email', validators=[DataRequired(), Length(1, 64), Email()])
-    username = StringField('用户名', validators=[DataRequired(), Length(1,64)])
+    email = StringField(
+        'Email', validators=[DataRequired(),
+                             Length(1, 64),
+                             Email()])
+    username = StringField('用户名', validators=[DataRequired(), Length(1, 64)])
     confirmed = BooleanField('Confirmed')
     role = SelectField('Role', coerce=int)
     location = StringField('地区', validators=[Length(0, 64)])
@@ -33,7 +35,8 @@ class EditProfileAdminForm(Form):
 
     def __init__(self, user, *args, **kwargs):
         super(EditProfileAdminForm, self).__init__(*args, **kwargs)
-        self.role.choices = [(role.id, role.name) for role in Role.query.all().order_by(Role.name)]
+        self.role.choices = [(role.id, role.name)
+                             for role in Role.query.all().order_by(Role.name)]
         self.user = user
 
     def validate_email(self, field):

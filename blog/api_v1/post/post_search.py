@@ -32,7 +32,8 @@ class PostSearch(Resource):
                 .order_by(db.desc(Post.timestamp)) \
                 .paginate(page, per_page=per_page, error_out=False)
         elif year:
-            pagination = Post.query.filter(extract('year', Post.timestamp) == year)\
+            pagination = Post.query.filter(
+                extract('year', Post.timestamp) == year)\
                 .order_by(db.desc(Post.timestamp)) \
                 .paginate(page, per_page=per_page, error_out=False)
         elif content:

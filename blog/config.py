@@ -47,6 +47,9 @@ class Config:
     BLOG_SLOW_DB_QUERY_TIME = 0.1
     FLASKY_DB_QUERY_TIMEOUT = 0.5
 
+    # LOGIN
+    LOGIN_TOKEN = 60 * 60 * 24
+
     # whoosh config
     WHOOSH_BASE = '/tmp/whoosh/base'
     WHOOSH_ANALYZER = StemmingAnalyzer()
