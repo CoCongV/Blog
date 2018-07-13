@@ -1,4 +1,9 @@
 import os
+try:
+    import config as conf
+except ImportError:
+    from .config import config
+    conf = config[os.getenv('RQ_ENV') or 'default']
 
 from flask_script import Shell, Manager
 from flask_migrate import Migrate, MigrateCommand
@@ -23,7 +28,7 @@ if os.path.exists('.env'):
         if len(var) == 2:
             os.environ[var[0]] = var[1]
 
-app = create_app(os.getenv('FLASK_CONFIG') or 'default')
+app = create_app(conf)
 manager = Manager(app)
 migrate = Migrate(app, db)
 whoosh_index(app, Post)
@@ -87,5 +92,5 @@ def test(coverage=False):
         COV.erase()
 
 
-if __name__ == '__main__':
+def cli():
     manager.run()

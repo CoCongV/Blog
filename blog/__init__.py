@@ -11,7 +11,6 @@ from flask_uploads import (UploadSet,
                            configure_uploads,
                            patch_request_class)
 
-from config import config
 from blog.utils import assets
 
 mail = Mail()
@@ -28,13 +27,9 @@ celery = Celery(__name__, broker='redis://localhost:6379')
 photos = UploadSet('photos', IMAGES)
 
 
-def create_app(config_name):
-    # global app
+def create_app(config):
     app = Flask(__name__)
-    app.config.from_object(config[config_name])
-    # config[config_name].init_app(app)
-    _config = config[config_name]
-    _config.init_app(app)
+    app.config.from_object(config)
 
     configure_uploads(app, (photos, ))
     patch_request_class(app, None)

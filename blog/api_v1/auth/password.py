@@ -7,10 +7,10 @@ from blog.api_v1.decorators import permission_required
 from blog.models import Permission
 
 
-reparse = reqparse.RequestParser()
-reqparse.add_argument(
+parser = reqparse.RequestParser()
+parser.add_argument(
     'old_password', location='json', required=True)
-reqparse.add_argument(
+parser.add_argument(
     'new_password', location='json', required=True)
 
 
@@ -20,7 +20,7 @@ class Password(Resource):
                   token_auth.login_required]
 
     def post(self):
-        args = reqparse.parse_args()
+        args = parser.parse_args()
         old_password = args['old_password']
         new_password = args['new_password']
         verify = g.current_user.verify_password(old_password)

@@ -25,7 +25,6 @@ except ImportError:
 from setuptools import (
     find_packages,
     setup,
-    Extension
 )
 
 with open(join(dirname(__file__), 'blog/VERSION.txt'), 'rb') as f:
@@ -40,33 +39,18 @@ setup(
     author_email='public@ricequant.com',
     license='Apache License v2',
     package_data={
-        '': ['*.*'],
-        'rqpro_api_server': [
-            'fonts/*',
-            'migrations/versions/*',
-            'pem/*',
-            'server/static/*',
-            'server/static/img/*',
-            'server/static/css/*',
-            'server/static/js/*',
-            'server/templates/admin/*',
-            'server/templates/admin/account/*',
-            'server/templates/admin/booking/*',
-            'server/templates/admin/license/*',
-            'server/templates/admin/modals/*',
-            'server/templates/admin/trade/*',
-            'server/templates/admin/user/*',
-            'server/templates/security/*',
-            'server/templates/*',
-            'views/*'
-        ]
+        '': ['*.*']
     },
     install_requires=[
         str(ir.req)
         for ir in parse_requirements("requirements.txt", session=False)
     ],
     zip_safe=False,
-    ext_modules=ext_modules,
+    entry_points={
+        "console_scripts": [
+            'blog-manager = blog.manage:cli'
+        ]
+    },
     classifiers=[
         'Programming Language :: Python',
         'Operating System :: Unix',

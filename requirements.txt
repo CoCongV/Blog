@@ -7,8 +7,6 @@ Flask
 Flask-Admin
 Flask-Assets
 Flask-Cache
-Flask-Dashed
-Flask-DebugToolbar
 Flask-GraphQL
 Flask-HTTPAuth
 Flask-Login

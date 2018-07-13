@@ -1,17 +1,12 @@
 [[source]]
-
 name = "tsinghua"
 url = "https://pypi.tuna.tsinghua.edu.cn/simple"
 verify_ssl = true
 
-
 [requires]
-
 python_version = "3.7"
 
-
 [packages]
-
 bleach = "*"
 blinker = "*"
 celery = "*"
@@ -44,10 +39,9 @@ sqlalchemy = "*"
 whoosh = "*"
 wtforms = "*"
 ipython = "*"
-
+meinheld = "*"
 
 [dev-packages]
-
 coverage = "*"
 flask-debugtoolbar = "*"
 "flake8" = "*"
@@ -55,3 +49,4 @@ pylint = "*"
 rope = "*"
 yapf = "*"
 ipython = "*"
+flask-blog = {editable = true, path = "."}
