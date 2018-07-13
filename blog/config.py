@@ -72,13 +72,13 @@ class Config:
 
 class DevelopmentConfig(Config):
     DEBUG = True
-    SQLALCHEMY_DATABASE_URI = 'postgresql://lvcong:password@/flask_blog'
+    SQLALCHEMY_DATABASE_URI = 'postgresql://lvcong:password@/blog'
 
 
 class TestingConfig(Config):
     WTF_CSRF_ENABLE = False
     DEBUG = True
-    SQLALCHEMY_DATABASE_URI = 'postgresql://lvcong:password@/flask_test'
+    SQLALCHEMY_DATABASE_URI = 'postgresql://lvcong:password@/blog_test'
 
 
 class ProductionConfig(Config):

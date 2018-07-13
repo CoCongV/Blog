@@ -1,12 +1,13 @@
 import unittest
 from blog import create_app, db
 from blog.models import User, Role, AnonymousUser, Permission, Post, Comment
+from blog.config import TestingConfig
 
 
 class TestUserModel(unittest.TestCase):
 
     def setUp(self):
-        self.app = create_app('testing')
+        self.app = create_app(TestingConfig)
         self.app_context = self.app.app_context()
         self.app_context.push()
         db.create_all()
@@ -62,7 +63,7 @@ class TestUserModel(unittest.TestCase):
 class TestPostModel(unittest.TestCase):
 
     def setUp(self):
-        self.app = create_app('testing')
+        self.app = create_app(TestingConfig)
         self.app_context = self.app.app_context()
         self.app_context.push()
         db.create_all()
@@ -102,7 +103,6 @@ class TestPostModel(unittest.TestCase):
         comment = Comment.create(body='test',
                                  author=self.user,
                                  post=self.post)
-        print(comment)
         comment.to_json()
         reply = Comment.create(body='reply',
                                author=self.user,

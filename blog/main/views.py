@@ -50,5 +50,4 @@ def image(uid, image):
                         str(uid), image)
     if not os.path.exists(path):
         raise FileError()
-    print(path)
     return send_file(path)
