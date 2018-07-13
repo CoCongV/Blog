@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from itsdangerous import TimedJSONWebSignatureSerializer
+from sqlalchemy.orm import relationship
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from blog import db
@@ -20,8 +21,8 @@ class User(db.Model):
     about_me = db.Column(db.String(128))
     member_since = db.Column(db.DateTime, default=lambda: datetime.utcnow())
     last_seen = db.Column(db.DateTime, default=lambda: datetime.utcnow())
-    posts = db.relationship('Post', backref='author', lazy='dynamic')
-    comments = db.relationship(
+    posts = relationship('Post', backref='author', lazy='dynamic')
+    comments = relationship(
         'Comment',
         backref='author',
         lazy='dynamic',

@@ -1,4 +1,3 @@
-from sanic.
 from sanic_restful import Resource, reqparse
 
 from blog.decorators import login_requred, permission_reuired
@@ -11,10 +10,10 @@ parser.add_argument('body', required=True)
 parser.add_argument('reply')
 parser.add_argument('post_id', required=True)
 parser.add_argument('comment_id')
-parse.add_argument('page', default=1)
+parser.add_argument('page', default=1)
 
 
-class CommentApi(Resource):
+class CommentsApi(Resource):
     method_decorators = {
         'post': [permission_reuired, login_requred]
     }
@@ -37,10 +36,10 @@ class CommentApi(Resource):
         pagination = paginate(query, params.page, per_page)
         comments = pagination.items
         prev = request.app.url_for(
-            'comment.commentapi', page=page - 1, post_id=post.id) \
+            'comment.commentapi', page=params.page - 1, post_id=post.id) \
             if pagination.has_prev else None
         next_ = request.app.url_for(
-            'comment.commentapi', page=page + 1, post_id=post.id) \
+            'comment.commentapi', page=params.page + 1, post_id=post.id) \
             if pagination.has_next else None
         return {
             'comments': [i.to_dict() for i in comments],

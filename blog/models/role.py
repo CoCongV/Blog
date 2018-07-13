@@ -1,5 +1,7 @@
 from blog import db
 
+from sqlalchemy.orm import relationship
+
 
 class Permission:
     COMMENT = 0x02
@@ -12,7 +14,7 @@ class Role(db.Model):
     name = db.Column(db.String(64), unique=True)
     default = db.Column(db.Boolean, default=False, index=True)
     permissions = db.Column(db.Integer)
-    users = db.relationship('User', backref='role', lazy='dynamic')
+    users = relationship('User', backref='role', lazy='dynamic')
 
     @staticmethod
     async def insert_roles():

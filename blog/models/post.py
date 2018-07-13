@@ -4,7 +4,9 @@ import bleach
 from whoosh.analysis import SimpleAnalyzer
 
 from markdown import markdown
+from sqlalchemy import event
 from sqlalchemy.dialects import postgresql
+from sqlalchemy.orm import relationship
 
 from blog import db
 
@@ -20,7 +22,7 @@ class Post(db.Model):
     timestamp = db.Column(
         db.DateTime, default=lambda: datetime.utcnow(), index=True)
     author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    comments = db.relationship(
+    comments = relationship(
         'Comment',
         backref='post',
         lazy='dynamic',
@@ -32,7 +34,7 @@ class Post(db.Model):
     def on_change_body(target, value, oldvalue, initiator):
         target.body_html = bleach.linkify(
             markdown(value, output_format='html'))
-    
+
     async def to_dict(self, app, split=False):
         data = {
             "post_id": self.id,
@@ -72,4 +74,4 @@ class Post(db.Model):
             )
 
 
-db.event.listen(Post.body, 'set', Post.on_change_body)
+# event.listen(Post.body, 'set', Post.on_change_body)

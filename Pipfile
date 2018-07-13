@@ -13,6 +13,12 @@ aiofiles = "*"
 aiosmtplib = "*"
 aioredis = "*"
 "jinja2" = "*"
+whooshalchemy = "*"
+whoosh = "*"
+gunicorn = "*"
+click = "*"
+bleach = "*"
+markdown = "*"
 
 [dev-packages]
 pylint = "*"
@@ -20,6 +26,10 @@ pylint = "*"
 rope = "*"
 yapf = "*"
 ipython = "*"
+feed-conductor = {editable = true, path = "."}
+sanic-blog = {editable = true, path = "."}
+requests = "*"
+aoiklivereload = "*"
 
 [requires]
-python_version = "3.6"
+python_version = "3.7"
