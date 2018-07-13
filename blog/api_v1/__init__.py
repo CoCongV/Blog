@@ -3,8 +3,8 @@ from datetime import datetime
 from flask import g, make_response, jsonify
 from flask_httpauth import HTTPTokenAuth
 
-from app.models import User, AnonymousUser
-from app.utils.web import NestableBlueprint
+from blog.models import User, AnonymousUser
+from blog.utils.web import NestableBlueprint
 
 
 api_v1 = NestableBlueprint('api_v1', __name__, url_prefix='/api/v1')
