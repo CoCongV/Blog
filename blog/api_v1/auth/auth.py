@@ -3,13 +3,12 @@ from flask_restful import Resource, reqparse
 
 from blog.api_v1 import token_auth
 from blog.api_v1.decorators import permission_required
-from blog.errors import UserAlreadyExistsError, AuthorizedError
+from blog.exceptions import UserAlreadyExistsError, AuthorizedError
 from blog.utils.celery.email import send_email
-from blog.utils.web import HTTPStatusCodeMixin
 from blog.models import Permission, User
 
 
-class SendEmailAuth(Resource, HTTPStatusCodeMixin):
+class SendEmailAuth(Resource):
 
     decorators = [permission_required(Permission.COMMENT),
                   token_auth.login_required]
@@ -29,7 +28,7 @@ class SendEmailAuth(Resource, HTTPStatusCodeMixin):
         return {}
 
 
-class EmailExist(Resource, HTTPStatusCodeMixin):
+class EmailExist(Resource):
 
     def get(self):
         _reqparse = reqparse.RequestParser()
@@ -38,10 +37,10 @@ class EmailExist(Resource, HTTPStatusCodeMixin):
         user = User.query.filter_by(email=email).first()
         if user:
             raise UserAlreadyExistsError()
-        return {}, self.SUCCESS
+        return {}
 
 
-class EmailAuth(Resource, HTTPStatusCodeMixin):
+class EmailAuth(Resource):
 
     def get(self, token):
         result = User.verify_email_token(token)
@@ -50,11 +49,11 @@ class EmailAuth(Resource, HTTPStatusCodeMixin):
         raise AuthorizedError()
 
 
-class UsernameExist(Resource, HTTPStatusCodeMixin):
+class UsernameExist(Resource):
 
     def get(self):
         username = request.args.get('username')
         user = User.query.filter_by(username=username).first()
         if user:
             raise UserAlreadyExistsError()
-        return {}, self.SUCCESS
+        return {}

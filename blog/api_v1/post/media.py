@@ -8,7 +8,6 @@ from blog import photos
 from blog.models import Permission
 from blog.api_v1 import token_auth
 from blog.api_v1.decorators import permission_required
-from blog.utils.web import HTTPStatusCodeMixin
 
 
 photo_reqparse = reqparse.RequestParser()
@@ -20,7 +19,7 @@ photo_reqparse.add_argument(
 )
 
 
-class PhotoStorage(Resource, HTTPStatusCodeMixin):
+class PhotoStorage(Resource):
 
     method_decorators = [
         permission_required(Permission.ADMINISTER), token_auth.login_required
@@ -30,14 +29,11 @@ class PhotoStorage(Resource, HTTPStatusCodeMixin):
         args = photo_reqparse.parse_args()
         if os.path.exists(
                 os.path.join(photos.config.destination, str(g.current_user.id),
-                             args.get('image').filename)):
+                             args.image.filename)):
             file_url = photos.url(
-                os.path.join(
-                    str(g.current_user.id),
-                    args.get('image').filename))
+                os.path.join(str(g.current_user.id), args.image.filename))
         else:
-            filename = photos.save(
-                args.get('image'), str(g.current_user.id))
+            filename = photos.save(args.image, str(g.current_user.id))
             file_url = photos.url(filename)
 
-        return {'url': file_url}, self.CREATED
+        return {'url': file_url}

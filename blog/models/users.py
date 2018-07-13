@@ -62,7 +62,9 @@ class User(CRUDMixin, UserMixin, db.Model, Serializer):
         else:
             return User.query.get(data['confirm_id'])
 
-    def generate_email_token(self, expiration=3600):
+    def generate_email_token(self, expiration=None):
+        if not expiration:
+            current_app.config['LOGIN_TOKEN']
         s = TimedJSONWebSignatureSerializer(
             current_app.config['SECRET_KEY'], expires_in=expiration)
         token = s.dumps({'email': self.email})

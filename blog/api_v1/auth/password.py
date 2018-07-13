@@ -1,9 +1,9 @@
 from flask import g
 from flask_restful import reqparse, Resource
+from werkzeug.exceptions import Unauthorized
 
 from blog.api_v1 import token_auth
 from blog.api_v1.decorators import permission_required
-from blog.errors import AuthorizedError
 from blog.models import Permission
 
 
@@ -25,6 +25,6 @@ class Password(Resource):
         new_password = args['new_password']
         verify = g.current_user.verify_password(old_password)
         if not verify:
-            raise AuthorizedError()
+            raise Unauthorized()
         g.current_user.update(password=new_password)
         return {}

@@ -2,24 +2,23 @@ from flask import current_app, url_for
 from flask_restful import reqparse, Resource
 
 from blog import db, cache
-from blog.utils.web import HTTPStatusCodeMixin
 from blog.models import Post
 
 
 tag_parse = reqparse.RequestParser()
 tag_parse.add_argument('tag', location='args')
-tag_parse.add_argument('page', location='args')
+tag_parse.add_argument('page', location='args', deafult=1, type=int)
 
 
-class PostTags(Resource, HTTPStatusCodeMixin):
+class PostTags(Resource):
 
     @cache.cached(300)
     def get(self):
         prev = None
 
         args = tag_parse.parse_args()
-        tag = args['tag']
-        page = args.get('page', 1)
+        tag = args.tag
+        page = args.page
 
         pagination = Post.query.filter(Post.tags.any(tag)) \
             .order_by(db.desc(Post.timestamp)) \
@@ -40,4 +39,4 @@ class PostTags(Resource, HTTPStatusCodeMixin):
             'prev': prev,
             'next': _next,
             'count': total
-        }, self.SUCCESS
+        }

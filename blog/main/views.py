@@ -6,7 +6,7 @@ from flask import (render_template,
                    current_app,
                    send_file)
 
-from blog.errors import FileError
+from blog.exceptions import FileError
 
 from . import main
 from .. import cache

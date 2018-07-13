@@ -5,48 +5,41 @@ from blog import db
 from blog.api_v1 import token_auth
 from blog.api_v1.decorators import permission_required
 from blog.models import Post, Comment, Permission
-from blog.utils.web import HTTPStatusCodeMixin
 
 comment_parse = reqparse.RequestParser()
-comment_parse.add_argument(
-    'body',
-    location='json',
-    required=True
-)
+comment_parse.add_argument('body', location='json')
 comment_parse.add_argument(
     'reply',
     location='json',
-    required=False
 )
-comment_parse.add_argument(
-    'post',
-    location='json',
-    required=True
-)
+comment_parse.add_argument('post_id', required=True)
+comment_parse.add_argument('page', type=int, default=1)
 
 
-class CommentView(Resource, HTTPStatusCodeMixin):
+class CommentView(Resource):
 
-    @token_auth.login_required
-    @permission_required(Permission.COMMENT)
+    method_decorators = {
+        'post':
+        [permission_required(Permission.COMMENT), token_auth.login_required]
+    }
+
     def post(self):
         args = comment_parse.parse_args()
-        comment_id = args.get('comment_id')
-        post = Post.get(args['post'])
-        kwargs = {'body': args['body'],
-                  'author': g.current_user,
-                  'post': post}
-        comment = Comment.create(**kwargs)
+        comment_id = args.comment_id
+        post = Post.get(args.post_id)
+        comment = Comment.create(
+            body=args.body, author=g.current_user, post=post)
         if comment_id:
             reply = Comment.query.get(comment_id)
             comment.reply(reply)
-        return {}, self.CREATED
+        return {}, 201
 
     def get(self):
         # 评论增加Email验证权限
         # 获取评论
-        post = Post.query.get(request.args['post_id'])
-        page = int(request.args.get('page', 1))
+        args = comment_parse.parse_args()
+        post = Post.query.get(args['post_id'])
+        page = args.page
         pagination = post.comments.order_by(db.desc('timestamp')).paginate(
             page, per_page=current_app.config['BLOG_COMMENT_PAGE'],
             error_out=False
@@ -63,4 +56,4 @@ class CommentView(Resource, HTTPStatusCodeMixin):
             'prev': prev,
             'next': _next,
             'count': pagination.total
-        }, self.SUCCESS
+        }

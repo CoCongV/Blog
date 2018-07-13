@@ -4,40 +4,38 @@ from flask import current_app, url_for
 from flask_restful import reqparse, Resource
 
 from blog import db, cache
-from blog.utils.web import HTTPStatusCodeMixin
 from blog.models import Post
 
-_parse = reqparse.RequestParser()
-_parse.add_argument('year', location='args')
-_parse.add_argument('page', location='args')
+parse = reqparse.RequestParser()
+parse.add_argument('year', location='args')
+parse.add_argument('page', location='args', type=int, default=1)
 
 
-class PostTimeLine(Resource, HTTPStatusCodeMixin):
+class PostTimeLine(Resource):
 
     @cache.cached(1800)
     def get(self):
-        args = _parse.parse_args()
-        year = args['year']
-        page = args.get('page', 1)
+        prev = None
+        next_ = None
+        args = parse.parse_args()
+        year = args.year
+        page = args.page
+        per_page = current_app.config['BLOG_POST_PER_PAGE']
+
         pagination = Post.query.filter(extract('year', Post.timestamp) == year) \
             .order_by(db.desc(Post.timestamp)) \
-            .paginate(
-            page, per_page=current_app.config['BLOG_POST_PER_PAGE'],
-            error_out=False
-        )
+            .paginate(page, per_page=per_page, error_out=False)
         posts = pagination.items
-        prev = None
         if pagination.has_prev:
             prev = url_for(
                 'post.post_time_line', page=page - 1, _external=True)
-        _next = None
         if pagination.has_next:
-            _next = url_for(
+            next_ = url_for(
                 'post.post_time_line', page=page + 1, _external=True)
 
         return {
             'posts': [i.to_json(True) for i in posts],
             'prev': prev,
-            'next': _next,
+            'next': next_,
             'count': pagination.total
-        }, self.SUCCESS
+        }

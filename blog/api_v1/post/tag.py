@@ -7,10 +7,9 @@ from flask_restful import Resource
 
 from blog import db, cache
 from blog.models import Post
-from blog.utils.web import HTTPStatusCodeMixin
 
 
-class Tag(Resource, HTTPStatusCodeMixin):
+class Tag(Resource):
 
     @cache.cached(timeout=1800)
     def get(self):
@@ -19,5 +18,7 @@ class Tag(Resource, HTTPStatusCodeMixin):
         result = session.query(
             Post.tags, func.count(Post.tags)).group_by(Post.tags).all()
         result.sort(key=itemgetter(1))
-        tags = list(deque(set(l for i in result for l in i[0]), maxlen=10))
-        return {"tags": tags}, self.SUCCESS
+        return {
+            "tags": list(
+                deque(set(l for i in result for l in i[0]), maxlen=10))
+        }

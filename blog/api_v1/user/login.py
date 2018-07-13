@@ -1,38 +1,30 @@
-from flask import g
+from flask import g, current_app
 from flask_restful import reqparse, Resource
+from werkzeug.exceptions import Unauthorized
 
 from blog.models import User
-from blog.utils.web import HTTPStatusCodeMixin
-from blog.errors import AuthorizedError
 
 
-class LoginView(Resource, HTTPStatusCodeMixin):
+reqparse = reqparse.RequestParser()
+reqparse.add_argument('email', required=True, location='json', type=str)
+reqparse.add_argument('password', required=True, location='json', type=str)
 
-    def __init__(self):
-        super(LoginView, self).__init__()
-        self.expiration = 86400
-        self.reqparse = reqparse.RequestParser()
-        self.reqparse.add_argument(
-            'email', required=True, location='json', type=str)
-        self.reqparse.add_argument(
-            'password', required=True, location='json', type=str)
+
+class LoginView(Resource):
 
     def post(self):
-        args = self.reqparse.parse_args()
-        email = args['email']
-        password = args['password']
-        user = User.query.filter_by(email=email).first()
+        args = reqparse.parse_args()
+        user = User.query.filter_by(email=args.email).first()
         if not user:
-            raise AuthorizedError('Email Error')
-        verify = user.verify_password(password)
+            raise Unauthorized('Email Error')
+        verify = user.verify_password(args.password)
         if not verify:
-            raise AuthorizedError('Password Error')
+            raise Unauthorized('Password Error')
         else:
             g.current_user = user
-            token = user.generate_confirm_token(expiration=self.expiration)
+            token = user.generate_confirm_token()
             return {
                 'token': token,
-                'expiration': self.expiration,
                 'username': user.username,
                 'permission': user.role.permissions
-            }, self.SUCCESS
+            }
