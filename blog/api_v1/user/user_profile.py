@@ -1,9 +1,9 @@
 from flask import g, request
 from flask_restful import Resource
 
-from app.models import User, Permission
-from app.api_v1 import token_auth
-from app.utils.web import HTTPStatusCodeMixin
+from blog.models import User, Permission
+from blog.api_v1 import token_auth
+from blog.utils.web import HTTPStatusCodeMixin
 
 
 class UserProfile(Resource, HTTPStatusCodeMixin):

@@ -4,8 +4,8 @@ from datetime import datetime
 import bleach
 from markdown import markdown
 
-from app import db
-from app.models.minixs import CRUDMixin, Serializer
+from blog import db
+from blog.models.minixs import CRUDMixin, Serializer
 
 
 class Reply(db.Model, CRUDMixin, Serializer):

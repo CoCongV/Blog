@@ -12,7 +12,7 @@ from flask_uploads import (UploadSet,
                            patch_request_class)
 
 from config import config
-from app.utils import assets
+from blog.utils import assets
 
 mail = Mail()
 pagedown = PageDown()

@@ -1,6 +1,6 @@
 from flask_restful import HTTPException
 
-from app.utils.web import HTTPStatusCodeMixin
+from blog.utils.web import HTTPStatusCodeMixin
 
 
 class PermissionForbiddenError(HTTPException, HTTPStatusCodeMixin):

@@ -1,6 +1,6 @@
 from sqlalchemy.inspection import inspect
 
-from app import db
+from blog import db
 
 
 class CRUDMixin(object):

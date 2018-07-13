@@ -4,11 +4,11 @@ from flask import g
 from flask_restful import Resource, reqparse
 from werkzeug.datastructures import FileStorage
 
-from app import photos
-from app.models import Permission
-from app.api_v1 import token_auth
-from app.api_v1.decorators import permission_required
-from app.utils.web import HTTPStatusCodeMixin
+from blog import photos
+from blog.models import Permission
+from blog.api_v1 import token_auth
+from blog.api_v1.decorators import permission_required
+from blog.utils.web import HTTPStatusCodeMixin
 
 
 photo_reqparse = reqparse.RequestParser()

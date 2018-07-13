@@ -3,11 +3,11 @@ from flask_restful import reqparse, Resource
 from sqlalchemy.exc import IntegrityError, InvalidRequestError, DataError
 from werkzeug.exceptions import Forbidden
 
-from app.api_v1 import token_auth
-from app.errors import UserAlreadyExistsError
-from app.models import User, Role
-from app.utils.celery.email import send_email
-from app.utils.web import HTTPStatusCodeMixin
+from blog.api_v1 import token_auth
+from blog.errors import UserAlreadyExistsError
+from blog.models import User, Role
+from blog.utils.celery.email import send_email
+from blog.utils.web import HTTPStatusCodeMixin
 
 
 user_reqparse = reqparse.RequestParser()

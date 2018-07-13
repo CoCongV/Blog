@@ -6,8 +6,8 @@ from wtforms.validators import DataRequired, Length, Email, Regexp
 from wtforms import ValidationError
 from flask_pagedown.fields import PageDownField
 
-from app.models.roles import Role
-from app.models.users import User
+from blog.models.roles import Role
+from blog.models.users import User
 
 
 class EditProfileForm(Form):

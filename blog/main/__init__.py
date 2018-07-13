@@ -2,7 +2,7 @@
 from flask import Blueprint
 from flask_graphql import GraphQLView
 
-from app.models.schema import schema
+from blog.models.schema import schema
 
 main = Blueprint('main', __name__)
 

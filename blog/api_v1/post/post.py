@@ -2,12 +2,12 @@ from flask import g, url_for, current_app
 from flask_restful import request, reqparse, Resource
 from werkzeug.exceptions import Forbidden
 
-from app import db
-from app.errors import PermissionForbiddenError
-from app.models import Post, Permission
-from app.api_v1 import token_auth
-from app.api_v1.decorators import permission_required
-from app.utils.web import HTTPStatusCodeMixin
+from blog import db
+from blog.errors import PermissionForbiddenError
+from blog.models import Post, Permission
+from blog.api_v1 import token_auth
+from blog.api_v1.decorators import permission_required
+from blog.utils.web import HTTPStatusCodeMixin
 
 post_parser = reqparse.RequestParser()
 post_parser.add_argument(

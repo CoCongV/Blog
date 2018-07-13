@@ -1,8 +1,8 @@
 from flask import g
 from flask_restful import reqparse, Resource
 
-from app.api_v1 import token_auth
-from app.utils.web import HTTPStatusCodeMixin
+from blog.api_v1 import token_auth
+from blog.utils.web import HTTPStatusCodeMixin
 
 permission_reqparse = reqparse.RequestParser()
 permission_reqparse.add_argument(

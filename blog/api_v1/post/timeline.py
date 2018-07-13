@@ -2,9 +2,9 @@ from sqlalchemy import extract
 from sqlalchemy.orm import sessionmaker
 from flask_restful import Resource
 
-from app.utils.web import HTTPStatusCodeMixin
-from app.models import Post
-from app import db, cache
+from blog.utils.web import HTTPStatusCodeMixin
+from blog.models import Post
+from blog import db, cache
 
 
 class Timeline(Resource, HTTPStatusCodeMixin):

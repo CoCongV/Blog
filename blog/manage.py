@@ -6,11 +6,11 @@ from flask_migrate import Migrate, MigrateCommand
 from flask_admin import Admin
 from flask_whooshalchemyplus import whoosh_index
 
-from app import create_app, db, make_celery, celery as celery_worker
-from app.models.comments import Comment
-from app.models.users import User
-from app.models.posts import Post
-from app.models.roles import Role, Permission
+from blog import create_app, db, make_celery, celery as celery_worker
+from blog.models.comments import Comment
+from blog.models.users import User
+from blog.models.posts import Post
+from blog.models.roles import Role, Permission
 
 COV = None
 if os.environ.get('FLASK_COVERAGE'):

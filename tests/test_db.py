@@ -1,6 +1,6 @@
 import unittest
-from app import create_app, db
-from app.models import User, Role, AnonymousUser, Permission, Post, Comment
+from blog import create_app, db
+from blog.models import User, Role, AnonymousUser, Permission, Post, Comment
 
 
 class TestUserModel(unittest.TestCase):

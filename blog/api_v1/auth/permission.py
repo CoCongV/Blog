@@ -1,10 +1,10 @@
 from flask import g, request
 from flask_restful import Resource
 
-from app.api_v1 import token_auth
-from app.errors import PermissionForbiddenError
-from app.models import Permission, User, Post
-from app.utils.web import HTTPStatusCodeMixin
+from blog.api_v1 import token_auth
+from blog.errors import PermissionForbiddenError
+from blog.models import Permission, User, Post
+from blog.utils.web import HTTPStatusCodeMixin
 
 
 class UserPermission(Resource, HTTPStatusCodeMixin):

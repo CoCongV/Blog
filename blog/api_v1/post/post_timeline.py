@@ -3,9 +3,9 @@ from sqlalchemy import extract
 from flask import current_app, url_for
 from flask_restful import reqparse, Resource
 
-from app import db, cache
-from app.utils.web import HTTPStatusCodeMixin
-from app.models import Post
+from blog import db, cache
+from blog.utils.web import HTTPStatusCodeMixin
+from blog.models import Post
 
 _parse = reqparse.RequestParser()
 _parse.add_argument('year', location='args')

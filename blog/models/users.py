@@ -6,8 +6,8 @@ from flask_login import UserMixin, AnonymousUserMixin
 from itsdangerous import TimedJSONWebSignatureSerializer
 from werkzeug.security import generate_password_hash, check_password_hash
 
-from app import db, login_manager
-from app.models.minixs import CRUDMixin, Serializer
+from blog import db, login_manager
+from blog.models.minixs import CRUDMixin, Serializer
 from .roles import Permission
 
 

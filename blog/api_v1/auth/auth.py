@@ -1,12 +1,12 @@
 from flask import g, url_for, request, redirect
 from flask_restful import Resource, reqparse
 
-from app.api_v1 import token_auth
-from app.api_v1.decorators import permission_required
-from app.errors import UserAlreadyExistsError, AuthorizedError
-from app.utils.celery.email import send_email
-from app.utils.web import HTTPStatusCodeMixin
-from app.models import Permission, User
+from blog.api_v1 import token_auth
+from blog.api_v1.decorators import permission_required
+from blog.errors import UserAlreadyExistsError, AuthorizedError
+from blog.utils.celery.email import send_email
+from blog.utils.web import HTTPStatusCodeMixin
+from blog.models import Permission, User
 
 
 class SendEmailAuth(Resource, HTTPStatusCodeMixin):

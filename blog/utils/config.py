@@ -1,6 +1,6 @@
 from configparser import ConfigParser
 
-from app.lib import Single
+from blog.lib import Single
 
 
 class Config(metaclass=Single):

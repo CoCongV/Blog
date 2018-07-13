@@ -1,9 +1,9 @@
 from flask import g
 from flask_restful import reqparse, Resource
 
-from app.models import User
-from app.utils.web import HTTPStatusCodeMixin
-from app.errors import AuthorizedError
+from blog.models import User
+from blog.utils.web import HTTPStatusCodeMixin
+from blog.errors import AuthorizedError
 
 
 class LoginView(Resource, HTTPStatusCodeMixin):

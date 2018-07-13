@@ -8,8 +8,8 @@ from whoosh.analysis import SimpleAnalyzer
 from markdown import markdown
 from sqlalchemy.dialects import postgresql
 
-from app import db, cache
-from app.models.minixs import CRUDMixin, Serializer
+from blog import db, cache
+from blog.models.minixs import CRUDMixin, Serializer
 
 
 class Post(CRUDMixin, db.Model, Serializer):

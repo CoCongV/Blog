@@ -3,9 +3,9 @@ from sqlalchemy import extract
 from flask import current_app, url_for
 from flask_restful import reqparse, Resource
 
-from app import db
-from app.utils.web import HTTPStatusCodeMixin
-from app.models import Post
+from blog import db
+from blog.utils.web import HTTPStatusCodeMixin
+from blog.models import Post
 
 
 search_parse = reqparse.RequestParser()

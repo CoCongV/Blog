@@ -1,11 +1,11 @@
 from flask import g
 from flask_restful import reqparse, Resource
 
-from app.api_v1 import token_auth
-from app.api_v1.decorators import permission_required
-from app.errors import AuthorizedError
-from app.models import Permission
-from app.utils.web import HTTPStatusCodeMixin
+from blog.api_v1 import token_auth
+from blog.api_v1.decorators import permission_required
+from blog.errors import AuthorizedError
+from blog.models import Permission
+from blog.utils.web import HTTPStatusCodeMixin
 
 
 class Password(Resource, HTTPStatusCodeMixin):

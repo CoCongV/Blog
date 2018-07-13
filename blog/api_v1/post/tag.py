@@ -5,9 +5,9 @@ from sqlalchemy import func
 from sqlalchemy.orm import sessionmaker
 from flask_restful import Resource
 
-from app import db, cache
-from app.models import Post
-from app.utils.web import HTTPStatusCodeMixin
+from blog import db, cache
+from blog.models import Post
+from blog.utils.web import HTTPStatusCodeMixin
 
 
 class Tag(Resource, HTTPStatusCodeMixin):
