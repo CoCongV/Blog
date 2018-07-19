@@ -1,6 +1,7 @@
 import os
 try:
-    import config as conf
+    from config import config
+    conf = config[os.getenv('RQ_ENV') or 'production']
 except ImportError:
     from .config import config
     conf = config[os.getenv('RQ_ENV') or 'default']

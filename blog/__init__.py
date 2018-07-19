@@ -1,4 +1,3 @@
-# coding: utf-8
 from celery import Celery
 from flask import Flask
 from flask_cache import Cache
@@ -30,6 +29,7 @@ photos = UploadSet('photos', IMAGES)
 def create_app(config):
     app = Flask(__name__)
     app.config.from_object(config)
+    config.init_app(app)
 
     configure_uploads(app, (photos, ))
     patch_request_class(app, None)
