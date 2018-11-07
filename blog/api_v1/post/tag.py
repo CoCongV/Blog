@@ -5,13 +5,12 @@ from sqlalchemy import func
 from sqlalchemy.orm import sessionmaker
 from flask_restful import Resource
 
-from blog import db, cache
+from blog import db
 from blog.models import Post
 
 
 class Tag(Resource):
 
-    @cache.cached(timeout=1800)
     def get(self):
         _Session = sessionmaker(db.engine)
         session = _Session()

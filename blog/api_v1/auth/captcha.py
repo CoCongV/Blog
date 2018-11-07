@@ -1,13 +1,15 @@
 from base64 import b64encode
 
-from flask_restful import Resource
+from flask import make_response
+from flask.views import MethodView
 
 from blog import flask_captchap
 
 
-class ImageCaptcha(Resource):
+class ImageCaptcha(MethodView):
 
     def get(self):
         img = flask_captchap.generate_img()
         # data = b64encode(img)
-        return img
+        rep = make_response(img)
+        return rep

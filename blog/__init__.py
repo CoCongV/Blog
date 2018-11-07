@@ -1,6 +1,5 @@
 from celery import Celery
 from flask import Flask
-from flask_cache import Cache
 from flask_login import LoginManager
 from flask_mail import Mail
 from flask_pagedown import PageDown
@@ -15,7 +14,6 @@ from blog.utils import assets, FlaskCaptcha
 mail = Mail()
 pagedown = PageDown()
 db = SQLAlchemy()
-cache = Cache()
 
 login_manager = LoginManager()
 login_manager.session_protection = 'strong'
@@ -39,7 +37,6 @@ def create_app(config):
     db.init_app(app)
     login_manager.init_app(app)
     assets.init_app(app)
-    cache.init_app(app)
 
     flask_captchap.init_app(app)
 
