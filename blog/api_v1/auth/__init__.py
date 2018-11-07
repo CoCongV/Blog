@@ -1,15 +1,16 @@
 from flask import Blueprint
 from flask_restful import Api
 
-from .token import Token
-from .permission import (PostPermission,
-                         CommentPermission,
-                         UserPermission)
-from .password import Password
 from .auth import (SendEmailAuth,
                    EmailExist,
                    EmailAuth,
                    UsernameExist)
+from .captcha import ImageCaptcha
+from .password import Password
+from .permission import (PostPermission,
+                         CommentPermission,
+                         UserPermission)
+from .token import Token
 
 
 api_auth = Blueprint('auth', __name__, url_prefix='/auth')
@@ -31,3 +32,5 @@ api.add_resource(EmailExist, '/email_exist/',
                  endpoint='email_exist')
 api.add_resource(UsernameExist, '/username_exist/',
                  endpoint='username_exist')
+api.add_resource(ImageCaptcha, '/img_captcha',
+                 endpoint='img_captcha')

@@ -10,7 +10,7 @@ from flask_uploads import (UploadSet,
                            configure_uploads,
                            patch_request_class)
 
-from blog.utils import assets
+from blog.utils import assets, FlaskCaptcha
 
 mail = Mail()
 pagedown = PageDown()
@@ -24,6 +24,7 @@ login_manager.login_view = 'auth.login'
 celery = Celery(__name__, broker='redis://localhost:6379')
 
 photos = UploadSet('photos', IMAGES)
+flask_captchap = FlaskCaptcha()
 
 
 def create_app(config):
@@ -39,6 +40,8 @@ def create_app(config):
     login_manager.init_app(app)
     assets.init_app(app)
     cache.init_app(app)
+
+    flask_captchap.init_app(app)
 
     from .main import main as main_blueprint
     app.register_blueprint(main_blueprint)

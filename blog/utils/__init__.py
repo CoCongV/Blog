@@ -1,3 +1,6 @@
+from .captcha import FlaskCaptcha
+
+
 class Single(type):
     def __init__(cls, *args, **kwargs):
         cls.__instance = None
@@ -13,3 +16,6 @@ class Single(type):
     @classmethod
     def reload(mcs):
         mcs.__instance = None
+
+
+__all__ = ['FlaskCaptcha', 'Single', ]

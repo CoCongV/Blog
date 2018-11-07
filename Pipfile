@@ -41,6 +41,7 @@ wtforms = "*"
 ipython = "*"
 meinheld = "*"
 jieba = "*"
+captcha = "*"
 
 [dev-packages]
 coverage = "*"
