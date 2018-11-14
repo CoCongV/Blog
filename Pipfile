@@ -41,6 +41,7 @@ ipython = "*"
 meinheld = "*"
 jieba = "*"
 captcha = "*"
+flask-redis = "*"
 
 [dev-packages]
 coverage = "*"

@@ -8,8 +8,9 @@ from flask_uploads import (UploadSet,
                            IMAGES,
                            configure_uploads,
                            patch_request_class)
+from flask_redis import FlaskRedis
 
-from blog.utils import assets, FlaskCaptcha
+from blog.utils import assets, FlaskCaptcha, RedisSessionInterface
 
 mail = Mail()
 pagedown = PageDown()
@@ -22,8 +23,8 @@ login_manager.login_view = 'auth.login'
 celery = Celery(__name__, broker='redis://localhost:6379')
 
 photos = UploadSet('photos', IMAGES)
-flask_captchap = FlaskCaptcha()
-
+flask_captcha = FlaskCaptcha()
+redis_cli = FlaskRedis()
 
 def create_app(config):
     app = Flask(__name__)
@@ -37,8 +38,10 @@ def create_app(config):
     db.init_app(app)
     login_manager.init_app(app)
     assets.init_app(app)
+    redis_cli.init_app(app)
 
-    flask_captchap.init_app(app)
+    flask_captcha.init_app(app)
+    app.session_interface = RedisSessionInterface(redis_cli)
 
     from .main import main as main_blueprint
     app.register_blueprint(main_blueprint)

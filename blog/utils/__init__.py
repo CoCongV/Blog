@@ -1,4 +1,5 @@
 from .captcha import FlaskCaptcha
+from .session import RedisSessionInterface
 
 
 class Single(type):
