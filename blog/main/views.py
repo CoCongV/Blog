@@ -9,10 +9,8 @@ from flask import (render_template,
 from blog.exceptions import FileError
 
 from . import main
-from .. import cache
 
 
-@cache.cached(timeout=50)
 @main.route('/')
 def index():
     return render_template('index.html')

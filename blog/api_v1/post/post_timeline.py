@@ -3,7 +3,7 @@ from sqlalchemy import extract
 from flask import current_app, url_for
 from flask_restful import reqparse, Resource
 
-from blog import db, cache
+from blog import db
 from blog.models import Post
 
 parse = reqparse.RequestParser()
@@ -13,7 +13,6 @@ parse.add_argument('page', location='args', type=int, default=1)
 
 class PostTimeLine(Resource):
 
-    @cache.cached(1800)
     def get(self):
         prev = None
         next_ = None

@@ -8,7 +8,7 @@ from whoosh.analysis import SimpleAnalyzer
 from markdown import markdown
 from sqlalchemy.dialects import postgresql
 
-from blog import db, cache
+from blog import db
 from blog.models.minixs import CRUDMixin, Serializer
 
 
@@ -40,7 +40,6 @@ class Post(CRUDMixin, db.Model, Serializer):
             markdown(value, output_format='html')
         )
 
-    @cache.memoize(timeout=300)
     def to_json(self, split=False):
         json_data = {
             "post_id": self.id,

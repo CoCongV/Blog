@@ -6,7 +6,6 @@ coverage
 Flask
 Flask-Admin
 Flask-Assets
-Flask-Cache
 Flask-GraphQL
 Flask-HTTPAuth
 Flask-Login

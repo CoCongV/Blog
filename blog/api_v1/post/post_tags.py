@@ -1,7 +1,7 @@
 from flask import current_app, url_for
 from flask_restful import reqparse, Resource
 
-from blog import db, cache
+from blog import db
 from blog.models import Post
 
 
@@ -12,7 +12,6 @@ tag_parse.add_argument('page', location='args', deafult=1, type=int)
 
 class PostTags(Resource):
 
-    @cache.cached(300)
     def get(self):
         prev = None
 

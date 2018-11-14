@@ -65,6 +65,8 @@ class Config:
     LOG_TIME = 'D'
     LOG_BACK_COUNT = 10
 
+    CAPTCHA_FONTS_PATH = [os.path.join(basedir, 'fonts/NotoSans-Regular.ttf')]
+
     @staticmethod
     def init_app(app):
         pass
