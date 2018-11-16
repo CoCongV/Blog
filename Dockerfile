@@ -1,7 +1,8 @@
 FROM python:3.6.7-alpine3.8
 RUN apk update && \
     apk add --virtual build-deps gcc python-dev musl-dev && \
-    apk add postgresql-dev
+    apk add postgresql-dev && \
+    apk add zlib-dev
 ENV PYTHON_VERSION 3.6.7
 RUN mkdir /Blog
 WORKDIR /Blog
