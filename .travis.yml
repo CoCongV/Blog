@@ -3,7 +3,7 @@ language: python
 python:
   - 3.6
 install:
-  - pip install -r requirements.txt
+  - python setup.py
 script: blog-manager test
 after_success:
   - export FLASK_COVERAGE=True
