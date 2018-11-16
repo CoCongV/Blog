@@ -52,3 +52,4 @@ rope = "*"
 yapf = "*"
 ipython = "*"
 flask-blog = {editable = true, path = "."}
+forgerypy = "*"
