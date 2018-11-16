@@ -80,7 +80,7 @@ class DevelopmentConfig(Config):
 class TestingConfig(Config):
     WTF_CSRF_ENABLE = False
     DEBUG = True
-    SQLALCHEMY_DATABASE_URI = 'postgresql://lvcong:password@/blog_test'
+    SQLALCHEMY_DATABASE_URI = 'postgresql://lvcong:password@172.17.0.1/blog_test'
 
 
 class ProductionConfig(Config):
