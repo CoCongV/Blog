@@ -20,6 +20,7 @@ Flask-Script
 Flask-SQLAlchemy
 Flask-Uploads
 flask_whooshalchemyplus
+ForgeryPy
 gevent
 graphene
 graphene-sqlalchemy
