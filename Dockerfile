@@ -1,8 +1,17 @@
 FROM python:3.6.7-alpine3.8
 RUN apk update && \
     apk add --virtual build-deps gcc python-dev musl-dev && \
-    apk add postgresql-dev && \
-    apk add zlib-dev
+    apk --no-cache add postgresql-dev \
+                       jpeg-dev \
+                       zlib-dev \
+                       freetype-dev \
+                       lcms2-dev \
+                       openjpeg-dev \
+                       tiff-dev \
+                       tk-dev \
+                       tcl-dev \
+                       harfbuzz-dev \
+                       fribidi-dev
 ENV PYTHON_VERSION 3.6.7
 RUN mkdir /Blog
 WORKDIR /Blog
