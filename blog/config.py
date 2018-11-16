@@ -56,8 +56,11 @@ class Config:
     DEBUG_TB_INTERCEPT_REDIRECTS = False
 
     # celery config
-    BROKER_URL = 'redis://localhost:6379'
-    CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+    BROKER_URL = 'redis://172.17.0.2:6379'
+    CELERY_RESULT_BACKEND = 'redis://172.17.0.2:6379/0'
+
+    # Redis
+    REDIS_URL = 'redis://172.17.0.2:6379'
 
     # logger
     LOG_NAME = 'blog.log'
