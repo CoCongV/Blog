@@ -5,7 +5,7 @@ python:
 services:
   - docker
 before_install:
-  - docker network create --subnet=172.17.0.1/16 testnetwork
+  - docker network create --subnet=172.17.0.0/16 testnetwork
   - docker pull moonlitlaputa/travis-ci-postgres
   - docker run --net testnetwork --ip 172.17.0.1 -d moonlitlaputa/travis-ci-postgres
   - docker ps -a
