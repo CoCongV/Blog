@@ -1,3 +1,4 @@
+aniso8601==3.0.2
 bleach
 blinker
 celery
