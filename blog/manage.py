@@ -1,17 +1,16 @@
 import os
 try:
-    from config import config
-    conf = config[os.getenv('RQ_ENV') or 'production']
+    from config import config as conf
 except ImportError:
     from .config import config
-    conf = config[os.getenv('RQ_ENV') or 'default']
+    conf = config[os.getenv('LV_ENV') or 'default']
 
 from flask_script import Shell, Manager
 from flask_migrate import Migrate, MigrateCommand
 from flask_admin import Admin
 from flask_whooshalchemyplus import whoosh_index
 
-from blog import create_app, db, make_celery, celery as celery_worker
+from blog import create_app, db, make_celery, celery as celery_worker, migrate
 from blog.models.comments import Comment
 from blog.models.users import User
 from blog.models.posts import Post
@@ -31,11 +30,9 @@ if os.path.exists('.env'):
 
 app = create_app(conf)
 manager = Manager(app)
-migrate = Migrate(app, db)
 whoosh_index(app, Post)
 admin = Admin(app, name='Cong Blog', template_mode="bootstrap3")
 celery = make_celery(app, celery_worker)
-
 
 @app.teardown_appcontext
 def shutdown_session(exception=None):
@@ -51,7 +48,6 @@ def make_shell_context():
         Comment=Comment,
         Permission=Permission,
         Post=Post)
-
 
 manager.add_command("shell",
                     Shell(use_ipython=True, make_context=make_shell_context))

@@ -32,9 +32,10 @@ class Config:
 
     # FILE UPLOAD
     # UPLOADED_PHOTOS_DEST = './app/media/photos'
-    UPLOADED_PHOTOS_DEST = os.path.join(basedir, 'app/media/photos/')
-    UPLOADED_PHOTOS_URL = 'images/'
-    UPLOADED_FILES_DEST = './app/media/files'
+    UPLOADED_BASE_URL = '/tmp/blog'
+    UPLOADED_PHOTOS_DEST = os.path.join(UPLOADED_BASE_URL, 'photos')
+    UPLOADED_PHOTOS_URL = os.path.join(UPLOADED_BASE_URL, 'images')
+    UPLOADED_FILES_DEST = os.path.join(UPLOADED_BASE_URL, 'files')
     ALLOWED_EXTENSIONS = ['png', 'jpg', 'jpeg', 'gif', 'webp']
     MAX_CONTENT_LENGTH = 10 * 1024 * 1024
 
@@ -76,8 +77,12 @@ class Config:
 
 
 class DevelopmentConfig(Config):
+    ENV = 'development'
     DEBUG = True
-    SQLALCHEMY_DATABASE_URI = 'postgresql://lvcong:password@/blog'
+    SQLALCHEMY_DATABASE_URI = 'postgresql://lvcong:password@/blog_dev'
+    BROKER_URL = 'redis://localhost:6379'
+    CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+    REDIS_URL = 'redis://localhost:6379'
 
 
 class TestingConfig(Config):

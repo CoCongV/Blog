@@ -2,6 +2,7 @@ from celery import Celery
 from flask import Flask
 from flask_login import LoginManager
 from flask_mail import Mail
+from flask_migrate import Migrate
 from flask_pagedown import PageDown
 from flask_sqlalchemy import SQLAlchemy
 from flask_uploads import (UploadSet,
@@ -15,6 +16,7 @@ from blog.utils import assets, FlaskCaptcha, RedisSessionInterface
 mail = Mail()
 pagedown = PageDown()
 db = SQLAlchemy()
+migrate = Migrate()
 
 login_manager = LoginManager()
 login_manager.session_protection = 'strong'
@@ -27,6 +29,7 @@ flask_captcha = FlaskCaptcha()
 redis_cli = FlaskRedis()
 
 def create_app(config):
+    print(config)
     app = Flask(__name__)
     app.config.from_object(config)
     config.init_app(app)
@@ -36,10 +39,10 @@ def create_app(config):
     mail.init_app(app)
     pagedown.init_app(app)
     db.init_app(app)
+    migrate.init_app(app, db)
     login_manager.init_app(app)
     assets.init_app(app)
     redis_cli.init_app(app)
-
     flask_captcha.init_app(app)
     app.session_interface = RedisSessionInterface(redis_cli)
 
