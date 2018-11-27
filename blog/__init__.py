@@ -1,10 +1,13 @@
+from datetime import datetime
+
 from celery import Celery
-from flask import Flask
+from flask import Flask, g
 from flask_login import LoginManager
 from flask_mail import Mail
 from flask_migrate import Migrate
 from flask_pagedown import PageDown
 from flask_sqlalchemy import SQLAlchemy
+from flask_httpauth import HTTPTokenAuth
 from flask_uploads import (UploadSet,
                            IMAGES,
                            configure_uploads,
@@ -27,6 +30,7 @@ celery = Celery(__name__, broker='redis://localhost:6379')
 photos = UploadSet('photos', IMAGES)
 flask_captcha = FlaskCaptcha()
 redis_cli = FlaskRedis()
+
 
 def create_app(config):
     print(config)

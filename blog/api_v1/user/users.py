@@ -3,8 +3,9 @@ from flask_restful import reqparse, Resource
 from sqlalchemy.exc import IntegrityError, InvalidRequestError, DataError
 
 from blog.api_v1 import token_auth
+from blog.api_v1.decorators import permission_required
 from blog.exceptions import UserAlreadyExistsError
-from blog.models import User, Role
+from blog.models import User, Role, Permission
 from blog.utils.celery.email import send_email
 
 
@@ -33,16 +34,12 @@ reqparse_patch.add_argument(
 
 class UserView(Resource):
     method_decorators = {
-        'get': [token_auth.login_required],
+        'get': [permission_required(Permission.COMMENT), token_auth.login_required],
         'patch': [token_auth.login_required]
     }
 
     def get(self):
-        # get user info
-        if not g.current_user.is_anonymous:
-            json_user = g.current_user.to_json()
-            return json_user
-        return {'username': ''}
+        return g.current_user.to_json()
 
     def post(self):
         # register user

@@ -57,7 +57,7 @@ class User(CRUDMixin, UserMixin, db.Model, Serializer):
         s = TimedJSONWebSignatureSerializer(current_app.config['SECRET_KEY'])
         try:
             data = s.loads(token)
-        except Exception:
+        except Exception as e:
             return False
         else:
             return User.query.get(data['confirm_id'])
@@ -75,7 +75,7 @@ class User(CRUDMixin, UserMixin, db.Model, Serializer):
         s = TimedJSONWebSignatureSerializer(current_app.config['SECRET_KEY'])
         try:
             data = s.loads(token)
-        except Exception:
+        except Exception as e:
             return False
         user = User.query.filter_by(email=data.get('email')).first()
         if not user:
@@ -147,7 +147,8 @@ class User(CRUDMixin, UserMixin, db.Model, Serializer):
             "about_me": self.about_me,
             "last_seen": self.last_seen.strftime('%Y-%m-%d %H:%M'),
             "member_since": self.member_since.strftime('%Y-%m-%d %H:%M'),
-            "confirmed": self.confirmed
+            "confirmed": self.confirmed,
+            "permission": self.role.permissions,
         }
         return json_data
 
