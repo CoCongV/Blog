@@ -19,7 +19,9 @@ class UserProfile(Resource):
     def get(self):
         args = parser.parse_args()
         user = User.get(args.uid)
-
         return {
-            "user": user.to_json(),
+            'avatar': user.avatar,
+            'email': user.email,
+            'about_me': user.about_me,
+            'member_since': user.member_since
         }

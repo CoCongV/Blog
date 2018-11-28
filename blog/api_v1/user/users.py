@@ -1,4 +1,5 @@
 from flask import g, url_for, current_app
+from werkzeug.exceptions import Forbidden
 from flask_restful import reqparse, Resource
 from sqlalchemy.exc import IntegrityError, InvalidRequestError, DataError
 
@@ -30,6 +31,8 @@ reqparse_patch.add_argument(
     'about_me', type=str, location='json', store_missing=False)
 reqparse_patch.add_argument(
     'password', type=str, location='json', store_missing=False)
+reqparse_patch.add_argument(
+    'old_password', type=str, location='json', store_missing=False)
 
 
 class UserView(Resource):
@@ -73,5 +76,10 @@ class UserView(Resource):
 
     def patch(self):
         args = reqparse_patch.parse_args()
+        if args.get('password'):
+            if args.get('old_password') and g.current_user.verify_password(args.get('old_password')):
+                pass
+            else:
+                raise Forbidden('Password error')
         g.current_user.update(**args)
-        return {}
+        return g.current_user.to_json(), 200

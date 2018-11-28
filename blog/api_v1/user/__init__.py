@@ -1,6 +1,7 @@
 from flask import Blueprint
 from flask_restful import Api
 
+from .blogger import Blogger
 from .users import UserView
 from .login import LoginView
 from .user_comment import UserComment
@@ -17,3 +18,4 @@ api.add_resource(UserProfile, '/profile/', endpoint='user_profile')
 api.add_resource(PermissionAuth, '/permission/', endpoint='permission_auth')
 api.add_resource(AvatarStroage, '/photo/')
 api.add_resource(UserComment, '/comment/', endpoint='user_comment')
+api.add_resource(Blogger, '/blogger/')
