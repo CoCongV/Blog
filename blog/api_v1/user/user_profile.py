@@ -7,7 +7,7 @@ from blog.api_v1.decorators import permission_required
 
 
 parser = reqparse.RequestParser()
-parser.add_argument('uid', type=int)
+parser.add_argument('uid', type=int, required=True)
 
 
 class UserProfile(Resource):
@@ -18,15 +18,8 @@ class UserProfile(Resource):
 
     def get(self):
         args = parser.parse_args()
-        if args.uid:
-            user = User.get(args.uid)
-        else:
-            user = g.current_user
-        edit_permission = False
-        if g.current_user == user or g.current_user.can(Permission.ADMINISTER):
-            edit_permission = True
+        user = User.get(args.uid)
 
         return {
             "user": user.to_json(),
-            "edit_permission": edit_permission
         }
