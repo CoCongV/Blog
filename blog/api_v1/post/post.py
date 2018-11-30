@@ -1,6 +1,6 @@
 from flask import g, url_for, current_app
 from flask_restful import reqparse, Resource
-from werkzeug.exceptions import Forbidden
+from werkzeug.exceptions import Forbidden, Unauthorized
 
 from blog import db
 from blog.models import Post, Permission
@@ -18,8 +18,8 @@ post_parser.add_argument('post_id', location='json')
 class PostView(Resource):
 
     method_decorators = {
-        'put': [
-            permission_required(Permission.ADMINISTER),
+        'patch': [
+            permission_required(Permission.ADMINISTER, Unauthorized),
             token_auth.login_required
         ],
         'delete': [

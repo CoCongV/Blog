@@ -1,5 +1,5 @@
 from flask_restful import reqparse, Resource
-from werkzeug.exceptions import Unauthorized
+from werkzeug.exceptions import Forbidden
 
 from blog.models import User
 
@@ -15,10 +15,10 @@ class LoginView(Resource):
         args = reqparse.parse_args()
         user = User.query.filter_by(email=args.email).first()
         if not user:
-            raise Unauthorized('Email Error')
+            raise Forbidden('Email Error')
         verify = user.verify_password(args.password)
         if not verify:
-            raise Unauthorized('Password Error')
+            raise Forbidden('Password Error')
         else:
             token = user.generate_confirm_token()
             return {

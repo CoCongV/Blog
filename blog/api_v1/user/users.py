@@ -1,7 +1,7 @@
 from flask import g, url_for, current_app
-from werkzeug.exceptions import Forbidden
 from flask_restful import reqparse, Resource
 from sqlalchemy.exc import IntegrityError, InvalidRequestError, DataError
+from werkzeug.exceptions import Forbidden, Unauthorized
 
 from blog.api_v1 import token_auth
 from blog.api_v1.decorators import permission_required
@@ -37,8 +37,8 @@ reqparse_patch.add_argument(
 
 class UserView(Resource):
     method_decorators = {
-        'get': [permission_required(Permission.COMMENT), token_auth.login_required],
-        'patch': [token_auth.login_required]
+        'get': [permission_required(Permission.COMMENT, Unauthorized), token_auth.login_required],
+        'patch': [permission_required(Permission.COMMENT), token_auth.login_required]
     }
 
     def get(self):

@@ -20,7 +20,7 @@ def verify_token(token):
         g.token_used = True
         g.current_user.update(last_seen=datetime.utcnow())
     else:
-        return False
+        g.current_user = AnonymousUser()
     return True
 
 
