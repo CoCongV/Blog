@@ -83,26 +83,25 @@ class PostsView(Resource):
         per_page = current_app.config['BLOG_POST_PER_PAGE']
 
         if uid:
-            pagination = Post.query.filter_by(
-                author_id=uid).order_by(db.desc('timestamp')).paginate(
-                    page,
-                    per_page=per_page,
-                    error_out=False)
+            post_query = Post.query.filter_by(
+                author_id=uid).order_by(db.desc('timestamp'))
         else:
-            pagination = Post.query.order_by(db.desc('timestamp')).paginate(
-                page, per_page=per_page,
-                error_out=False
-            )
+            post_query = Post.query.order_by(db.desc('timestamp'))
+
+        pagination = post_query.paginate(page, per_page=per_page, error_out=False)
         posts = pagination.items
+
         if pagination.has_prev:
             prev = url_for('post.postsview', page=page - 1, _external=True)
         if pagination.has_next:
             next_ = url_for('post.postsview', page=page + 1, _external=True)
+
         return {
             'posts': [post.to_json(500) for post in posts],
             'prev': prev,
             'next': next_,
-            'count': pagination.total
+            'count': pagination.total,
+            'pages': pagination.pages,
         }
 
     def post(self):
