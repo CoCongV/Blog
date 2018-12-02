@@ -24,5 +24,6 @@ class LoginView(Resource):
             return {
                 'token': token,
                 'username': user.username,
-                'permission': user.role.permissions
+                'permission': user.role.permissions,
+                'avatar': user.avatar
             }

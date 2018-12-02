@@ -14,6 +14,7 @@ class Token(Resource):
             return {
                 'state': True,
                 'username': g.current_user.username,
-                'permission': g.current_user.role.permissions
+                'permission': g.current_user.role.permissions,
+                'avatar': g.current_user.avatar
             }
         return {'state': False}
