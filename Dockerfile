@@ -1,11 +1,21 @@
-FROM python:3.5.3-slim
-RUN apt-get update -qq && apt-get install -y build-essential libgmp-dev libpq-dev
-ENV PYTHON_VERSION 3.5.3
-RUN mkdir /Flask_Blog
-WORKDIR /Flask_Blog
-ADD ./requirements.txt .
-RUN pip install -r requirements.txt
-ADD ./ /Flask_Blog/
+FROM python:3.6.7-alpine3.8
+RUN apk update && \
+    apk add --no-cache --virtual build-deps gcc python-dev musl-dev && \
+    apk --no-cache add postgresql-dev \
+                       jpeg-dev \
+                       zlib-dev \
+                       freetype-dev \
+                       lcms2-dev \
+                       openjpeg-dev \
+                       tiff-dev \
+                       tk-dev \
+                       tcl-dev \
+                       harfbuzz-dev \
+                       fribidi-dev
+ENV PYTHON_VERSION 3.6.7
+RUN mkdir /Blog
+WORKDIR /Blog
+ADD ./ /Blog/
+RUN pip --no-cache-dir install .
 EXPOSE 8080
-CMD ["gunicorn", "-c", "deploy_config.py", "manage:app"]
-
+CMD ["gunicorn", "--log-level", "error", "-w", "2", "-k", "gevent", "blog.manage:app", "-b", "localhost:8080"]

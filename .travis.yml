@@ -1,0 +1,16 @@
+sudo: false
+language: python
+python:
+  - 3.6
+services:
+  - docker
+before_install:
+  - docker pull moonlitlaputa/travis-ci-postgres
+  - docker run -d moonlitlaputa/travis-ci-postgres
+  - docker ps -a
+install:
+  - pip install .
+script: blog-manager test
+after_success:
+  - export FLASK_COVERAGE=True
+  - blog-manager test
