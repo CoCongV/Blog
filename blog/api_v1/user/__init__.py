@@ -14,7 +14,7 @@ api = Api(api_user)
 
 api.add_resource(UserView, '/')
 api.add_resource(LoginView, '/login/')
-api.add_resource(UserProfile, '/profile/', endpoint='user_profile')
+api.add_resource(UserProfile, '/<int:uid>/profile/', endpoint='user_profile')
 api.add_resource(PermissionAuth, '/permission/', endpoint='permission_auth')
 api.add_resource(AvatarStroage, '/photo/')
 api.add_resource(UserComment, '/comment/', endpoint='user_comment')
