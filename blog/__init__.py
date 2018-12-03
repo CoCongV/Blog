@@ -33,7 +33,6 @@ redis_cli = FlaskRedis()
 
 
 def create_app(config):
-    print(config)
     app = Flask(__name__)
     app.config.from_object(config)
     config.init_app(app)

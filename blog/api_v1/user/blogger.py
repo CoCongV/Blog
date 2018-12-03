@@ -11,5 +11,6 @@ class Blogger(Resource):
         return {
             'username': blogger.username,
             'avatar': blogger.avatar,
-            'about_me': blogger.about_me
+            'about_me': blogger.about_me,
+            'uid': blogger.id,
         }
