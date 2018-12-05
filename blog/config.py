@@ -32,10 +32,11 @@ class Config:
 
     # FILE UPLOAD
     # UPLOADED_PHOTOS_DEST = './app/media/photos'
-    UPLOADED_BASE_URL = '/tmp/blog'
-    UPLOADED_PHOTOS_DEST = os.path.join(UPLOADED_BASE_URL, 'photos')
-    UPLOADED_PHOTOS_URL = os.path.join(UPLOADED_BASE_URL, 'images')
-    UPLOADED_FILES_DEST = os.path.join(UPLOADED_BASE_URL, 'files')
+    UPLOADED_DEFAULT_DEST = '/tmp/blog'
+    UPLOADED_DEFAULT_URL = '/media/'
+    UPLOADED_PHOTOS_DEST = os.path.join(UPLOADED_DEFAULT_DEST, 'photos/')
+    UPLOADED_PHOTOS_URL = os.path.join(UPLOADED_DEFAULT_URL, 'images/')
+    UPLOADED_FILES_DEST = os.path.join(UPLOADED_DEFAULT_DEST, 'files/')
     ALLOWED_EXTENSIONS = ['png', 'jpg', 'jpeg', 'gif', 'webp']
     MAX_CONTENT_LENGTH = 10 * 1024 * 1024
 

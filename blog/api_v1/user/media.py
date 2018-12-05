@@ -16,7 +16,7 @@ photo_reqparse.add_argument(
 
 class AvatarStroage(Resource):
     method_decorators = [
-        permission_required(Permission.ADMINISTER),
+        permission_required(Permission.COMMENT),
         token_auth.login_required
     ]
 
