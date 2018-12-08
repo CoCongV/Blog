@@ -103,11 +103,9 @@ class ProductionConfig(Config):
 
     # SENTRY CONFIGURE
     SENTRY_DSN = os.environ.get('SENTRY_DSN')
-    SENTRY_DSN = ['username', 'email']
 
     @classmethod
     def init_app(cls, app):
-        Config.init_app(app)
         from logging.handlers import SMTPHandler
         credentials = None
         secure = None

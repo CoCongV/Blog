@@ -22,14 +22,15 @@ class AvatarStroage(Resource):
 
     def put(self):
         args = photo_reqparse.parse_args()
-        if os.path.exists(
-                os.path.join(photos.config.destination, 'avatar',
-                             args.image.filename)):
-            file_url = photos.url(args.image.filename)
-        else:
-            filename = photos.save(args.image, 'avatar')
-            file_url = photos.url(filename)
-            user = User.get(g.current_user.id)
-            user.avatar = file_url
-            user.save()
+        file_format = args.image.filename.split('.')[-1]
+        name = '%d-avatar.%s' % (g.current_user.id, file_format)
+        path = os.path.join(photos.config.destination, 'avatar', name)
+        os.remove(path)
+        filename = photos.save(
+            args.image,
+            folder='avatar',
+            name=name)
+        file_url = photos.url(filename)
+        g.current_user.avatar = file_url
+        g.current_user.save()
         return {'url': file_url}
