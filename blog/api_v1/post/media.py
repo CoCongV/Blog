@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 
 from flask import g
 from flask_restful import Resource, reqparse
@@ -27,9 +28,10 @@ class PhotoStorage(Resource):
 
     def put(self):
         args = photo_reqparse.parse_args()
-        if os.path.exists(
-                os.path.join(photos.config.destination, str(g.current_user.id),
-                             args.image.filename)):
+        path = Path(
+            os.path.join(photos.config.destination, str(g.current_user.id),
+                         args.image.filename))
+        if path.exists():
             file_url = photos.url(
                 os.path.join(str(g.current_user.id), args.image.filename))
         else:

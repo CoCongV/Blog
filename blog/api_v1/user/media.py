@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 
 from flask import g
 from flask_restful import Resource, reqparse
@@ -24,8 +25,9 @@ class AvatarStroage(Resource):
         args = photo_reqparse.parse_args()
         file_format = args.image.filename.split('.')[-1]
         name = '%d-avatar.%s' % (g.current_user.id, file_format)
-        path = os.path.join(photos.config.destination, 'avatar', name)
-        os.remove(path)
+        path = Path(os.path.join(photos.config.destination, 'avatar', name))
+        if path.exists():
+            path.unlink()
         filename = photos.save(
             args.image,
             folder='avatar',
