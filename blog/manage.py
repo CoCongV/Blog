@@ -1,6 +1,8 @@
 import os
+import sys
+sys.path.insert(0, '.')
 try:
-    from config import config as conf
+    from config import Config as conf
 except ImportError:
     from .config import config
     conf = config[os.getenv('LV_ENV') or 'default']
@@ -29,6 +31,7 @@ if os.path.exists('.env'):
             os.environ[var[0]] = var[1]
 
 app = create_app(conf)
+basedir = os.path.abspath(os.path.dirname(__file__))
 manager = Manager(app)
 whoosh_index(app, Post)
 admin = Admin(app, name='Cong Blog', template_mode="bootstrap3")
@@ -83,7 +86,6 @@ def test(coverage=False):
         COV.save()
         print('Coverage Summary:')
         COV.report()
-        basedir = os.path.abspath(os.path.dirname(__file__))
         covdir = os.path.join(basedir, 'tmp/coverage')
         COV.html_report(directory=covdir)
         print('HTML version: file://%s/index.html' % covdir)
