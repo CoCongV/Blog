@@ -42,6 +42,7 @@ meinheld = "*"
 jieba = "*"
 captcha = "*"
 flask-redis = "*"
+pygithub = "*"
 
 [dev-packages]
 coverage = "*"
@@ -51,6 +52,6 @@ pylint = "*"
 rope = "*"
 yapf = "*"
 ipython = "*"
-flask-blog = {editable = true, path = "."}
+flask-blog = {editable = true,path = "."}
 forgerypy = "*"
 requests = "*"
