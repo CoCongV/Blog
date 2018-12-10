@@ -22,9 +22,10 @@ class PostTimeLine(Resource):
         per_page = current_app.config['BLOG_POST_PER_PAGE']
 
         pagination = Post.query.filter(
-            extract('year', Post.timestamp) == year) \
+            extract('year', Post.timestamp) == year, Post.draft == False) \
             .order_by(db.desc(Post.timestamp)) \
             .paginate(page, per_page=per_page, error_out=False)
+
         posts = pagination.items
         if pagination.has_prev:
             prev = url_for(

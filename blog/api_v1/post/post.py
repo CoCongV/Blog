@@ -61,7 +61,7 @@ class PostView(Resource):
 
 
 posts_parser = reqparse.RequestParser()
-posts_parser.add_argument('uid', type=int)
+post_parser.add_argument('draft', default=False)
 posts_parser.add_argument('page', type=int, default=1)
 
 
@@ -71,30 +71,32 @@ class PostsView(Resource):
         'post': [
             permission_required(Permission.ADMINISTER),
             token_auth.login_required
-        ]
+        ],
+        'get': [token_auth.login_required]
     }
 
     def get(self):
+        args = posts_parser.parse_args()
+        if args.draft:
+            if not g.current_user.can(Permission.ADMINISTER):
+                raise Forbidden()
+
         prev = None
         next_ = None
-        args = posts_parser.parse_args()
-        uid = args.uid
-        page = args.page
         per_page = current_app.config['BLOG_POST_PER_PAGE']
+        post_query = Post.query.filter_by(draft=args.draft).order_by(
+            db.desc('timestamp'))
 
-        if uid:
-            post_query = Post.query.filter_by(
-                author_id=uid).order_by(db.desc('timestamp'))
-        else:
-            post_query = Post.query.order_by(db.desc('timestamp'))
-
-        pagination = post_query.paginate(page, per_page=per_page, error_out=False)
+        pagination = post_query.paginate(
+            args.page, per_page=per_page, error_out=False)
         posts = pagination.items
 
         if pagination.has_prev:
-            prev = url_for('post.postsview', page=page - 1, _external=True)
+            prev = url_for(
+                'post.postsview', page=args.page - 1, _external=True)
         if pagination.has_next:
-            next_ = url_for('post.postsview', page=page + 1, _external=True)
+            next_ = url_for(
+                'post.postsview', page=args.page + 1, _external=True)
 
         return {
             'posts': [post.to_json(500) for post in posts],
@@ -107,8 +109,6 @@ class PostsView(Resource):
     def post(self):
         # 新建文章
         args = post_parser.parse_args(strict=True)
-        title = args['title']
-        body = args['content']
 
         author = g.current_user
         post = Post.create(

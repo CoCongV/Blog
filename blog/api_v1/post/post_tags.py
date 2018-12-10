@@ -19,7 +19,7 @@ class PostTags(Resource):
         tag = args.tag
         page = args.page
 
-        pagination = Post.query.filter(Post.tags.any(tag)) \
+        pagination = Post.query.filter(Post.tags.any(tag), Post.draft == False) \
             .order_by(db.desc(Post.timestamp)) \
             .paginate(
             page, per_page=current_app.config['BLOG_POST_PER_PAGE'],
@@ -27,6 +27,7 @@ class PostTags(Resource):
         )
         posts = pagination.items
         total = pagination.total
+
         if pagination.has_prev:
             prev = url_for('post.post_tags', page=page - 1, _external=True)
         _next = None
