@@ -11,7 +11,7 @@ post_parser = reqparse.RequestParser()
 post_parser.add_argument('title', location='json', required=True)
 post_parser.add_argument('content', location='json', required=True)
 post_parser.add_argument(
-    'tags', location='json', action='append', required=True)
+    'tags', location='json', action='append', default=[])
 post_parser.add_argument('post_id', location='json')
 
 
@@ -109,10 +109,10 @@ class PostsView(Resource):
         args = post_parser.parse_args(strict=True)
         title = args['title']
         body = args['content']
-        tags = args['tags']
 
         author = g.current_user
-        post = Post.create(title=title, body=body, tags=tags, author=author)
+        post = Post.create(
+            title=args.title, body=args.content, tags=args.tags, author=author)
         return {
             'url': url_for('post.postview', post_id=post.id),
             'id': post.id
