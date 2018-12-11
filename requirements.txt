@@ -13,7 +13,6 @@ Flask-HTTPAuth
 Flask-Login
 Flask-Mail
 Flask-Migrate
-Flask-PageDown
 Flask-RESTful
 Flask_Redis
 Flask-Script

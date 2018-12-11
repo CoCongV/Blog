@@ -5,7 +5,6 @@ from flask import Flask, g
 from flask_login import LoginManager
 from flask_mail import Mail
 from flask_migrate import Migrate
-from flask_pagedown import PageDown
 from flask_sqlalchemy import SQLAlchemy
 from flask_httpauth import HTTPTokenAuth
 from flask_uploads import (UploadSet,
@@ -14,21 +13,18 @@ from flask_uploads import (UploadSet,
                            patch_request_class)
 from flask_redis import FlaskRedis
 
-from blog.utils import assets, FlaskCaptcha, RedisSessionInterface
+from blog.utils import assets, RedisSessionInterface
 
 mail = Mail()
-pagedown = PageDown()
 db = SQLAlchemy()
 migrate = Migrate()
 
 login_manager = LoginManager()
-login_manager.session_protection = 'strong'
 login_manager.login_view = 'auth.login'
 
 celery = Celery(__name__, broker='redis://localhost:6379')
 
 photos = UploadSet('photos', IMAGES)
-flask_captcha = FlaskCaptcha()
 redis_cli = FlaskRedis()
 
 
@@ -40,13 +36,11 @@ def create_app(config):
     configure_uploads(app, (photos, ))
     patch_request_class(app, None)
     mail.init_app(app)
-    pagedown.init_app(app)
     db.init_app(app)
     migrate.init_app(app, db)
     login_manager.init_app(app)
     assets.init_app(app)
     redis_cli.init_app(app)
-    flask_captcha.init_app(app)
     app.session_interface = RedisSessionInterface(redis_cli)
 
     from .main import main as main_blueprint

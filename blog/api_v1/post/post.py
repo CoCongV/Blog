@@ -1,5 +1,6 @@
 from flask import g, url_for, current_app
 from flask_restful import reqparse, Resource
+from flask_restful.inputs import boolean
 from werkzeug.exceptions import Forbidden, Unauthorized
 
 from blog import db
@@ -13,6 +14,7 @@ post_parser.add_argument('content', location='json', required=True)
 post_parser.add_argument(
     'tags', location='json', action='append', default=[])
 post_parser.add_argument('post_id', location='json')
+post_parser.add_argument('draft', default=False, type=boolean)
 
 
 class PostView(Resource):
@@ -35,17 +37,16 @@ class PostView(Resource):
     def patch(self, post_id):
         # 修改文章
         args = post_parser.parse_args()
-        title = args.title
         body = args.content
-        tags = args.tags
         post = Post.get_or_404(post_id)
         if g.current_user != post.author and not g.current_user.can(
                 Permission.ADMINISTER):
             raise Forbidden(description="Insufficient permissions")
-        post.body = body
-        post.title = title
-        post.tags = tags
-        post.save()
+        post.update(
+            title=args.title,
+            body=args.content,
+            tags=args.tags,
+            draft=args.draft)
         return {
             'url': url_for('post.postview', post_id=post.id),
             'post_id': post.id
@@ -61,7 +62,7 @@ class PostView(Resource):
 
 
 posts_parser = reqparse.RequestParser()
-post_parser.add_argument('draft', default=False)
+posts_parser.add_argument('draft', default=False, type=boolean)
 posts_parser.add_argument('page', type=int, default=1)
 
 
@@ -112,7 +113,11 @@ class PostsView(Resource):
 
         author = g.current_user
         post = Post.create(
-            title=args.title, body=args.content, tags=args.tags, author=author)
+            title=args.title,
+            body=args.content,
+            tags=args.tags,
+            author=author,
+            draft=args.draft)
         return {
             'url': url_for('post.postview', post_id=post.id),
             'id': post.id
