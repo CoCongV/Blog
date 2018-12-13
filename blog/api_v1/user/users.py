@@ -55,10 +55,9 @@ class UserView(Resource):
                                location=args.get('location'),
                                about_me=args.get('about'),
                                role=role)
-        except (IntegrityError, InvalidRequestError):
+        except (IntegrityError, InvalidRequestError, DataError):
             raise UserAlreadyExistsError()
-        except DataError:
-            raise UserAlreadyExistsError()
+
         token = user.generate_confirm_token(expiration=86400)
         email_token = user.generate_email_token()
         send_email.delay(

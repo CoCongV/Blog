@@ -12,7 +12,7 @@ class UserComment(Resource):
 
     def get(self):
         if g.current_user.is_anonymous:
-            comments = list()
+            comments = []
         else:
             comments = g.current_user.comments
         return {

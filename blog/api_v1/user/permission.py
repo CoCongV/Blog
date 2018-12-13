@@ -12,7 +12,8 @@ class PermissionAuth(Resource):
 
     @token_auth.login_required
     def get(self):
-        response = {'permission': 0}
+        # response = {'permission': 0}
         if not g.current_user.is_anonymous:
-            response = {'permission': g.current_user.role.permissions}
-        return response
+            return {"permission": g.current_user.role.permissions}
+        else:
+            return {"permission": 0}

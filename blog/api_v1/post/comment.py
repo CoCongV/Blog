@@ -21,12 +21,11 @@ class CommentsView(Resource):
 
     def post(self, post_id):
         args = comment_parse.parse_args()
-        comment_id = args.comment_id
-        post = Post.get(post_id)
         comment = Comment.create(
-            body=args.body, author=g.current_user, post=post)
-        if comment_id:
-            reply = Comment.query.get(comment_id)
+            body=args.body, author=g.current_user, post_id=post_id)
+
+        if args.comment_id:
+            reply = Comment.query.get(args.comment_id)
             comment.reply(reply)
         return {}, 201
 
