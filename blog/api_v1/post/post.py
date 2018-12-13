@@ -37,7 +37,6 @@ class PostView(Resource):
     def patch(self, post_id):
         # 修改文章
         args = post_parser.parse_args()
-        body = args.content
         post = Post.get_or_404(post_id)
         if g.current_user != post.author and not g.current_user.can(
                 Permission.ADMINISTER):

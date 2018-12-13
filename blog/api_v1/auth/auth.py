@@ -27,14 +27,11 @@ class SendEmailAuth(Resource):
                     'auth.email_auth', token=email_token, _external=True))
         return {}
 
-
 class EmailExist(Resource):
 
     def get(self):
-        _reqparse = reqparse.RequestParser()
-        _reqparse.add_argument('email', type=str, location='args')
-        email = _reqparse.parse_args()['email']
-        user = User.query.filter_by(email=email).first()
+        
+        user = User.query.filter_by(email=request.args.email).first()
         if user:
             raise UserAlreadyExistsError()
         return {}

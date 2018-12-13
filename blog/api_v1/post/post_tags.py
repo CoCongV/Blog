@@ -14,29 +14,28 @@ class PostTags(Resource):
 
     def get(self):
         prev = None
-
+        next_ = None
         args = tag_parse.parse_args()
-        tag = args.tag
-        page = args.page
 
-        pagination = Post.query.filter(Post.tags.any(tag), Post.draft == False) \
+        pagination = Post.query.filter(Post.tags.any(args.tag), Post.draft == False) \
             .order_by(db.desc(Post.timestamp)) \
             .paginate(
-            page, per_page=current_app.config['BLOG_POST_PER_PAGE'],
+            args.page, per_page=current_app.config['BLOG_POST_PER_PAGE'],
             error_out=False
         )
         posts = pagination.items
         total = pagination.total
 
         if pagination.has_prev:
-            prev = url_for('post.post_tags', page=page - 1, _external=True)
-        _next = None
+            prev = url_for(
+                'post.post_tags', page=args.page - 1, _external=True)
         if pagination.has_next:
-            _next = url_for('post.post_tags', page=page + 1, _external=True)
+            next_ = url_for(
+                'post.post_tags', page=args.page + 1, _external=True)
 
         return {
             'posts': [i.to_json(True) for i in posts],
             'prev': prev,
-            'next': _next,
+            'next': next_,
             'count': total
         }
