@@ -50,3 +50,7 @@ class Book(db.Model, CRUDMixin, Serializer):
         'Author', secondary=author_book, back_populates='books')
     categories = db.relationship(
         'Category', secondary=category_book, back_populates='books')
+
+    def read(self):
+        with open(self.path, 'rb') as f:
+            yield f.readline()
