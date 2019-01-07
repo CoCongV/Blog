@@ -5,7 +5,7 @@ from werkzeug.exceptions import Forbidden, Unauthorized
 
 from blog.api_v1 import token_auth
 from blog.api_v1.decorators import permission_required
-from blog.exceptions import UserAlreadyExistsError
+from blog.exceptions import AlreadyExists
 from blog.models import User, Role, Permission
 from blog.utils.celery.email import send_email
 
@@ -56,7 +56,7 @@ class UserView(Resource):
                                about_me=args.get('about'),
                                role=role)
         except (IntegrityError, InvalidRequestError, DataError):
-            raise UserAlreadyExistsError()
+            raise AlreadyExists()
 
         token = user.generate_confirm_token(expiration=86400)
         email_token = user.generate_email_token()

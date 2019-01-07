@@ -24,7 +24,9 @@ login_manager.login_view = 'auth.login'
 
 celery = Celery(__name__, broker='redis://localhost:6379')
 
+EBOOKS = ('txt', 'mobi', 'equb')
 photos = UploadSet('photos', IMAGES)
+books = UploadSet('books', EBOOKS)
 redis_cli = FlaskRedis()
 
 
@@ -33,7 +35,7 @@ def create_app(config):
     app.config.from_object(config)
     config.init_app(app)
 
-    configure_uploads(app, (photos, ))
+    configure_uploads(app, (photos, books))
     patch_request_class(app, None)
     mail.init_app(app)
     db.init_app(app)

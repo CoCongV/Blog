@@ -9,7 +9,7 @@ class PermissionForbiddenError(HTTPException, HTTPStatusCodeMixin):
     """
 
     def __init__(self, description="Permission Exception", response=None):
-        super(PermissionForbiddenError, self).__init__(description, response)
+        super().__init__(description, response)
         self.code = self.PERMISSION_FORBIDDEN
         self.description = description
 
@@ -17,13 +17,13 @@ class PermissionForbiddenError(HTTPException, HTTPStatusCodeMixin):
         return self.__class__.__name__
 
 
-class UserAlreadyExistsError(HTTPException, HTTPStatusCodeMixin):
+class AlreadyExists(HTTPException, HTTPStatusCodeMixin):
     """
     User Info Already Exists
     """
 
     def __init__(self, description='User Info Already Exists', response=None):
-        super(UserAlreadyExistsError, self).__init__(description, response)
+        super().__init__(description, response)
         self.code = self.USER_EXIST
         self.description = description
 

@@ -42,11 +42,13 @@ class Book(db.Model, CRUDMixin, Serializer):
     __table__ = 'book'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, index=True)
+    file = db.Column(db.String(64), nullable=False, unique=True)
     cover_img = db.Column(db.Text)
     upload_time = db.Column(db.DateTime, default=lambda: datetime.utcnow())
-    path = db.Column(db.String(64), nullable=False)
-    file = db.Column(db.String(64), nullable=False)
 
+    creater_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    creater = db.relationship(
+        'User', back_populates='books')
     authors = db.relationship(
         'Author', secondary=author_book, back_populates='books')
     categories = db.relationship(

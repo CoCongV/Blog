@@ -24,12 +24,14 @@ class User(CRUDMixin, UserMixin, db.Model, Serializer):
     about_me = db.Column(db.String(128))
     member_since = db.Column(db.DateTime, default=lambda: datetime.utcnow())
     last_seen = db.Column(db.DateTime, default=lambda: datetime.utcnow())
+
     posts = db.relationship('Post', backref='author', lazy='dynamic')
     comments = db.relationship(
         'Comment',
         backref='author',
         lazy='dynamic',
         cascade='all, delete-orphan')
+    books = db.relationship('Book', back_populates='creater')
 
     def __repr__(self):
         return str(self.json()).replace(',', '\n')
@@ -126,8 +128,7 @@ class User(CRUDMixin, UserMixin, db.Model, Serializer):
         db.session.commit()
 
     def can(self, permissions):
-        return self.role is not None and (
-            self.role.permissions & permissions) == permissions
+        return self.role is not None and self.role.has_permission(permissions)
 
     def is_administrator(self):
         return self.can(Permission.ADMINISTER)

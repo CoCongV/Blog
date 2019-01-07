@@ -37,8 +37,13 @@ class Config:
     UPLOADED_PHOTOS_DEST = os.path.join(UPLOADED_DEFAULT_DEST, 'photos/')
     UPLOADED_PHOTOS_URL = os.path.join(UPLOADED_DEFAULT_URL, 'images/')
     UPLOADED_FILES_DEST = os.path.join(UPLOADED_DEFAULT_DEST, 'files/')
-    ALLOWED_EXTENSIONS = ['png', 'jpg', 'jpeg', 'gif', 'webp']
-    MAX_CONTENT_LENGTH = 10 * 1024 * 1024
+    MAX_CONTENT_LENGTH = 30 * 1024 * 1024
+
+    UPLOADED_BOOK_DEST = os.path.join(UPLOADED_DEFAULT_DEST, 'books/')
+
+    ALLOWED_EXTENSIONS = [
+        'png', 'jpg', 'jpeg', 'gif', 'webp', 'txt', 'mobi', 'equb'
+    ]
 
     # sqlalchemy config
     SQLALCHEMY_COMMIT_ON_TEARDOWN = True
