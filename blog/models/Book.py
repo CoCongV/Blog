@@ -45,6 +45,7 @@ class Book(db.Model, CRUDMixin, Serializer):
     cover_img = db.Column(db.Text)
     upload_time = db.Column(db.DateTime, default=lambda: datetime.utcnow())
     path = db.Column(db.String(64), nullable=False)
+    file = db.Column(db.String(64), nullable=False)
 
     authors = db.relationship(
         'Author', secondary=author_book, back_populates='books')

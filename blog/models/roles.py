@@ -5,6 +5,7 @@ from blog.models.minixs import CRUDMixin, Serializer
 
 class Permission:
     COMMENT = 0x02
+    RESOURCE = 0X0A
     ADMINISTER = 0xff
 
 
@@ -22,14 +23,29 @@ class Role(db.Model, CRUDMixin, Serializer):
     @staticmethod
     def insert_roles():
         roles = {
-            'User': (Permission.COMMENT, True),
-            'Administrator': (Permission.ADMINISTER, False)
+            'User': [Permission.COMMENT],
+            'Advanced_User': [Permission.COMMENT, Permission.RESOURCE],
+            'Administrator': [Permission.ADMINISTER, Permission.COMMENT,
+                              Permission.RESOURCE],
         }
-        for r in roles:
+        default_role = 'User'
+        for r, p in roles:
             role = Role.query.filter_by(name=r).first()
             if role is None:
                 role = Role(name=r)
-            role.permissions = roles[r][0]
-            role.default = roles[r][1]
+            role.reset_permissions()
+            for perm in p:
+                role.add_permission(perm)
+            role.default = (role.name == default_role)
             db.session.add(role)
         db.session.commit()
+
+    def has_permission(self, perm):
+        return self.permissions & perm == perm
+    
+    def add_permission(self, perm):
+        if not self.has_permission(perm):
+            self.permissions += perm
+    
+    def reset_permissions(self):
+        self.permissions = 0
