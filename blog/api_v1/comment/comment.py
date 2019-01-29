@@ -25,35 +25,33 @@ class CommentView(Resource):
 
     def post(self):
         args = comment_parse.parse_args()
-        comment_id = args.comment_id
         post = Post.get(args.post_id)
         comment = Comment.create(
             body=args.body, author=g.current_user, post=post)
-        if comment_id:
-            reply = Comment.query.get(comment_id)
+        if args.comment_id:
+            reply = Comment.query.get(args.comment_id)
             comment.reply(reply)
         return {}, 201
 
     def get(self):
         # 评论增加Email验证权限
         # 获取评论
+        prev = None
+        next_ = None
         args = comment_parse.parse_args()
         post = Post.query.get(args['post_id'])
-        page = args.page
         pagination = post.comments.order_by(db.desc('timestamp')).paginate(
-            page, per_page=current_app.config['BLOG_COMMENT_PAGE'],
+            args.page, per_page=current_app.config['BLOG_COMMENT_PAGE'],
             error_out=False
         )
         comments = pagination.items
-        prev = None
         if pagination.has_prev:
-            prev = url_for('comment.commentview', page=page - 1, post=post.id)
-        _next = None
+            prev = url_for('comment.commentview', page=args.page - 1, post=post.id)
         if pagination.has_next:
-            _next = url_for('comment.commentview', page=page + 1, post=post.id)
+            next_ = url_for('comment.commentview', page=args.page + 1, post=post.id)
         return {
             'comments': [i.to_json() for i in comments],
             'prev': prev,
-            'next': _next,
+            'next': next_,
             'count': pagination.total
         }

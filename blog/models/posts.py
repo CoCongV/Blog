@@ -30,6 +30,7 @@ class Post(CRUDMixin, db.Model, Serializer):
         cascade='all, delete-orphan')
     tags = db.Column(postgresql.ARRAY(db.String(32)))
     view = db.Column(db.Integer, default=0)
+    draft = db.Column(db.Boolean, default=False)
 
     def __repr__(self):
         return str(self.json()).replace(',', '\n')

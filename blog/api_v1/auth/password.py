@@ -21,10 +21,8 @@ class Password(Resource):
 
     def post(self):
         args = parser.parse_args()
-        old_password = args['old_password']
-        new_password = args['new_password']
-        verify = g.current_user.verify_password(old_password)
+        verify = g.current_user.verify_password(args.old_password)
         if not verify:
             raise Unauthorized()
-        g.current_user.update(password=new_password)
+        g.current_user.update(password=args.new_password)
         return {}

@@ -27,17 +27,19 @@ class PostSearch(Resource):
         year = args.year
         content = args.search
         page = args.page
+        post_query = Post.query.filter_by(draft=False)
+        
         if tag:
-            pagination = Post.query.filter(Post.tags.any(tag))\
+            pagination = post_query.filter(Post.tags.any(tag))\
                 .order_by(db.desc(Post.timestamp)) \
                 .paginate(page, per_page=per_page, error_out=False)
         elif year:
-            pagination = Post.query.filter(
+            pagination = post_query.filter(
                 extract('year', Post.timestamp) == year)\
                 .order_by(db.desc(Post.timestamp)) \
                 .paginate(page, per_page=per_page, error_out=False)
         elif content:
-            pagination = Post.query.whoosh_search(content)\
+            pagination = post_query.whoosh_search(content)\
                 .order_by(db.desc(Post.timestamp))\
                 .paginate(page, per_page=per_page, error_out=False)
         else:

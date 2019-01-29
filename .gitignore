@@ -8,7 +8,6 @@ __pycache__/
 .idea/
 .vscode/
 .blog/
-migrations/
 tmp/
 media/
 static/

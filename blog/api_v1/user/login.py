@@ -14,16 +14,16 @@ class LoginView(Resource):
     def post(self):
         args = reqparse.parse_args()
         user = User.query.filter_by(email=args.email).first()
+
         if not user:
             raise Forbidden('Email Error')
-        verify = user.verify_password(args.password)
-        if not verify:
+        if not user.verify_password(args.password):
             raise Forbidden('Password Error')
-        else:
-            token = user.generate_confirm_token()
-            return {
-                'token': token,
-                'username': user.username,
-                'permission': user.role.permissions,
-                'avatar': user.avatar
-            }
+
+        token = user.generate_confirm_token()
+        return {
+            'token': token,
+            'username': user.username,
+            'permission': user.role.permissions,
+            'avatar': user.avatar
+        }
