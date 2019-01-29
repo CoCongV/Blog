@@ -29,8 +29,8 @@ books_post_parser.add_argument('category_ids', action='append')
 class BooksResource(Resource):
 
     decorators = [
-        token_auth.login_required,
         permission_required(Permission.RESOURCE)
+        token_auth.login_required,
     ]
 
     def get(self):
@@ -83,20 +83,16 @@ books_post_parser.add_argument('book', type=FileStorage, location='files')
 
 class BookResource(Resource):
     decorators = [
+        permission_required(Permission.RESOURCE),
         token_auth.login_required,
-        permission_required(Permission.RESOURCE)
     ]
-
-    method_decorators = {
-        'patch': permission_required(Permission.ADMINISTER),
-        'delete': permission_required(Permission.ADMINISTER)
-    }
 
     def get(self, book_id):
         book = Book.get_or_404(book_id)
         return send_from_directory(current_app.config['UPLOADED_BOOK_DEST'],
                                    book.file)
 
+    @permission_required(Permission.ADMINISTER)
     def patch(self, book_id):
         args = book_parser.parse_args()
         book = Book.get_or_404(book_id)
@@ -115,6 +111,7 @@ class BookResource(Resource):
             book.update(file=filename)
         return ''
 
+    @permission_required(Permission.ADMINISTER)
     def delete(self, book_id):
         book = Book.get_or_404(book_id)
         path = Path(os.path.join(books.config.destination, book.file))
