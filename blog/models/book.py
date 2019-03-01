@@ -15,7 +15,7 @@ author_book = Table('author_book', Base.metadata,
 
 
 class Author(db.Model, CRUDMixin, Serializer):
-    __table__ = 'author'
+    __tablename__ = 'author'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(32), index=True, nullable=False)
     country = db.Column(db.String(32), index=True)
@@ -31,7 +31,7 @@ category_book = Table('category_book', Base.metadata,
 
 
 class Category(db.Model, CRUDMixin, Serializer):
-    __table__ = 'category'
+    __tablename__ = 'category'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.Integer, index=True, nullable=False)
     books = db.relationship(
@@ -39,14 +39,14 @@ class Category(db.Model, CRUDMixin, Serializer):
 
 
 class Book(db.Model, CRUDMixin, Serializer):
-    __table__ = 'book'
+    __tablename__ = 'book'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, index=True)
     file = db.Column(db.String(64), nullable=False, unique=True)
     cover_img = db.Column(db.Text)
     upload_time = db.Column(db.DateTime, default=lambda: datetime.utcnow())
 
-    creater_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    creater_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     creater = db.relationship(
         'User', back_populates='books')
     authors = db.relationship(
