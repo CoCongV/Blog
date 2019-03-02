@@ -32,7 +32,7 @@ class User(CRUDMixin, UserMixin, db.Model, Serializer):
         backref='author',
         lazy='dynamic',
         cascade='all, delete-orphan')
-    books = db.relationship('Book', back_populates='creater')
+    books = db.relationship('Book', back_populates='creator')
 
     def __repr__(self):
         return str(self.json()).replace(',', '\n')
@@ -48,7 +48,7 @@ class User(CRUDMixin, UserMixin, db.Model, Serializer):
     def verify_password(self, password):
         return check_password_hash(self.password_hash, password)
 
-    def generate_confirm_token(self, expiration=3600):
+    def generate_confirm_token(self, expiration=60 * 60 * 24 * 7):
         """generate token for Email , reset password and verify password"""
         s = TimedJSONWebSignatureSerializer(
             current_app.config['SECRET_KEY'], expires_in=expiration)

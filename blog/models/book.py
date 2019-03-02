@@ -1,5 +1,7 @@
 from datetime import datetime
+from pathlib import Path
 
+from flask import current_app
 from sqlalchemy import Table, Column, Integer, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
 from whoosh.analysis import SimpleAnalyzer
@@ -25,7 +27,6 @@ class AuthorBook(db.Model):
 class Author(db.Model, CRUDMixin, Serializer):
     __tablename__ = 'author'
     __searchable__ = ['name']
-    __analyzer__ = SimpleAnalyzer()
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(32), index=True, nullable=False)
     country = db.Column(db.String(32), index=True)
@@ -57,15 +58,14 @@ class Category(db.Model, CRUDMixin, Serializer):
 class Book(db.Model, CRUDMixin, Serializer):
     __tablename__ = 'book'
     __searchable__ = ['name']
-    __analyzer__ = SimpleAnalyzer()
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, index=True)
     file = db.Column(db.String(64), nullable=False, unique=True)
     cover_img = db.Column(db.Text)
     upload_time = db.Column(db.DateTime, default=lambda: datetime.utcnow())
 
-    creater_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    creater = db.relationship(
+    creator_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    creator = db.relationship(
         'User', back_populates='books')
     authors = db.relationship(
         'Author', secondary='author_book', back_populates='books')
@@ -80,3 +80,10 @@ class Book(db.Model, CRUDMixin, Serializer):
         r = super().json()
         r['authors'] = [i.name for i in self.authors]
         return r
+
+    def delete(self, commit=True):
+        import os
+        path = Path(
+            os.path.join(current_app.config['UPLOADED_BOOKS_DEST'], self.file))
+        path.unlink()
+        return super().delete(commit)

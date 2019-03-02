@@ -15,7 +15,6 @@ from blog.models.minixs import CRUDMixin, Serializer
 class Post(CRUDMixin, db.Model, Serializer):
     __tablename__ = 'posts'
     __searchable__ = ['body', 'title']
-    __analyzer__ = SimpleAnalyzer()
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(32), index=True)
     body = db.Column(db.Text)

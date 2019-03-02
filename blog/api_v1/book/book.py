@@ -37,7 +37,7 @@ class BooksResource(Resource):
         args = books_parser.parse_args()
         prev = None
         next_ = None
-        per_page = current_app.config.get('BOOK_PER_PAGE', 20)
+        per_page = current_app.config.get('BOOK_PER_PAGE', 12)
         book_query = Book.query.filter_by().order_by(
             db.desc('upload_time'))
 
@@ -68,7 +68,8 @@ class BooksResource(Resource):
         book = Book(name=args.name, file=filename)
         book.categories = Category.query.filter(
             Category.id.in_(args.category_ids))
-        book.authors = Author.query.filter(Author.id.in_(args.author_ids))
+        book.authors.append(
+            Author.query.filter(Author.id.in_(args.author_ids)))
         book.save()
         file_url = books.url(filename)
         return {'url': file_url}
@@ -118,3 +119,39 @@ class BookResource(Resource):
         path.unlink()
         book.delete()
         return ''
+
+
+search_parse = RequestParser()
+search_parse.add_argument('param', location='args')
+search_parse.add_argument('page', location='args', type=int, default=1)
+
+class BookSearch(Resource):
+    def get(self):
+        prev = None
+        next_ = None
+        total = 0
+        per_page = current_app.config['BLOG_BOOK_PER_PAGE']
+
+        args = search_parse.parse_args()
+        book_query = Book.query.filter_by()
+        if args.param:
+            pagination = book_query.whoosh_search(args.param).paginate(
+                args.page, per_page=per_page, error_out=False)
+        else:
+            pagination = None
+        if pagination:
+            books = pagination.items
+            total = pagination.total
+            if pagination.has_prev:
+                prev = url_for(
+                    'post.post_search', page=args.page - 1, _external=True)
+            if pagination.has_next:
+                next_ = url_for(
+                    'post.post_search', page=args.page + 1, _external=True)
+        else:
+            books = []
+        return {'books': [i.json() for i in books],
+                'prev': prev,
+                'next': next_,
+                'count': total}
+

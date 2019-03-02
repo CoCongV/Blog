@@ -4,7 +4,8 @@ import logging
 from logging.handlers import TimedRotatingFileHandler
 
 from raven.contrib.flask import Sentry
-from whoosh.analysis import StemmingAnalyzer
+# from whoosh.analysis import StemmingAnalyzer
+from jieba.analyse import ChineseAnalyzer
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -51,6 +52,7 @@ class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = True
     BLOG_POST_PER_PAGE = 10
     BLOG_COMMENT_PAGE = 10
+    BLOG_BOOK_PER_PAGE = 12
     BLOG_SLOW_DB_QUERY_TIME = 0.1
     FLASKY_DB_QUERY_TIMEOUT = 0.5
 
@@ -58,8 +60,8 @@ class Config:
     LOGIN_TOKEN = 60 * 60 * 24 * 7
 
     # whoosh config
-    WHOOSH_BASE = '/tmp/whoosh/base'
-    WHOOSH_ANALYZER = StemmingAnalyzer()
+    WHOOSH_BASE = '/home/lvcong/tmp/whoosh/base'
+    WHOOSH_ANALYZER = ChineseAnalyzer()
     DEBUG_TB_INTERCEPT_REDIRECTS = False
 
     # celery config

@@ -26,6 +26,7 @@ graphene-sqlalchemy
 graphql-core
 graphql-relay
 gunicorn
+jieba
 Markdown
 psycopg2-binary
 raven

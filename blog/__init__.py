@@ -24,7 +24,7 @@ login_manager.login_view = 'auth.login'
 
 celery = Celery(__name__, broker='redis://localhost:6379')
 
-EBOOKS = ('txt', 'mobi', 'equb')
+EBOOKS = ('txt', 'mobi', 'equb', 'pdf')
 photos = UploadSet('photos', IMAGES)
 books = UploadSet('books', EBOOKS)
 redis_cli = FlaskRedis()
