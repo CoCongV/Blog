@@ -13,10 +13,8 @@ from flask_admin import Admin
 from flask_whooshalchemyplus import whoosh_index
 
 from blog import create_app, db, make_celery, celery as celery_worker, migrate
-from blog.models.comments import Comment
-from blog.models.users import User
-from blog.models.posts import Post
-from blog.models.roles import Role, Permission
+from blog.models import (Comment, User, Post, Role, Permission, Author, Book,
+                         AuthorBook, CategoryBook)
 
 COV = None
 if os.environ.get('FLASK_COVERAGE'):
@@ -50,7 +48,9 @@ def make_shell_context():
         Role=Role,
         Comment=Comment,
         Permission=Permission,
-        Post=Post)
+        Post=Post,
+        Book=Book,
+        Author=Author)
 
 manager.add_command("shell",
                     Shell(use_ipython=True, make_context=make_shell_context))

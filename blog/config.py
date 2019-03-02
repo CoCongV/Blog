@@ -32,14 +32,14 @@ class Config:
 
     # FILE UPLOAD
     # UPLOADED_PHOTOS_DEST = './app/media/photos'
-    UPLOADED_DEFAULT_DEST = '/tmp/blog'
+    UPLOADED_DEFAULT_DEST = '/home/lvcong/tmp/blog'
     UPLOADED_DEFAULT_URL = '/media/'
     UPLOADED_PHOTOS_DEST = os.path.join(UPLOADED_DEFAULT_DEST, 'photos/')
     UPLOADED_PHOTOS_URL = os.path.join(UPLOADED_DEFAULT_URL, 'images/')
     UPLOADED_FILES_DEST = os.path.join(UPLOADED_DEFAULT_DEST, 'files/')
     MAX_CONTENT_LENGTH = 30 * 1024 * 1024
-
-    UPLOADED_BOOK_DEST = os.path.join(UPLOADED_DEFAULT_DEST, 'books/')
+    UPLOADED_BOOKS_URL = os.path.join(UPLOADED_DEFAULT_URL, 'books/')
+    UPLOADED_BOOKS_DEST = os.path.join(UPLOADED_DEFAULT_DEST, 'books/')
 
     ALLOWED_EXTENSIONS = [
         'png', 'jpg', 'jpeg', 'gif', 'webp', 'txt', 'mobi', 'equb'
@@ -55,7 +55,7 @@ class Config:
     FLASKY_DB_QUERY_TIMEOUT = 0.5
 
     # LOGIN
-    LOGIN_TOKEN = 60 * 60 * 24
+    LOGIN_TOKEN = 60 * 60 * 24 * 7
 
     # whoosh config
     WHOOSH_BASE = '/tmp/whoosh/base'

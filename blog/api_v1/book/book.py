@@ -9,7 +9,7 @@ from werkzeug.datastructures import FileStorage
 
 from blog import db, books
 from blog.api_v1 import token_auth
-from blog.decorators import permission_required
+from blog.api_v1.decorators import permission_required
 from blog.exceptions import AlreadyExists
 from blog.models import Book, Permission, Category, Author
 
@@ -29,7 +29,7 @@ books_post_parser.add_argument('category_ids', action='append')
 class BooksResource(Resource):
 
     decorators = [
-        permission_required(Permission.RESOURCE)
+        permission_required(Permission.RESOURCE),
         token_auth.login_required,
     ]
 
@@ -41,7 +41,7 @@ class BooksResource(Resource):
         book_query = Book.query.filter_by().order_by(
             db.desc('upload_time'))
 
-        pagination = book_query.pagination(
+        pagination = book_query.paginate(
             args.page, per_page, error_out=False)
         books = pagination.items
 
@@ -53,7 +53,7 @@ class BooksResource(Resource):
                 'book.booksresource', page=args.page + 1, _external=True)
 
         return {
-            'books': [book.to_json() for book in books],
+            'books': [book.json() for book in books],
             'prev': prev,
             'next': next_,
             'count': pagination.total,
@@ -89,7 +89,7 @@ class BookResource(Resource):
 
     def get(self, book_id):
         book = Book.get_or_404(book_id)
-        return send_from_directory(current_app.config['UPLOADED_BOOK_DEST'],
+        return send_from_directory(current_app.config['UPLOADED_BOOKS_DEST'],
                                    book.file)
 
     @permission_required(Permission.ADMINISTER)

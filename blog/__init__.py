@@ -45,8 +45,8 @@ def create_app(config):
     redis_cli.init_app(app)
     app.session_interface = RedisSessionInterface(redis_cli)
 
-    from .main import main as main_blueprint
-    app.register_blueprint(main_blueprint)
+    # from .main import main as main_blueprint
+    # app.register_blueprint(main_blueprint)
 
     from .api_v1 import api_v1
     app.register_blueprint(api_v1)
