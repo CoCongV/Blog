@@ -2,6 +2,7 @@ from datetime import datetime
 
 from sqlalchemy import Table, Column, Integer, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
+from whoosh.analysis import SimpleAnalyzer
 
 from blog import db
 from blog.models.minixs import CRUDMixin, Serializer
@@ -23,6 +24,8 @@ class AuthorBook(db.Model):
 
 class Author(db.Model, CRUDMixin, Serializer):
     __tablename__ = 'author'
+    __searchable__ = ['name']
+    __analyzer__ = SimpleAnalyzer()
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(32), index=True, nullable=False)
     country = db.Column(db.String(32), index=True)
@@ -53,6 +56,8 @@ class Category(db.Model, CRUDMixin, Serializer):
 
 class Book(db.Model, CRUDMixin, Serializer):
     __tablename__ = 'book'
+    __searchable__ = ['name']
+    __analyzer__ = SimpleAnalyzer()
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, index=True)
     file = db.Column(db.String(64), nullable=False, unique=True)

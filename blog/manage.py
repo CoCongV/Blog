@@ -32,6 +32,8 @@ app = create_app(conf)
 basedir = os.path.abspath(os.path.dirname(__file__))
 manager = Manager(app)
 whoosh_index(app, Post)
+whoosh_index(app, Book)
+whoosh_index(app, Author)
 admin = Admin(app, name='Cong Blog', template_mode="bootstrap3")
 celery = make_celery(app, celery_worker)
 
