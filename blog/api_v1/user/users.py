@@ -37,7 +37,7 @@ reqparse_patch.add_argument(
 
 class UserView(Resource):
     method_decorators = {
-        'get': [permission_required(Permission.COMMENT, Unauthorized), token_auth.login_required],
+        'get': [permission_required(Permission.COMMENT), token_auth.login_required],
         'patch': [permission_required(Permission.COMMENT), token_auth.login_required]
     }
 
