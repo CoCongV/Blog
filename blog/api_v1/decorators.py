@@ -7,7 +7,7 @@ def permission_required(permission):
     def decorator(f):
         @wraps(f)
         def decorated_function(*args, **kwargs):
-            if g.current_user.is_anonymous():
+            if g.current_user.is_anonymous:
                 raise Unauthorized()
             if not g.current_user.can(permission):
                 raise Forbidden()

@@ -24,6 +24,8 @@ reqparse_patch = reqparse.RequestParser()
 reqparse_patch.add_argument(
     'email', type=str, location='json', store_missing=False)
 reqparse_patch.add_argument(
+    'kindle_email', type=str, location='json', store_missing=False)
+reqparse_patch.add_argument(
     'username', type=str, location='json', store_missing=False)
 reqparse_patch.add_argument(
     'location', type=str, location='json', store_missing=False)

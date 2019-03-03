@@ -151,6 +151,7 @@ class User(CRUDMixin, UserMixin, db.Model, Serializer):
             "member_since": self.member_since.strftime('%Y-%m-%d %H:%M'),
             "confirmed": self.confirmed,
             "permission": self.role.permissions,
+            "kindle_email": self.kindle_email
         }
         return json_data
 
