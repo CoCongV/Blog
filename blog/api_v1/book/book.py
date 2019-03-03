@@ -3,11 +3,13 @@ import os
 from pathlib import Path
 
 from flask import url_for, current_app, g, send_from_directory
+from werkzeug.exceptions import BadRequest
+from flask_mail import Message
 from flask_restful import Resource
 from flask_restful.reqparse import RequestParser
 from werkzeug.datastructures import FileStorage
 
-from blog import db, books
+from blog import db, books, mail
 from blog.api_v1 import token_auth
 from blog.api_v1.decorators import permission_required
 from blog.exceptions import AlreadyExists
@@ -155,3 +157,34 @@ class BookSearch(Resource):
                 'prev': prev,
                 'next': next_,
                 'count': total}
+
+
+class BookPush(Resource):
+
+    decorators = [
+        permission_required(Permission.RESOURCE), token_auth.login_required
+    ]
+
+    def put(self, book_id):
+        if not g.current_user.kindle_email:
+            raise BadRequest("Kindle Email Not Exist")
+        print('test')
+        book = Book.get_or_404(book_id)
+        file_type = book.file.split('.')[-1].lower()
+        if file_type not in ('mobi', 'txt', 'pdf'):
+            raise BadRequest("The Book file type not support!")
+        if file_type == 'pdf':
+            content_type = 'application/pdf'
+        msg = Message(
+            current_app.config['FLASK_MAIL_SUBJECT_PREFIX'] + ' ' +
+            "Push EBook",
+            sender=current_app.config['FLASK_MAIL_SENDER'],
+            recipients=[g.current_user.kindle_email])
+        file_path = os.path.join(current_app.config['UPLOADED_BOOKS_DEST'], book.file)
+        with current_app.open_resource(file_path) as fp:
+            msg.attach(
+                filename=book.file,
+                content_type='application/octet-stream',
+                data=fp.read())
+        mail.send(msg)
+        return '', 200
