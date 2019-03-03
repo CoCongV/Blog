@@ -29,7 +29,7 @@ class Role(db.Model, CRUDMixin, Serializer):
                               Permission.RESOURCE],
         }
         default_role = 'User'
-        for r, p in roles:
+        for r, p in roles.items():
             role = Role.query.filter_by(name=r).first()
             if role is None:
                 role = Role(name=r)
