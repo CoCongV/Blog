@@ -16,6 +16,7 @@ from blog.models import Book, Permission, Category, Author
 
 books_parser = RequestParser()
 books_parser.add_argument('page', type=int, default=1)
+books_parser.add_argument('num', type=int, default=15)
 
 books_post_parser = RequestParser()
 books_post_parser.add_argument(
@@ -37,7 +38,7 @@ class BooksResource(Resource):
         args = books_parser.parse_args()
         prev = None
         next_ = None
-        per_page = current_app.config.get('BOOK_PER_PAGE', 12)
+        per_page = args.num or current_app.config.get('BLOG_BOOK_PER_PAGE', 15)
         book_query = Book.query.filter_by().order_by(
             db.desc('upload_time'))
 
@@ -154,4 +155,3 @@ class BookSearch(Resource):
                 'prev': prev,
                 'next': next_,
                 'count': total}
-
