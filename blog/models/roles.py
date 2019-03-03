@@ -4,9 +4,9 @@ from blog.models.minixs import CRUDMixin, Serializer
 
 
 class Permission:
-    COMMENT = 0x02
-    RESOURCE = 0X0A
-    ADMINISTER = 0xff
+    COMMENT = 1
+    RESOURCE = 8
+    ADMINISTER = 16
 
 
 class Role(db.Model, CRUDMixin, Serializer):
