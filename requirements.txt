@@ -26,6 +26,7 @@ graphene-sqlalchemy
 graphql-core
 graphql-relay
 gunicorn
+hiredis
 jieba
 Markdown
 psycopg2-binary

@@ -42,6 +42,7 @@ jieba = "*"
 captcha = "*"
 flask-redis = "*"
 pygithub = "*"
+hiredis = "*"
 
 [dev-packages]
 coverage = "*"
