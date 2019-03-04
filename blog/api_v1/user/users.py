@@ -50,7 +50,8 @@ class UserView(Resource):
         # register user
         args = user_reqparse.parse_args()
         try:
-            role = Role.query.filter_by(permissions=2).first()
+            role = Role.query.filter_by(name='User').first()
+            permissions = role.permissions
             user = User.create(email=args['email'],
                                username=args['username'],
                                password=args['password'],
@@ -63,7 +64,7 @@ class UserView(Resource):
         token = user.generate_confirm_token(
             expiration=current_app.config['LOGIN_TOKEN_EXPIRES'])
         email_token = user.generate_email_token()
-        send_email.delay(
+        send_email(
             to=user.email,
             subject='Confirm Your Account',
             template='mail/confirm',
@@ -73,7 +74,9 @@ class UserView(Resource):
             'New User Exist: {}, {}'.format(user.id, user.email))
         return {
             'token': token,
-            'permission': user.role.permissions
+            'permission': permissions,
+            'expiration': current_app.config['LOGIN_TOKEN_EXPIRES'],
+            'avatar': user.avatar,
         },
 
     def patch(self):

@@ -18,7 +18,7 @@ class SendEmailAuth(Resource):
         user = g.current_user
         if not user.is_anonymous:
             email_token = g.current_user.generate_email_token()
-            send_email.delay(
+            send_email(
                 to=user.email,
                 subject='Confirm Your Account',
                 template='mail/confirm',
