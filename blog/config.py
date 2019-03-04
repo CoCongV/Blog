@@ -76,6 +76,7 @@ class Config:
     LOG_PATH = '/logs/blog/'
     LOG_TIME = 'D'
     LOG_BACK_COUNT = 10
+    SQLALCHEMY_POOL_SIZE = 20
 
     CAPTCHA_FONTS_PATH = [os.path.join(basedir, 'fonts/NotoSans-Regular.ttf')]
 

@@ -156,7 +156,9 @@ class BookSearch(Resource):
         return {'books': [i.json() for i in books],
                 'prev': prev,
                 'next': next_,
-                'count': total}
+                'count': total,
+                'pages': pagination.pages
+            }
 
 
 class BookPush(Resource):

@@ -51,7 +51,7 @@ class UserView(Resource):
         args = user_reqparse.parse_args()
         try:
             role = Role.query.filter_by(name='User').first()
-            permissions = role.permissions
+            permission = role.permissions
             user = User.create(email=args['email'],
                                username=args['username'],
                                password=args['password'],
@@ -74,10 +74,11 @@ class UserView(Resource):
             'New User Exist: {}, {}'.format(user.id, user.email))
         return {
             'token': token,
-            'permission': permissions,
+            'username': user.username,
+            'permission': permission,
             'expiration': current_app.config['LOGIN_TOKEN_EXPIRES'],
             'avatar': user.avatar,
-        },
+        }
 
     def patch(self):
         args = reqparse_patch.parse_args()
