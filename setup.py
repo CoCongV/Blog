@@ -39,7 +39,9 @@ setup(
     author_email='public@ricequant.com',
     license='Apache License v2',
     package_data={
-        '': ['*.*']
+        '': ['*.*'],
+        'templates': ['*'],
+        'fonts': ['*'],
     },
     install_requires=[
         str(ir.req)

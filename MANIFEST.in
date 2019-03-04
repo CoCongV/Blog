@@ -1,2 +1,4 @@
 include requirements.txt
 include blog/VERSION.txt
+include blog/fonts/*
+include template/*
