@@ -48,8 +48,10 @@ class User(CRUDMixin, UserMixin, db.Model, Serializer):
     def verify_password(self, password):
         return check_password_hash(self.password_hash, password)
 
-    def generate_confirm_token(self, expiration=60 * 60 * 24 * 7):
+    def generate_confirm_token(self, expiration=None):
         """generate token for Email , reset password and verify password"""
+        if not expiration:
+            expiration = current_app.config['LOGIN_TOKEN_EXPIRES']
         s = TimedJSONWebSignatureSerializer(
             current_app.config['SECRET_KEY'], expires_in=expiration)
         token = s.dumps({'confirm_id': self.id})
@@ -67,7 +69,7 @@ class User(CRUDMixin, UserMixin, db.Model, Serializer):
 
     def generate_email_token(self, expiration=None):
         if not expiration:
-            current_app.config['LOGIN_TOKEN']
+            current_app.config['LOGIN_TOKEN_EXPIRES']
         s = TimedJSONWebSignatureSerializer(
             current_app.config['SECRET_KEY'], expires_in=expiration)
         token = s.dumps({'email': self.email})

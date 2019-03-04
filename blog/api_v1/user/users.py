@@ -60,7 +60,8 @@ class UserView(Resource):
         except (IntegrityError, InvalidRequestError, DataError):
             raise AlreadyExists()
 
-        token = user.generate_confirm_token(expiration=86400)
+        token = user.generate_confirm_token(
+            expiration=current_app.config['LOGIN_TOKEN_EXPIRES'])
         email_token = user.generate_email_token()
         send_email.delay(
             to=user.email,

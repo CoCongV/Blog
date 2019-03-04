@@ -57,7 +57,7 @@ class Config:
     FLASKY_DB_QUERY_TIMEOUT = 0.5
 
     # LOGIN
-    LOGIN_TOKEN = 60 * 60 * 24 * 7
+    LOGIN_TOKEN_EXPIRES = 60 * 60 * 24 * 7
 
     # whoosh config
     WHOOSH_BASE = '/home/lvcong/tmp/whoosh/base'
