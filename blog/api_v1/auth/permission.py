@@ -23,10 +23,11 @@ class PostPermission(Resource):
     decorators = [token_auth.login_required]
 
     def get(self):
-        post = Post.query.get(request.args.post_id)
+        print(request.args)
+        post = Post.query.get(request.args['post_id'])
         if g.current_user == post.author or g.current_user.can(
                 Permission.ADMINISTER):
-            return {}
+            return ''
         raise Forbidden()
 
 
