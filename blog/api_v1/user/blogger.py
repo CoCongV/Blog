@@ -5,9 +5,7 @@ from blog.models import User, Role
 
 class Blogger(Resource):
     def get(self):
-        administrator = Role.query.filter_by(
-            name="Administrator").first()
-        blogger = User.query.filter_by(role=administrator).first()
+        blogger = User.query.filter(Role.name == "Administrator").first()
         return {
             'username': blogger.username,
             'avatar': blogger.avatar,

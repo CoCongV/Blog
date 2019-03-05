@@ -1,4 +1,5 @@
 from datetime import datetime
+import os
 from pathlib import Path
 
 from flask import current_app
@@ -79,10 +80,10 @@ class Book(db.Model, CRUDMixin, Serializer):
     def json(self):
         r = super().json()
         r['authors'] = [i.name for i in self.authors]
+        r['creator'] = self.creator.username
         return r
 
     def delete(self, commit=True):
-        import os
         path = Path(
             os.path.join(current_app.config['UPLOADED_BOOKS_DEST'], self.file))
         path.unlink()

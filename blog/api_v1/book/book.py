@@ -170,13 +170,7 @@ class BookPush(Resource):
     def put(self, book_id):
         if not g.current_user.kindle_email:
             raise BadRequest("Kindle Email Not Exist")
-        print('test')
         book = Book.get_or_404(book_id)
-        file_type = book.file.split('.')[-1].lower()
-        if file_type not in ('mobi', 'txt', 'pdf'):
-            raise BadRequest("The Book file type not support!")
-        if file_type == 'pdf':
-            content_type = 'application/pdf'
         msg = Message(
             current_app.config['FLASK_MAIL_SUBJECT_PREFIX'] + ' ' +
             "Push EBook",
