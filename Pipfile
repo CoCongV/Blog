@@ -43,6 +43,7 @@ flask-redis = "*"
 pygithub = "*"
 hiredis = "*"
 psycopg2-binary = "*"
+beautifulsoup4 = "*"
 
 [dev-packages]
 coverage = "*"

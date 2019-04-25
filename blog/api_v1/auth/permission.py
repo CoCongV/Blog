@@ -3,7 +3,8 @@ from flask_restful import Resource, reqparse
 from werkzeug.exceptions import Forbidden
 
 from blog.api_v1 import token_auth
-from blog.models import Permission, User, Post
+from blog.api_v1.decorators import permission_required
+from blog.models import Permission, User, Post, Role
 
 
 class UserPermission(Resource):
@@ -39,3 +40,14 @@ class CommentPermission(Resource):
         if g.current_user.can(Permission.COMMENT) and g.current_user.confirmed:
             return {}
         raise Forbidden()
+
+
+class UpdatePermission(Resource):
+    decorators = [permission_required(Permission.COMMENT), token_auth.login_required]
+
+    def post(self):
+        g.current_user.role = Role.query.filter_by(name='Advanced_User').first()
+        g.current_user.save()
+        return {'permission': g.current_user.role.permissions}
+        
+    

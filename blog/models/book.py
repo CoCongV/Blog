@@ -86,5 +86,9 @@ class Book(db.Model, CRUDMixin, Serializer):
     def delete(self, commit=True):
         path = Path(
             os.path.join(current_app.config['UPLOADED_BOOKS_DEST'], self.file))
-        path.unlink()
-        return super().delete(commit)
+        try:
+            path.unlink()
+        except:
+            pass
+        finally:
+            return super().delete(commit)

@@ -9,7 +9,8 @@ from .captcha import ImageCaptcha
 from .password import Password
 from .permission import (PostPermission,
                          CommentPermission,
-                         UserPermission)
+                         UserPermission,
+                         UpdatePermission)
 from .token import Token
 
 
@@ -25,6 +26,8 @@ api.add_resource(CommentPermission, '/comment_permission',
                  endpoint='comment_permission')
 api.add_resource(UserPermission, '/user_permission',
                  endpoint='user_permission')
+api.add_resource(UpdatePermission, '/update_permission',
+                 endpoint='update_permission')
 api.add_resource(SendEmailAuth, '/send_email_auth/',
                  endpoint='send_email_auth')
 api.add_resource(Password, '/password/')

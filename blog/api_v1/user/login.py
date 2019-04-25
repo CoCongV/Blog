@@ -14,6 +14,7 @@ class LoginView(Resource):
 
     def post(self):
         args = reqparse.parse_args()
+        print(args)
         user = User.query.filter_by(email=args.email).first()
 
         if not user:

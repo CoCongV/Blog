@@ -7,6 +7,7 @@ from werkzeug.exceptions import BadRequest
 from flask_mail import Message
 from flask_restful import Resource
 from flask_restful.reqparse import RequestParser
+from sqlalchemy.exc import IntegrityError
 from werkzeug.datastructures import FileStorage
 
 from blog import db, books, mail
@@ -14,7 +15,8 @@ from blog.api_v1 import token_auth
 from blog.api_v1.decorators import permission_required
 from blog.exceptions import AlreadyExists
 from blog.models import Book, Permission, Category, Author
-
+from blog.utils.celery.spiders import (bookset, get_bookset_download_url,
+                                       download)
 
 books_parser = RequestParser()
 books_parser.add_argument('page', type=int, default=1)
@@ -41,11 +43,9 @@ class BooksResource(Resource):
         prev = None
         next_ = None
         per_page = args.num or current_app.config.get('BLOG_BOOK_PER_PAGE', 15)
-        book_query = Book.query.filter_by().order_by(
-            db.desc('upload_time'))
+        book_query = Book.query.filter_by().order_by(db.desc('upload_time'))
 
-        pagination = book_query.paginate(
-            args.page, per_page, error_out=False)
+        pagination = book_query.paginate(args.page, per_page, error_out=False)
         books = pagination.items
 
         if pagination.has_prev:
@@ -128,6 +128,7 @@ search_parse = RequestParser()
 search_parse.add_argument('param', location='args')
 search_parse.add_argument('page', location='args', type=int, default=1)
 
+
 class BookSearch(Resource):
     def get(self):
         prev = None
@@ -136,6 +137,7 @@ class BookSearch(Resource):
         per_page = current_app.config['BLOG_BOOK_PER_PAGE']
 
         args = search_parse.parse_args()
+        print(args)
         book_query = Book.query.filter_by()
         if args.param:
             pagination = book_query.whoosh_search(args.param).paginate(
@@ -153,12 +155,13 @@ class BookSearch(Resource):
                     'post.post_search', page=args.page + 1, _external=True)
         else:
             books = []
-        return {'books': [i.json() for i in books],
-                'prev': prev,
-                'next': next_,
-                'count': total,
-                'pages': pagination.pages
-            }
+        return {
+            'books': [i.json() for i in books],
+            'prev': prev,
+            'next': next_,
+            'count': total,
+            'pages': pagination.pages
+        }
 
 
 class BookPush(Resource):
@@ -176,11 +179,40 @@ class BookPush(Resource):
             "Push EBook",
             sender=current_app.config['FLASK_MAIL_SENDER'],
             recipients=[g.current_user.kindle_email])
-        file_path = os.path.join(current_app.config['UPLOADED_BOOKS_DEST'], book.file)
+        file_path = os.path.join(current_app.config['UPLOADED_BOOKS_DEST'],
+                                 book.file)
         with current_app.open_resource(file_path) as fp:
             msg.attach(
                 filename=book.file,
                 content_type='application/octet-stream',
                 data=fp.read())
         mail.send(msg)
+        return '', 200
+
+
+completion_parser = RequestParser()
+completion_parser.add_argument('name')
+completion_parser.add_argument('url')
+
+
+class BookCompletion(Resource):
+    decorators = [
+        permission_required(Permission.RESOURCE), token_auth.login_required
+    ]
+
+    def get(self):
+        args = completion_parser.parse_args()
+        return {'source': bookset(args.name)}
+
+    def post(self):
+        args = completion_parser.parse_args()
+        filename = args.name + '.mobi'
+        book = Book(name=args.name, file=filename, creator=g.current_user)
+        try:
+            book.save()
+        except IntegrityError:
+            raise AlreadyExists('Book Already Exists')
+        download_url = get_bookset_download_url(args.url)
+        download(download_url, current_app.config['UPLOADED_BOOKS_DEST'],
+                 filename)
         return '', 200
