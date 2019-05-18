@@ -62,10 +62,13 @@ class CRUDMixin(object):
 class Serializer(object):
     serialized_fields = ()
 
-    def json(self):
+    def json(self, exclude: list=None):
+        exclude = list(exclude) if exclude else []
         serialized_fields = self.serialized_fields
-        cls_serialized_fields = set(
-            [column.name for column in self.__class__.__table__.columns])
+        cls_serialized_fields = set([
+            column.name for column in self.__class__.__table__.columns
+            if column.name not in exclude
+        ])
 
         for primary_key in inspect(self.__class__).primary_key:
             if not getattr(self, primary_key.name):

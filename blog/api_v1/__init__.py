@@ -33,8 +33,10 @@ from .post import api_post
 from .user import api_user
 from .comment import api_comment
 from .auth import api_auth
+from .book import api_book
 
 api_v1.register_blueprint(api_post)
 api_v1.register_blueprint(api_user)
 api_v1.register_blueprint(api_comment)
 api_v1.register_blueprint(api_auth)
+api_v1.register_blueprint(api_book)

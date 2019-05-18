@@ -1,13 +1,12 @@
 from flask_restful import Resource
 
-from blog.models import User, Permission, Role
+from blog.models import User, Role
 
 
 class Blogger(Resource):
     def get(self):
-        administrator = Role.query.filter_by(
-            permissions=Permission.ADMINISTER).first()
-        blogger = User.query.filter_by(role=administrator).first()
+        role = Role.query.filter_by(name="Administrator").first()
+        blogger = User.query.filter_by(role=role).first()
         return {
             'username': blogger.username,
             'avatar': blogger.avatar,

@@ -21,7 +21,7 @@ class PostView(Resource):
 
     method_decorators = {
         'patch': [
-            permission_required(Permission.ADMINISTER, Unauthorized),
+            permission_required(Permission.ADMINISTER),
             token_auth.login_required
         ],
         'delete': [

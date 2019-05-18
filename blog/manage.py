@@ -1,3 +1,4 @@
+import glob
 import os
 import sys
 sys.path.insert(0, '.')
@@ -7,16 +8,15 @@ except ImportError:
     from .config import config
     conf = config[os.getenv('LV_ENV') or 'default']
 
+from flask import current_app
 from flask_script import Shell, Manager
 from flask_migrate import Migrate, MigrateCommand
 from flask_admin import Admin
 from flask_whooshalchemyplus import whoosh_index
 
 from blog import create_app, db, make_celery, celery as celery_worker, migrate
-from blog.models.comments import Comment
-from blog.models.users import User
-from blog.models.posts import Post
-from blog.models.roles import Role, Permission
+from blog.models import (Comment, User, Post, Role, Permission, Author, Book,
+                         AuthorBook, CategoryBook)
 
 COV = None
 if os.environ.get('FLASK_COVERAGE'):
@@ -34,6 +34,8 @@ app = create_app(conf)
 basedir = os.path.abspath(os.path.dirname(__file__))
 manager = Manager(app)
 whoosh_index(app, Post)
+whoosh_index(app, Book)
+whoosh_index(app, Author)
 admin = Admin(app, name='Cong Blog', template_mode="bootstrap3")
 celery = make_celery(app, celery_worker)
 
@@ -50,7 +52,9 @@ def make_shell_context():
         Role=Role,
         Comment=Comment,
         Permission=Permission,
-        Post=Post)
+        Post=Post,
+        Book=Book,
+        Author=Author)
 
 manager.add_command("shell",
                     Shell(use_ipython=True, make_context=make_shell_context))
@@ -90,6 +94,40 @@ def test(coverage=False):
         COV.html_report(directory=covdir)
         print('HTML version: file://%s/index.html' % covdir)
         COV.erase()
+
+
+@manager.option('-p', '--path', help='EBook dir path')
+@manager.option('-c', '--creator', help="Creator for create ebook")
+def load_ebook(path, creator):
+    from sqlalchemy.exc import IntegrityError
+    user = User.query.filter_by(email=creator).first()
+    books_dest = current_app.config['UPLOADED_BOOKS_DEST']
+    os.chdir(path)
+    filetypes = ['txt', 'mobi', 'pdf', 'equb']
+    for root, dirs, files in os.walk(path):
+        for f in files:
+            for t in filetypes:
+                if f.endswith(t):
+                    path = os.path.join(root, f)
+                    filename = f.split('.')[0]
+                    book = Book(name=filename, file=f, creator=user)
+                    try:
+                        book.save()
+                    except IntegrityError:
+                        continue
+                    with open(path, 'rb') as origin_file:
+                        data = origin_file.read()
+                    write_path = os.path.join(books_dest, f)
+                    with open(write_path, 'wb') as dest_file:
+                        dest_file.write(data)
+                                        
+
+
+@manager.command
+def del_ebooks():
+    books = Book.query.filter()
+    for b in books:
+        b.delete()
 
 
 def cli():

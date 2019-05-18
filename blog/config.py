@@ -4,7 +4,8 @@ import logging
 from logging.handlers import TimedRotatingFileHandler
 
 from raven.contrib.flask import Sentry
-from whoosh.analysis import StemmingAnalyzer
+# from whoosh.analysis import StemmingAnalyzer
+from jieba.analyse import ChineseAnalyzer
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -32,13 +33,18 @@ class Config:
 
     # FILE UPLOAD
     # UPLOADED_PHOTOS_DEST = './app/media/photos'
-    UPLOADED_DEFAULT_DEST = '/tmp/blog'
+    UPLOADED_DEFAULT_DEST = '/home/lvcong/tmp/blog'
     UPLOADED_DEFAULT_URL = '/media/'
     UPLOADED_PHOTOS_DEST = os.path.join(UPLOADED_DEFAULT_DEST, 'photos/')
     UPLOADED_PHOTOS_URL = os.path.join(UPLOADED_DEFAULT_URL, 'images/')
     UPLOADED_FILES_DEST = os.path.join(UPLOADED_DEFAULT_DEST, 'files/')
-    ALLOWED_EXTENSIONS = ['png', 'jpg', 'jpeg', 'gif', 'webp']
-    MAX_CONTENT_LENGTH = 10 * 1024 * 1024
+    MAX_CONTENT_LENGTH = 30 * 1024 * 1024
+    UPLOADED_BOOKS_URL = os.path.join(UPLOADED_DEFAULT_URL, 'books/')
+    UPLOADED_BOOKS_DEST = os.path.join(UPLOADED_DEFAULT_DEST, 'books/')
+
+    ALLOWED_EXTENSIONS = [
+        'png', 'jpg', 'jpeg', 'gif', 'webp', 'txt', 'mobi', 'equb'
+    ]
 
     # sqlalchemy config
     SQLALCHEMY_COMMIT_ON_TEARDOWN = True
@@ -46,15 +52,16 @@ class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = True
     BLOG_POST_PER_PAGE = 10
     BLOG_COMMENT_PAGE = 10
+    BLOG_BOOK_PER_PAGE = 15
     BLOG_SLOW_DB_QUERY_TIME = 0.1
     FLASKY_DB_QUERY_TIMEOUT = 0.5
 
     # LOGIN
-    LOGIN_TOKEN = 60 * 60 * 24
+    LOGIN_TOKEN_EXPIRES = 60 * 60 * 24 * 7
 
     # whoosh config
-    WHOOSH_BASE = '/tmp/whoosh/base'
-    WHOOSH_ANALYZER = StemmingAnalyzer()
+    WHOOSH_BASE = '/home/lvcong/tmp/whoosh/base'
+    WHOOSH_ANALYZER = ChineseAnalyzer()
     DEBUG_TB_INTERCEPT_REDIRECTS = False
 
     # celery config
@@ -69,6 +76,7 @@ class Config:
     LOG_PATH = '/logs/blog/'
     LOG_TIME = 'D'
     LOG_BACK_COUNT = 10
+    SQLALCHEMY_POOL_SIZE = 20
 
     CAPTCHA_FONTS_PATH = [os.path.join(basedir, 'fonts/NotoSans-Regular.ttf')]
 

@@ -3,7 +3,7 @@ from flask_restful import Resource, reqparse
 
 from blog.api_v1 import token_auth
 from blog.api_v1.decorators import permission_required
-from blog.exceptions import UserAlreadyExistsError, AuthorizedError
+from blog.exceptions import AlreadyExists, AuthorizedError
 from blog.utils.celery.email import send_email
 from blog.models import Permission, User
 
@@ -18,7 +18,7 @@ class SendEmailAuth(Resource):
         user = g.current_user
         if not user.is_anonymous:
             email_token = g.current_user.generate_email_token()
-            send_email.delay(
+            send_email(
                 to=user.email,
                 subject='Confirm Your Account',
                 template='mail/confirm',
@@ -33,7 +33,7 @@ class EmailExist(Resource):
         
         user = User.query.filter_by(email=request.args.email).first()
         if user:
-            raise UserAlreadyExistsError()
+            raise AlreadyExists()
         return {}
 
 
@@ -52,5 +52,5 @@ class UsernameExist(Resource):
         username = request.args.get('username')
         user = User.query.filter_by(username=username).first()
         if user:
-            raise UserAlreadyExistsError()
+            raise AlreadyExists()
         return {}

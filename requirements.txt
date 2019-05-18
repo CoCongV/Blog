@@ -1,4 +1,5 @@
 aniso8601==3.0.2
+beautifulsoup4
 bleach
 blinker
 captcha
@@ -26,10 +27,13 @@ graphene-sqlalchemy
 graphql-core
 graphql-relay
 gunicorn
+hiredis
+jieba
 Markdown
 psycopg2-binary
 raven
 redis
+requests
 SQLAlchemy
 Whoosh
 WTForms

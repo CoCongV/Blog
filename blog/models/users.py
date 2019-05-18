@@ -24,12 +24,15 @@ class User(CRUDMixin, UserMixin, db.Model, Serializer):
     about_me = db.Column(db.String(128))
     member_since = db.Column(db.DateTime, default=lambda: datetime.utcnow())
     last_seen = db.Column(db.DateTime, default=lambda: datetime.utcnow())
+    kindle_email = db.Column(db.String(64))
+
     posts = db.relationship('Post', backref='author', lazy='dynamic')
     comments = db.relationship(
         'Comment',
         backref='author',
         lazy='dynamic',
         cascade='all, delete-orphan')
+    books = db.relationship('Book', back_populates='creator')
 
     def __repr__(self):
         return str(self.json()).replace(',', '\n')
@@ -45,8 +48,10 @@ class User(CRUDMixin, UserMixin, db.Model, Serializer):
     def verify_password(self, password):
         return check_password_hash(self.password_hash, password)
 
-    def generate_confirm_token(self, expiration=3600):
+    def generate_confirm_token(self, expiration=None):
         """generate token for Email , reset password and verify password"""
+        if not expiration:
+            expiration = current_app.config['LOGIN_TOKEN_EXPIRES']
         s = TimedJSONWebSignatureSerializer(
             current_app.config['SECRET_KEY'], expires_in=expiration)
         token = s.dumps({'confirm_id': self.id})
@@ -64,7 +69,7 @@ class User(CRUDMixin, UserMixin, db.Model, Serializer):
 
     def generate_email_token(self, expiration=None):
         if not expiration:
-            current_app.config['LOGIN_TOKEN']
+            current_app.config['LOGIN_TOKEN_EXPIRES']
         s = TimedJSONWebSignatureSerializer(
             current_app.config['SECRET_KEY'], expires_in=expiration)
         token = s.dumps({'email': self.email})
@@ -126,8 +131,7 @@ class User(CRUDMixin, UserMixin, db.Model, Serializer):
         db.session.commit()
 
     def can(self, permissions):
-        return self.role is not None and (
-            self.role.permissions & permissions) == permissions
+        return self.role is not None and self.role.has_permission(permissions)
 
     def is_administrator(self):
         return self.can(Permission.ADMINISTER)
@@ -149,6 +153,7 @@ class User(CRUDMixin, UserMixin, db.Model, Serializer):
             "member_since": self.member_since.strftime('%Y-%m-%d %H:%M'),
             "confirmed": self.confirmed,
             "permission": self.role.permissions,
+            "kindle_email": self.kindle_email
         }
         return json_data
 

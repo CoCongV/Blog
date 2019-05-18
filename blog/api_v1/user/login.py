@@ -1,3 +1,4 @@
+from flask import current_app
 from flask_restful import reqparse, Resource
 from werkzeug.exceptions import Forbidden
 
@@ -13,6 +14,7 @@ class LoginView(Resource):
 
     def post(self):
         args = reqparse.parse_args()
+        print(args)
         user = User.query.filter_by(email=args.email).first()
 
         if not user:
@@ -25,5 +27,6 @@ class LoginView(Resource):
             'token': token,
             'username': user.username,
             'permission': user.role.permissions,
-            'avatar': user.avatar
+            'avatar': user.avatar,
+            'expiration': current_app.config['LOGIN_TOKEN_EXPIRES']
         }
